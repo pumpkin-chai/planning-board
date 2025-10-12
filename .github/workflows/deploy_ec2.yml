@@ -43,7 +43,6 @@ jobs:
           mkdir -p deploy/.next deploy/public
           rsync -a .next/standalone/ deploy/.next/standalone/
           rsync -a .next/static/     deploy/.next/static/
-          rsync -a public/           deploy/public/
           # include any runtime files needed (optional)
           # cp package.json deploy/    # only if your app expects it at runtime
           tar -C deploy -czf release.tar.gz .
