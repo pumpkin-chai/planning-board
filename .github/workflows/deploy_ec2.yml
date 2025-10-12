@@ -58,3 +58,52 @@ jobs:
         with:
           name: release
           path: release.tar.gz
+
+    deploy:
+      needs: build
+      runs-on: ubuntu-22.04
+      steps:
+        - name: Download artifact
+          uses: actions/download-artifact@v4
+          with:
+            name: release
+            path: .
+
+        - name: Setup SSH
+          uses: webfactory/ssh-agent@v0.9.0
+          with:
+            ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+        - name: Add host to known_hosts
+          run: |
+            mkdir -p ~/.ssh
+            ssh-keyscan -p "${{ secrets.SSH_PORT || 22 }}" -H "${{ secrets.EC2_HOST }}" >> ~/.ssh/known_hosts
+
+        - name: Upload bundle to EC2
+          run: |
+            scp -P "${{ secrets.SSH_PORT || 22 }}" release.tar.gz \
+              ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/tmp/release.tar.gz
+
+        - name: Atomic release on EC2
+          run: |
+            ssh -p "${{ secrets.SSH_PORT || 22 }}" ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+            set -euo pipefail
+            APP_DIR="${EC2_PATH:-/var/www/app}"
+            RELEASES_DIR="$APP_DIR/releases"
+            TS="$(date +%Y%m%d%H%M%S)"
+            NEW_RELEASE="$RELEASES_DIR/$TS"
+
+            mkdir -p "$RELEASES_DIR"
+            mkdir -p "$NEW_RELEASE"
+            tar -C "$NEW_RELEASE" -xzf /tmp/release.tar.gz
+
+            # Switch symlink atomically
+            ln -sfn "$NEW_RELEASE" "$APP_DIR/current"
+
+            # Restart the service
+            sudo systemctl restart group-plan
+            sudo systemctl status group-plan --no-pager --full || true
+
+            # Cleanup old releases (keep last 5)
+            ls -1dt "$RELEASES_DIR"/* | tail -n +6 | xargs -r rm -rf
+            EOF
