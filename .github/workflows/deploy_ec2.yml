@@ -34,7 +34,8 @@ jobs:
 
       - name: Build Next (standalone)
         env:
-          # add any NEXT_PUBLIC_* envs required for build-time if needed
+          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY: ${{ vars.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ vars.NEXT_PUBLIC_SUPABASE_URL }}
           NODE_OPTIONS: --max-old-space-size=2048
         run: pnpm build
 
