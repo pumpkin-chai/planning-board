@@ -1,0 +1,23 @@
+[Unit]
+Description=Planning Board Next.js app
+After=network.target
+
+[Service]
+Type=simple
+# Change this to the user that owns the app (e.g. ec2-user)
+User=ec2-user
+# Working directory where the repo is checked out
+WorkingDirectory=/var/www/planning-board
+
+# Load production env vars from this file (create with your secrets)
+EnvironmentFile=/var/www/planning-board/.env.production
+
+# Use bash to source nvm and run pnpm from the user's nvm-installed node.
+# Adjust NVM_DIR if the user has nvm in a different location.
+ExecStart=/bin/bash -lc 'export HOME=/home/%u; export NVM_DIR="$HOME/.nvm"; [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"; exec pnpm start'
+
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
