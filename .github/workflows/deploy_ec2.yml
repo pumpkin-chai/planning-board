@@ -87,17 +87,17 @@ jobs:
           TS="$(date +%Y%m%d%H%M%S)"
           NEW_RELEASE="$RELEASES_DIR/$TS"
 
-          mkdir -p "$RELEASES_DIR"
-          mkdir -p "$NEW_RELEASE"
-          tar -C "$NEW_RELEASE" -xzf /tmp/release.tar.gz
+          sudo mkdir -p "$RELEASES_DIR"
+          sudo mkdir -p "$NEW_RELEASE"
+          sudo tar -C "$NEW_RELEASE" -xzf /tmp/release.tar.gz
 
           # Switch symlink atomically
-          ln -sfn "$NEW_RELEASE" "$APP_DIR/current"
+          sudo ln -sfn "$NEW_RELEASE" "$APP_DIR/current"
 
           # Restart the service
           sudo systemctl restart group-plan
           sudo systemctl status group-plan --no-pager --full || true
 
           # Cleanup old releases (keep last 5)
-          ls -1dt "$RELEASES_DIR"/* | tail -n +6 | xargs -r rm -rf
+          sudo ls -1dt "$RELEASES_DIR"/* | tail -n +6 | xargs -r rm -rf
           EOF
