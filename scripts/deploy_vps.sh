@@ -5,33 +5,33 @@ set -euo pipefail
 # Assumptions for this variant:
 #  - `git`, `nvm`, `node` (installed via nvm), and `pnpm` are already available for the deploy user
 #  - The VPS already has nginx/certbot configured externally
-# Usage: sudo ./scripts/deploy_vps.sh [-r <git-repo-url>] [-d /var/www/planning-board] [-b main] [-u ec2-user] [-s planning-board]
+# Usage: sudo ./scripts/deploy_vps.sh [-d <app-dir>] [-b <branch>] [-u <app-user>] [-s <service-name>]
 
-REPO_URL=""
-APP_DIR="/var/www/planning-board"
+# Default APP_DIR to the repository root (assumes script is at ./scripts/deploy_vps.sh)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+APP_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 BRANCH="main"
 APP_USER="ec2-user"
 SERVICE_NAME="planning-board"
 
 print_usage() {
   cat <<EOF
-Usage: sudo $0 [-r <repo-url>] [-d <app-dir>] [-b <branch>] [-u <app-user>] [-s <service-name>]
+Usage: sudo $0 [-d <app-dir>] [-b <branch>] [-u <app-user>] [-s <service-name>]
 
-This script will (Amazon Linux / EC2 variant):
-  - clone the repo as the specified app user (if needed) or pull updates
-  - run dependency install and build using the app user's nvm environment (so their node/pnpm are used)
+This script assumes you're running it from a cloned copy of the repository (or that the repo root is passed with -d).
+It will:
+  - pull updates as the specified app user
+  - run dependency install and build using the app user's nvm environment
   - restart the systemd service named by -s (default: planning-board)
 
 Notes:
-  - If the repo doesn't exist at the target dir, provide -r <repo-url> so the script can clone it as the app user.
-  - The script assumes the deploy user has nvm/node/pnpm available and ssh keys (if cloning over SSH).
+  - Ensure the deploy user has nvm/node/pnpm available and ssh keys if you rely on private remotes.
   - nginx/certbot are expected to be configured separately.
 EOF
 }
 
-while getopts "r:d:b:u:s:h" opt; do
+while getopts "d:b:u:s:h" opt; do
   case "$opt" in
-    r) REPO_URL="$OPTARG" ;;
     d) APP_DIR="$OPTARG" ;;
     b) BRANCH="$OPTARG" ;;
     u) APP_USER="$OPTARG" ;;
@@ -45,7 +45,6 @@ if [ "$EUID" -ne 0 ]; then
   echo "Warning: it's recommended to run this script with sudo/root so it can restart the systemd service. Continuing anyway..."
 fi
 
-echo "Using: REPO_URL=${REPO_URL:-<not-set>}"
 echo "Using: APP_DIR=$APP_DIR"
 echo "Using: BRANCH=$BRANCH"
 echo "Using: APP_USER=$APP_USER"
@@ -57,20 +56,14 @@ if ! id -u "$APP_USER" >/dev/null 2>&1; then
   exit 1
 fi
 
-# If repo exists, update it as the app user (so SSH keys and nvm work correctly)
+# Require the repo to already be present at APP_DIR. Pull updates as the app user so SSH keys and nvm work correctly.
 if [ -d "$APP_DIR/.git" ]; then
   echo "Updating existing repository in $APP_DIR as $APP_USER"
   sudo -u "$APP_USER" -H bash -lc "cd '$APP_DIR' && git fetch --all && git checkout '$BRANCH' && git pull origin '$BRANCH'"
 else
-  if [ -z "$REPO_URL" ]; then
-    echo "Error: repository not found at $APP_DIR and no -r <repo-url> provided to clone."
-    print_usage
-    exit 1
-  fi
-  echo "Cloning repository into $APP_DIR as $APP_USER"
-  mkdir -p "$APP_DIR"
-  chown "$APP_USER":"$APP_USER" "$APP_DIR"
-  sudo -u "$APP_USER" -H git clone --branch "$BRANCH" "$REPO_URL" "$APP_DIR"
+  echo "Error: repository not found at $APP_DIR. Please run this script from the cloned repository root or pass -d <path>."
+  print_usage
+  exit 1
 fi
 
 cd "$APP_DIR"
