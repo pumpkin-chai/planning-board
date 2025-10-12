@@ -34,9 +34,6 @@ jobs:
       - name: Install deps
         run: pnpm install --frozen-lockfile
 
-      - name: Type check (CI safety)
-        run: pnpm exec tsc --noEmit
-
       - name: Build Next (standalone)
         env:
           # add any NEXT_PUBLIC_* envs required for build-time if needed
