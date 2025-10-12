@@ -88,22 +88,25 @@ if [ ! -f "$APP_DIR/.env.production" ]; then
   echo "Warning: $APP_DIR/.env.production not found. Ensure your production env vars are present before starting the service."
 fi
 
-# Restart systemd service
-if systemctl list-units --full -all | grep -Fq "${SERVICE_NAME}.service"; then
-  echo "Restarting systemd service: $SERVICE_NAME"
-  if [ "$EUID" -eq 0 ]; then
-    systemctl restart "$SERVICE_NAME"
-    sleep 1
-    systemctl --no-pager status "$SERVICE_NAME" | sed -n '1,10p'
+# Restart systemd service (use sudo so non-root SSH sessions can manage system services)
+echo "Checking systemd service: $SERVICE_NAME"
+if sudo systemctl status "${SERVICE_NAME}.service" >/dev/null 2>&1; then
+  echo "Service '${SERVICE_NAME}' exists. Attempting restart..."
+  if sudo -n systemctl restart "${SERVICE_NAME}.service" >/dev/null 2>&1; then
+    echo "Restarted ${SERVICE_NAME} successfully."
+    echo "Recent journal logs:"
+    sudo journalctl -u "${SERVICE_NAME}" --no-pager -n 40 | sed -n '1,40p'
   else
-    echo "Attempting to restart via sudo..."
-    sudo systemctl restart "$SERVICE_NAME"
-    echo "Service status (short):"
-    sudo systemctl --no-pager status "$SERVICE_NAME" | sed -n '1,10p'
+    echo "Failed to restart ${SERVICE_NAME} via sudo. Showing status and logs for debugging:"
+    sudo systemctl --no-pager status "${SERVICE_NAME}.service" || true
+    sudo journalctl -u "${SERVICE_NAME}" --no-pager -n 200 | sed -n '1,80p' || true
+    exit 3
   fi
 else
-  echo "Warning: systemd unit '$SERVICE_NAME' not found. The script updated the repo and built the app but did not restart any service."
-  echo "If you use a different run method, restart it manually (e.g. systemctl start $SERVICE_NAME or your process manager)."
+  echo "Warning: systemd unit '${SERVICE_NAME}.service' not found (via sudo)."
+  echo "List unit-files matching name:"
+  sudo systemctl list-unit-files | grep -i "${SERVICE_NAME}" || true
+  echo "If you can run 'systemctl start ${SERVICE_NAME}' manually over SSH, ensure the deploy user has permission to run sudo without a password for systemctl or run the deploy script with sudo."
 fi
 
 echo "Done."
