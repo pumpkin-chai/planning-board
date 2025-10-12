@@ -4,43 +4,57 @@ on:
   workflow_dispatch:
     inputs:
       branch:
-        description: 'Branch to deploy'
+        description: "Branch to deploy"
         required: true
-        default: 'main'
+        default: "main"
   push:
     branches:
       - main
 
 jobs:
-  deploy:
-    name: Deploy to EC2 via SSH
-    runs-on: ubuntu-latest
+  build:
+    runs-on: ubuntu-22.04
+    env:
+      NODE_ENV: production
     steps:
-      - name: Checkout (local copy for workflow metadata)
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Deploy to EC2 over SSH
-        uses: appleboy/ssh-action@v0.1.8
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v3
         with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          port: ${{ secrets.EC2_SSH_PORT }}
-          script: |
-            set -euo pipefail
-            echo "Connected to $(hostname)"
-            # Ensure the application directory exists
-            APP_DIR="${{ secrets.EC2_APP_DIR }}"
-            BRANCH="${{ github.ref_name }}"
-            if [ -z "$APP_DIR" ]; then
-              echo "Error: EC2_APP_DIR secret is not set."
-              exit 2
-            fi
-            cd "$APP_DIR" || { echo "App dir $APP_DIR not found"; exit 1; }
-            # Update the repo to the pushed branch
-            git fetch --all
-            git checkout "$BRANCH" || git checkout main
-            git reset --hard "origin/$BRANCH"
-            # Ensure deploy script is executable and run it
-            chmod +x ./scripts/deploy_vps.sh
-            ./scripts/deploy_vps.sh -d "$APP_DIR" -u "${{ secrets.EC2_USER }}" -b "$BRANCH"
+          version: 9
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+
+      - name: Install deps
+        run: pnpm install --frozen-lockfile
+
+      - name: Type check (CI safety)
+        run: pnpm exec tsc --noEmit
+
+      - name: Build Next (standalone)
+        env:
+          # add any NEXT_PUBLIC_* envs required for build-time if needed
+          NODE_OPTIONS: --max-old-space-size=2048
+        run: pnpm build
+
+      - name: Create deploy bundle
+        run: |
+          mkdir -p deploy/.next deploy/public
+          rsync -a .next/standalone/ deploy/.next/standalone/
+          rsync -a .next/static/     deploy/.next/static/
+          rsync -a public/           deploy/public/
+          # include any runtime files needed (optional)
+          # cp package.json deploy/    # only if your app expects it at runtime
+          tar -C deploy -czf release.tar.gz .
+
+      - name: Upload artifact (for traceability)
+        uses: actions/upload-artifact@v4
+        with:
+          name: release
+          path: release.tar.gz
