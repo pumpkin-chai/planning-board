@@ -12,7 +12,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 APP_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 BRANCH="main"
 APP_USER="ec2-user"
-SERVICE_NAME="planning-board"
+SERVICE_NAME="group-plan"
 
 print_usage() {
   cat <<EOF
