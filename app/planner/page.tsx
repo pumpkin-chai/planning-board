@@ -87,9 +87,9 @@ export default async function Home() {
   return (
     <div className="px-8 py-3 w-full">
       <h1 className="self-start text-5xl font-bold mb-8">Dashboard</h1>
-      <section className="mb-12">
+      <section className="mb-32">
         <h2 className="text-2xl mb-4">Your Calendars</h2>
-        <div className="p-4 bg-secondary">
+        <div className="p-4 bg-secondary h-96">
           {calendars.length === 0 ? (
             <Empty className="size-full">
               <EmptyHeader>
@@ -119,9 +119,9 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="mb-12">
+      <section className="mb-32">
         <h2 className="text-2xl mb-4">Notifications</h2>
-        <div className="p-4 bg-secondary h-64">
+        <div className="p-4 bg-secondary h-96">
           {notifications.length === 0 ? (
             <Empty className="size-full">
               <EmptyHeader>
@@ -140,9 +140,9 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="mb-12">
+      <section className="mb-32">
         <h2 className="text-2xl mb-4">Upcoming Events</h2>
-        <div className="p-4 bg-secondary h-64">
+        <div className="p-4 bg-secondary h-96">
           {events.length === 0 ? (
             <Empty className="size-full">
               <EmptyHeader>
