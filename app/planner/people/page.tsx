@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ChevronRight, Plus } from "lucide-react";
+import { ChevronRight, Plus, UserRoundSearch } from "lucide-react";
 
 export default function People() {
   type Group = { id: number; name: string };
@@ -16,10 +16,14 @@ export default function People() {
       <h1 className="self-start text-5xl font-bold mb-8">People</h1>
       <section>
         <h2 className="text-2xl mb-4">Your Groups</h2>
-        <div className="mb-6">
+        <div className="mb-6 flex items-stretch gap-4">
           <Button variant="default">
             <Plus />
             Create Group
+          </Button>
+          <Button variant="outline">
+            <UserRoundSearch />
+            Join Group
           </Button>
         </div>
         <GroupList groups={groups} />
