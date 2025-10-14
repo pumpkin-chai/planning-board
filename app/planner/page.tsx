@@ -30,6 +30,13 @@ export default async function Home() {
     { id: 1, message: "Notification 1", read: false },
     { id: 2, message: "Notification 2", read: true },
     { id: 3, message: "Notification 3", read: false },
+    { id: 4, message: "Notification 4", read: true },
+    { id: 5, message: "Notification 5", read: false },
+    { id: 6, message: "Notification 6", read: true },
+    { id: 7, message: "Notification 7", read: false },
+    { id: 8, message: "Notification 8", read: true },
+    { id: 9, message: "Notification 9", read: false },
+    { id: 10, message: "Notification 10", read: true },
   ];
 
   type Event = { id: number; groupId: number; title: string; date: string };
@@ -86,16 +93,7 @@ export default async function Home() {
               </EmptyHeader>
             </Empty>
           ) : (
-            <ul>
-              {notifications.map((notification) => (
-                <li
-                  key={notification.id}
-                  className={notification.read ? "text-gray-500" : "font-bold"}
-                >
-                  {notification.message}
-                </li>
-              ))}
-            </ul>
+            <NotificationList notifications={notifications} />
           )}
         </div>
       </section>
@@ -136,6 +134,38 @@ function EventItem({ event }: EventItemProps) {
     <div>
       <strong>{event.title}</strong> -{" "}
       {new Date(event.date).toLocaleDateString()}
+    </div>
+  );
+}
+
+function NotificationList({
+  notifications,
+}: {
+  notifications: Notification[];
+}) {
+  return (
+    <ul className="overflow-y-auto h-full">
+      {notifications.map((notification) => (
+        <li key={notification.id} className="mb-4 last:mb-0">
+          <NotificationCard notification={notification} />
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function NotificationCard({ notification }: { notification: Notification }) {
+  return (
+    <div className="p-6 bg-card hover:bg-accent hover:text-accent-foreground transition-colors rounded-lg">
+      <p
+        className={
+          notification.read
+            ? "text-muted-foreground"
+            : "font-bold text-card-foreground"
+        }
+      >
+        {notification.message}
+      </p>
     </div>
   );
 }
