@@ -73,7 +73,7 @@ export default async function Home() {
       <section className="mb-12">
         <h2 className="text-2xl mb-4">Notifications</h2>
         <div className="p-4 bg-secondary h-64">
-          {events.length === 0 ? (
+          {notifications.length === 0 ? (
             <Empty className="size-full">
               <EmptyHeader>
                 <EmptyMedia variant="icon">
