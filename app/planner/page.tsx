@@ -22,7 +22,7 @@ export default async function Home() {
     redirect("/auth/login");
   }
 
-  type Calendar = { id: number; name: string };
+  type Calendar = { id: number; groupId: number; name: string };
   const calendars: Calendar[] = [];
 
   type Notification = { id: number; message: string; read: boolean };
@@ -32,7 +32,7 @@ export default async function Home() {
     { id: 3, message: "Notification 3", read: false },
   ];
 
-  type Event = { id: number; title: string; date: string };
+  type Event = { id: number; groupId: number; title: string; date: string };
   const events: Event[] = [];
 
   return (
