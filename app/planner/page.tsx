@@ -39,8 +39,50 @@ export default async function Home() {
     { id: 10, message: "Notification 10", read: true },
   ];
 
-  type Event = { id: number; groupId: number; title: string; date: string };
-  const events: Event[] = [];
+  type Event = {
+    id: number;
+    groupId: number;
+    title: string;
+    date: string;
+    time: string;
+  };
+  const events: Event[] = [
+    {
+      id: 1,
+      groupId: 1,
+      title: "Event 1",
+      date: "2023-10-01",
+      time: "10:00 AM",
+    },
+    {
+      id: 2,
+      groupId: 1,
+      title: "Event 2",
+      date: "2023-10-05",
+      time: "2:00 PM",
+    },
+    {
+      id: 3,
+      groupId: 2,
+      title: "Event 3",
+      date: "2023-10-10",
+      time: "6:00 PM",
+    },
+    {
+      id: 4,
+      groupId: 2,
+      title: "Event 4",
+      date: "2023-10-15",
+      time: "9:00 AM",
+    },
+    {
+      id: 5,
+      groupId: 3,
+      title: "Event 5",
+      date: "2023-10-20",
+      time: "1:00 PM",
+    },
+  ];
 
   return (
     <div className="px-8 py-3 w-full">
@@ -100,7 +142,7 @@ export default async function Home() {
 
       <section className="mb-12">
         <h2 className="text-2xl mb-4">Upcoming Events</h2>
-        <div className="p-4 bg-secondary min-h-64">
+        <div className="p-4 bg-secondary h-64">
           {events.length === 0 ? (
             <Empty className="size-full">
               <EmptyHeader>
@@ -114,26 +156,10 @@ export default async function Home() {
               </EmptyHeader>
             </Empty>
           ) : (
-            <ul>
-              {events.map((event) => (
-                <li key={event.id}>
-                  <EventItem event={event} />
-                </li>
-              ))}
-            </ul>
+            <EventList events={events} />
           )}
         </div>
       </section>
-    </div>
-  );
-}
-
-type EventItemProps = { event: { id: number; title: string; date: string } };
-function EventItem({ event }: EventItemProps) {
-  return (
-    <div>
-      <strong>{event.title}</strong> -{" "}
-      {new Date(event.date).toLocaleDateString()}
     </div>
   );
 }
@@ -166,6 +192,31 @@ function NotificationCard({ notification }: { notification: Notification }) {
       >
         {notification.message}
       </p>
+    </div>
+  );
+}
+
+function EventList({ events }: { events: Event[] }) {
+  return (
+    <ul className="overflow-y-auto h-full">
+      {events.map((event) => (
+        <li key={event.id} className="mb-4 last:mb-0">
+          <EventItem event={event} />
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+type EventItemProps = {
+  event: { id: number; title: string; date: string; time: string };
+};
+function EventItem({ event }: EventItemProps) {
+  return (
+    <div className="p-6 bg-card hover:bg-accent hover:text-accent-foreground transition-colors rounded-lg">
+      <strong>{event.title}</strong> -{" "}
+      {new Date(event.date).toLocaleDateString()}
+      {" at "} {event.time}
     </div>
   );
 }
