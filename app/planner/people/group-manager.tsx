@@ -1,8 +1,9 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { ChevronRight, Plus, UserRoundSearch } from "lucide-react";
+import { ChevronRight, UserRoundSearch } from "lucide-react";
 import { useState } from "react";
+import { NewGroupDialog } from "./new-group-dialog";
 
 type Group = { id: number; name: string };
 
@@ -15,8 +16,8 @@ export function GroupManager() {
     { id: 5, name: "Book Club" },
   ]);
 
-  const handleNewGroup = () => {
-    console.log("New Group");
+  const handleNewGroup = (name: string) => {
+    console.log(`New Group ${name}`);
   };
 
   const handleLeaveGroup = (id: number) => {
@@ -26,7 +27,7 @@ export function GroupManager() {
   return (
     <div>
       <div className="mb-6 flex items-stretch gap-4">
-        <CreateGroupButton onClickAction={handleNewGroup} />
+        <NewGroupDialog newGroupAction={handleNewGroup} />
         <Button variant="outline">
           <UserRoundSearch />
           Join Group
@@ -34,19 +35,6 @@ export function GroupManager() {
       </div>
       <GroupList groups={groups} onLeaveGroup={handleLeaveGroup} />
     </div>
-  );
-}
-
-export function CreateGroupButton({
-  onClickAction,
-}: {
-  onClickAction: () => void;
-}) {
-  return (
-    <Button variant="default" onClick={onClickAction}>
-      <Plus />
-      Create Group
-    </Button>
   );
 }
 
@@ -93,3 +81,4 @@ function GroupCard({
     </div>
   );
 }
+
