@@ -50,11 +50,8 @@ export default async function CalendarPage({
 
       <section className="mb-32">
         <h2 className="text-2xl mb-4">Calendar</h2>
-        <div className="flex justify-center p-8 bg-secondary gap-4">
-          <EventCalendar />
-          <div>
-            <EventProposalDialog />
-          </div>
+        <div className="p-8 bg-secondary">
+          <EventCalendar events={events} />
         </div>
       </section>
 
