@@ -28,7 +28,6 @@ export function EventProposalDialog() {
   };
 
   const handleSubmit = (event: any) => {
-    event.preventDefault();
     console.log("Event Proposed:", { eventName: name, eventDate: date });
   };
 
