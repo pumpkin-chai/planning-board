@@ -56,7 +56,7 @@ export default async function CalendarPage({
       </section>
 
       <section className="mb-16">
-        <h2 className="text-2xl mb-4">List</h2>
+        <h2 className="text-2xl mb-4">Upcoming Events</h2>
         <div className="p-8 bg-secondary">
           <ul className="overflow-y-auto">
             {events.map((event) => (
