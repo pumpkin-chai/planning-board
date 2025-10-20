@@ -8,9 +8,9 @@ export function EventCalendar() {
 
   return (
     <Calendar
-      // mode="single"
-      // selected={date}
-      // onSelect={setDate}
+      mode="single"
+      selected={date}
+      onSelect={setDate}
       className="rounded-md border shadow-sm w-full md:w-3/5 lg:w-1/2"
       captionLayout="dropdown"
     />
