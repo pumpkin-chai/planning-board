@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { NewGroupDialog } from "./new-group-dialog";
 import { JoinGroupDialog } from "./join-group-dialog";
 import { createClient } from "@/lib/supabase/client";
+import Link from "next/link";
 
 type Group = { id: number; name: string };
 
@@ -128,7 +129,10 @@ function GroupCard({
   onLeaveGroup: (id: number) => void;
 }) {
   return (
-    <div className="border border-border p-6 rounded-lg cursor-pointer flex items-center justify-between gap-4 shadow-sm hover:shadow-md transition-shadow">
+    <Link
+      href={`/planner/calendar/${group.id}`}
+      className="border border-border p-6 rounded-lg cursor-pointer flex items-center justify-between gap-4 shadow-sm hover:shadow-md transition-shadow"
+    >
       <div>
         <h3 className="text-xl font-semibold">{group.name}</h3>
         <span className="text-sm text-muted-foreground">5 members</span>
@@ -142,6 +146,6 @@ function GroupCard({
         </div>
         <ChevronRight className="ml-4" />
       </div>
-    </div>
+    </Link>
   );
 }
