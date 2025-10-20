@@ -6,7 +6,13 @@ import { EventProposal, EventProposalDialog } from "./event-proposal-dialog";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 
-type Event = { id: number; name: string; datetime: Date };
+export type Event = {
+  id: number;
+  title: string;
+  startsAt: Date;
+  status: string;
+  createdBy: string;
+};
 
 export function EventCalendar({
   groupId,
@@ -20,7 +26,7 @@ export function EventCalendar({
 
   const [date, setDate] = useState<Date | undefined>(new Date());
   const selectedEvents = events.filter(
-    (event) => event.datetime.toDateString() === date?.toDateString(),
+    (event) => event.startsAt.toDateString() === date?.toDateString(),
   );
 
   const handlePropose = (proposal: EventProposal) => {
@@ -31,8 +37,9 @@ export function EventCalendar({
         .from("Events")
         .insert({
           group_id: groupId,
-          name: proposal.name,
-          datetime: proposal.date.toISOString(),
+          title: proposal.title,
+          starts_at: proposal.startsAt.toISOString(),
+          status: "proposed",
         })
         .select()
         .single();
@@ -58,9 +65,9 @@ export function EventCalendar({
           {selectedEvents.length > 0 ? (
             selectedEvents.map((event) => (
               <li key={event.id} className="p-4 border rounded-md">
-                <h3 className="font-semibold">{event.name}</h3>
+                <h3 className="font-semibold">{event.title}</h3>
                 <p className="text-sm text-muted-foreground">
-                  {event.datetime.toLocaleString()}
+                  {event.startsAt.toLocaleString()}
                 </p>
               </li>
             ))

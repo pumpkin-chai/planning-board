@@ -15,18 +15,18 @@ import {
 } from "@/components/ui/dialog";
 import { useState } from "react";
 
-export type EventProposal = { name: string; date: Date };
+export type EventProposal = { title: string; startsAt: Date };
 
 export function EventProposalDialog({
   proposeAction,
 }: {
   proposeAction: (date: EventProposal) => void;
 }) {
-  const [name, setName] = useState<string>("");
+  const [title, setTitle] = useState<string>("");
   const [date, setDate] = useState<string>("");
 
   const handleEventNameChange = (event: any) => {
-    setName(event.target.value);
+    setTitle(event.target.value);
   };
 
   const handleEventDateChange = (event: any) => {
@@ -34,7 +34,7 @@ export function EventProposalDialog({
   };
 
   const handleSubmit = () => {
-    proposeAction({ name: name, date: new Date(date) });
+    proposeAction({ title: title, startsAt: new Date(date) });
   };
 
   return (
@@ -58,7 +58,7 @@ export function EventProposalDialog({
                 type="text"
                 name="name"
                 placeholder="Event Name"
-                value={name}
+                value={title}
                 onChange={handleEventNameChange}
                 required
               />

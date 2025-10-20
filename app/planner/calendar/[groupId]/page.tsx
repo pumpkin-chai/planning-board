@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import { EventCalendar } from "./event-calendar";
+import { EventCalendar, Event } from "./event-calendar";
 
 export default async function CalendarPage({
   params,
@@ -25,18 +25,19 @@ export default async function CalendarPage({
     .single();
   console.log("Group Data:", groupData);
 
-  type Event = { id: number; name: string; datetime: Date };
   const { data: eventData } = await supabase
     .from("Events")
-    .select("id, name, datetime")
+    .select("id, title, starts_at, status, created_by")
     .eq("group_id", groupId);
   console.log("Event Data:", eventData);
   const events: Event[] = eventData
     ? eventData.map((event) => {
         return {
           id: event.id,
-          name: event.name,
-          datetime: new Date(event.datetime),
+          title: event.title,
+          startsAt: new Date(event.starts_at),
+          status: event.status,
+          createdBy: event.created_by,
         };
       })
     : [];
@@ -60,8 +61,8 @@ export default async function CalendarPage({
           <ul className="overflow-y-auto">
             {events.map((event) => (
               <li key={event.id}>
-                <strong>{event.datetime.toLocaleDateString()} </strong>
-                <em>{event.datetime.toLocaleTimeString()}</em> - {event.name}
+                <strong>{event.startsAt.toLocaleDateString()} </strong>
+                <em>{event.startsAt.toLocaleTimeString()}</em> - {event.title}
               </li>
             ))}
           </ul>
