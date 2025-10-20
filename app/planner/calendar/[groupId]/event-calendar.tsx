@@ -55,14 +55,18 @@ export function EventCalendar({
       />
       <div className="flex-1 flex flex-col min-w-[300px] gap-4">
         <ul className="space-y-2 flex-1 overflow-y-auto">
-          {selectedEvents.map((event) => (
-            <li key={event.id} className="p-4 border rounded-md">
-              <h3 className="font-semibold">{event.name}</h3>
-              <p className="text-sm text-muted-foreground">
-                {event.datetime.toLocaleString()}
-              </p>
-            </li>
-          ))}
+          {selectedEvents.length > 0 ? (
+            selectedEvents.map((event) => (
+              <li key={event.id} className="p-4 border rounded-md">
+                <h3 className="font-semibold">{event.name}</h3>
+                <p className="text-sm text-muted-foreground">
+                  {event.datetime.toLocaleString()}
+                </p>
+              </li>
+            ))
+          ) : (
+            <li>No events for this date.</li>
+          )}
         </ul>
         <EventProposalDialog proposeAction={handlePropose} />
       </div>
