@@ -64,11 +64,19 @@ export function EventCalendar({
         <ul className="space-y-2 flex-1 overflow-y-auto">
           {selectedEvents.length > 0 ? (
             selectedEvents.map((event) => (
-              <li key={event.id} className="p-4 border rounded-md">
-                <h3 className="font-semibold">{event.title}</h3>
-                <p className="text-sm text-muted-foreground">
-                  {event.startsAt.toLocaleString()}
-                </p>
+              <li
+                key={event.id}
+                className="p-4 border rounded-md flex items-center gap-4"
+              >
+                <div className="flex-1">
+                  <h3 className="font-semibold">{event.title}</h3>
+                  <p className="text-sm text-muted-foreground">
+                    {event.startsAt.toLocaleString()}
+                  </p>
+                </div>
+                <div className="text-muted-foreground text-sm">
+                  {event.status.toUpperCase()}
+                </div>
               </li>
             ))
           ) : (
