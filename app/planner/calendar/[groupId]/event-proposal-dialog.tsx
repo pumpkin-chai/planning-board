@@ -13,8 +13,25 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useState } from "react";
 
 export function EventProposalDialog() {
+  const [name, setName] = useState<string>("");
+  const [date, setDate] = useState<string>("");
+
+  const handleEventNameChange = (event: any) => {
+    setName(event.target.value);
+  };
+
+  const handleEventDateChange = (event: any) => {
+    setDate(event.target.value);
+  };
+
+  const handleSubmit = (event: any) => {
+    event.preventDefault();
+    console.log("Event Proposed:", { eventName: name, eventDate: date });
+  };
+
   return (
     <Dialog>
       <form>
@@ -36,17 +53,28 @@ export function EventProposalDialog() {
                 type="text"
                 name="name"
                 placeholder="Event Name"
+                value={name}
+                onChange={handleEventNameChange}
                 required
               />
               <Label htmlFor="date">Date</Label>
-              <Input id="date" type="datetime-local" name="date" required />
+              <Input
+                id="date"
+                type="datetime-local"
+                name="date"
+                value={date}
+                onChange={handleEventDateChange}
+                required
+              />
             </div>
           </div>
           <DialogFooter>
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>
             </DialogClose>
-            <Button type="submit">Create Proposal</Button>
+            <Button type="submit" onClick={handleSubmit}>
+              Create Proposal
+            </Button>
           </DialogFooter>
         </DialogContent>
       </form>
