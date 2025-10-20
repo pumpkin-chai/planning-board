@@ -38,7 +38,6 @@ export function GroupManager() {
   }, []);
 
   const handleNewGroup = async (name: string) => {
-    console.log(`New Group ${name}`);
     try {
       const supabase = createClient();
       const { data } = await supabase
@@ -46,7 +45,9 @@ export function GroupManager() {
         .insert({ name })
         .select()
         .single();
-      console.log("Created group:", data);
+      if (data) {
+        setGroups((prevGroups) => [...prevGroups, data]);
+      }
     } catch (error) {
       console.error("Error creating group:", error);
     }
