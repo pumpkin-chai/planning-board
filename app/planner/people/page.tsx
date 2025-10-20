@@ -13,15 +13,6 @@ export default async function People() {
     redirect("/auth/login");
   }
 
-  console.log(user);
-
-  const { data } = await supabase
-    .from("Memberships")
-    .select(`group_id`)
-    .eq("user_id", user.id);
-
-  console.log(data);
-
   return (
     <div className="px-8 py-3 w-full">
       <h1 className="self-start text-5xl font-bold mb-8">People</h1>
@@ -32,4 +23,3 @@ export default async function People() {
     </div>
   );
 }
-

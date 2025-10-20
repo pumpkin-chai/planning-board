@@ -2,22 +2,54 @@
 
 import { Button } from "@/components/ui/button";
 import { ChevronRight, UserRoundSearch } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NewGroupDialog } from "./new-group-dialog";
+import { createClient } from "@/lib/supabase/client";
 
 type Group = { id: number; name: string };
 
 export function GroupManager() {
-  const [groups, setGroups] = useState<Group[]>([
-    { id: 1, name: "Family" },
-    { id: 2, name: "Friends" },
-    { id: 3, name: "Work" },
-    { id: 4, name: "Gym Buddies" },
-    { id: 5, name: "Book Club" },
-  ]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [groups, setGroups] = useState<Group[]>([]);
 
-  const handleNewGroup = (name: string) => {
+  useEffect(() => {
+    setLoading(true);
+
+    const fetchGroups = async () => {
+      try {
+        const supabase = createClient();
+        const { data } = await supabase
+          .from("Memberships")
+          .select("Groups:group_id ( id, name )")
+          .overrideTypes<{ Groups: Group }[]>();
+        if (data === null) {
+          setGroups([]);
+          return;
+        }
+        setGroups(data.map((item) => item.Groups));
+      } catch (error) {
+        console.error("Error fetching groups:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchGroups();
+  }, []);
+
+  const handleNewGroup = async (name: string) => {
     console.log(`New Group ${name}`);
+    try {
+      const supabase = createClient();
+      const { data } = await supabase
+        .from("Groups")
+        .insert({ name })
+        .select()
+        .single();
+      console.log("Created group:", data);
+    } catch (error) {
+      console.error("Error creating group:", error);
+    }
   };
 
   const handleLeaveGroup = (id: number) => {
@@ -33,7 +65,11 @@ export function GroupManager() {
           Join Group
         </Button>
       </div>
-      <GroupList groups={groups} onLeaveGroup={handleLeaveGroup} />
+      {loading ? (
+        <div>Loading...</div>
+      ) : (
+        <GroupList groups={groups} onLeaveGroup={handleLeaveGroup} />
+      )}
     </div>
   );
 }
@@ -81,4 +117,3 @@ function GroupCard({
     </div>
   );
 }
-
