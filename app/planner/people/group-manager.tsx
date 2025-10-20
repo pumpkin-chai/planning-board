@@ -64,8 +64,13 @@ export function GroupManager() {
       const supabase = createClient();
       const { data } = await supabase
         .from("Memberships")
-        .insert({ group_id: id });
-      console.log("Membership insert data:", data);
+        .insert({ group_id: id })
+        .select("Groups:group_id ( id, name )")
+        .single()
+        .overrideTypes<{ Groups: Group }>();
+      if (data?.Groups) {
+        setGroups((prevGroups) => [...prevGroups, data.Groups]);
+      }
     } catch (error) {
       console.error("Error joining group:", error);
     }
