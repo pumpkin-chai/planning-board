@@ -2,15 +2,47 @@
 
 import { Calendar } from "@/components/ui/calendar";
 import { useState } from "react";
-import { EventProposalDialog } from "./event-proposal-dialog";
+import { EventProposal, EventProposalDialog } from "./event-proposal-dialog";
+import { createClient } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
 
 type Event = { id: number; name: string; datetime: Date };
 
-export function EventCalendar({ events }: { events: Event[] }) {
+export function EventCalendar({
+  groupId,
+  events,
+}: {
+  groupId: number;
+  events: Event[];
+}) {
+  const router = useRouter();
+  const supabase = createClient();
+
   const [date, setDate] = useState<Date | undefined>(new Date());
   const selectedEvents = events.filter(
     (event) => event.datetime.toDateString() === date?.toDateString(),
   );
+
+  const handlePropose = (proposal: EventProposal) => {
+    console.log("Proposed Event:", proposal);
+
+    const propose = async () => {
+      const { data } = await supabase
+        .from("Events")
+        .insert({
+          group_id: groupId,
+          name: proposal.name,
+          datetime: proposal.date.toISOString(),
+        })
+        .select()
+        .single();
+      if (data) {
+        router.refresh();
+      }
+    };
+
+    propose();
+  };
 
   return (
     <div className="flex flex-wrap gap-6">
@@ -32,7 +64,7 @@ export function EventCalendar({ events }: { events: Event[] }) {
             </li>
           ))}
         </ul>
-        <EventProposalDialog />
+        <EventProposalDialog proposeAction={handlePropose} />
       </div>
     </div>
   );
