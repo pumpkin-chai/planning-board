@@ -47,6 +47,10 @@ export function GroupManager() {
         .single();
       if (data) {
         setGroups((prevGroups) => [...prevGroups, data]);
+        const { data: membershipAddData } = await supabase
+          .from("Memberships")
+          .insert({ group_id: data.id });
+        console.log(membershipAddData);
       }
     } catch (error) {
       console.error("Error creating group:", error);
