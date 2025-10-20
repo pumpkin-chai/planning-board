@@ -71,8 +71,15 @@ export function GroupManager() {
     }
   };
 
-  const handleLeaveGroup = (id: number) => {
-    setGroups(groups.filter((group) => group.id !== id));
+  const handleLeaveGroup = async (id: number) => {
+    console.log("Leaving group with ID:", id);
+    try {
+      const supabase = createClient();
+      await supabase.from("Memberships").delete().eq("group_id", id);
+      setGroups(groups.filter((group) => group.id !== id));
+    } catch (error) {
+      console.error("Error leaving group:", error);
+    }
   };
 
   return (
