@@ -47,10 +47,10 @@ export function GroupManager() {
         .select()
         .single();
       if (data) {
-        setGroups((prevGroups) => [...prevGroups, data]);
         const { data: membershipAddData } = await supabase
           .from("Memberships")
           .insert({ group_id: data.id });
+        setGroups((prevGroups) => [...prevGroups, data]);
         console.log("Membership insert data:", membershipAddData);
       }
     } catch (error) {
