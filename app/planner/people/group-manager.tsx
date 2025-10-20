@@ -1,9 +1,10 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { ChevronRight, UserRoundSearch } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import { NewGroupDialog } from "./new-group-dialog";
+import { JoinGroupDialog } from "./join-group-dialog";
 import { createClient } from "@/lib/supabase/client";
 
 type Group = { id: number; name: string };
@@ -50,10 +51,23 @@ export function GroupManager() {
         const { data: membershipAddData } = await supabase
           .from("Memberships")
           .insert({ group_id: data.id });
-        console.log(membershipAddData);
+        console.log("Membership insert data:", membershipAddData);
       }
     } catch (error) {
       console.error("Error creating group:", error);
+    }
+  };
+
+  const handleJoinGroup = async (id: number) => {
+    console.log("Joining group with ID:", id);
+    try {
+      const supabase = createClient();
+      const { data } = await supabase
+        .from("Memberships")
+        .insert({ group_id: id });
+      console.log("Membership insert data:", data);
+    } catch (error) {
+      console.error("Error joining group:", error);
     }
   };
 
@@ -65,10 +79,7 @@ export function GroupManager() {
     <div>
       <div className="mb-6 flex items-stretch gap-4">
         <NewGroupDialog newGroupAction={handleNewGroup} />
-        <Button variant="outline">
-          <UserRoundSearch />
-          Join Group
-        </Button>
+        <JoinGroupDialog joinGroupAction={handleJoinGroup} />
       </div>
       {loading ? (
         <div>Loading...</div>
