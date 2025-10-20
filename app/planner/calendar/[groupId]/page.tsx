@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { EventCalendar } from "./event-calendar";
+import { EventProposalDialog } from "./event-proposal-dialog";
 
 export default async function CalendarPage({
   params,
@@ -49,8 +50,11 @@ export default async function CalendarPage({
 
       <section className="mb-32">
         <h2 className="text-2xl mb-4">Calendar</h2>
-        <div className="flex justify-center p-8 bg-secondary">
+        <div className="flex justify-center p-8 bg-secondary gap-4">
           <EventCalendar />
+          <div>
+            <EventProposalDialog />
+          </div>
         </div>
       </section>
 
