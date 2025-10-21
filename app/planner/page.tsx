@@ -14,6 +14,15 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 
+type Notification = { id: number; message: string; read: boolean };
+type MockEvent = {
+  id: number;
+  groupId: number;
+  title: string;
+  date: string;
+  time: string;
+};
+
 export default async function Home() {
   const supabase = await createClient();
 
@@ -25,7 +34,6 @@ export default async function Home() {
   type Calendar = { id: number; groupId: number; name: string };
   const calendars: Calendar[] = [];
 
-  type Notification = { id: number; message: string; read: boolean };
   const notifications: Notification[] = [
     { id: 1, message: "Notification 1", read: false },
     { id: 2, message: "Notification 2", read: true },
@@ -39,14 +47,7 @@ export default async function Home() {
     { id: 10, message: "Notification 10", read: true },
   ];
 
-  type Event = {
-    id: number;
-    groupId: number;
-    title: string;
-    date: string;
-    time: string;
-  };
-  const events: Event[] = [
+  const events: MockEvent[] = [
     {
       id: 1,
       groupId: 1,
@@ -196,7 +197,7 @@ function NotificationCard({ notification }: { notification: Notification }) {
   );
 }
 
-function EventList({ events }: { events: Event[] }) {
+function EventList({ events }: { events: MockEvent[] }) {
   return (
     <ul className="overflow-y-auto h-full">
       {events.map((event) => (
