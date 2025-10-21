@@ -6,7 +6,7 @@ export function EventCard({ event }: { event: Event }) {
       <div className="flex-1">
         <h3 className="font-semibold">{event.title}</h3>
         <p className="text-sm text-muted-foreground">
-          {event.startsAt.toLocaleString()}
+          {event.startsAt.toLocaleTimeString()}
         </p>
       </div>
       <div className="text-muted-foreground text-sm">
