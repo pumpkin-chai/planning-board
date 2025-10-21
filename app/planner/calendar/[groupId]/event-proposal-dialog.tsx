@@ -13,7 +13,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 
 export type EventProposal = { title: string; startsAt: Date };
 
@@ -25,14 +25,12 @@ export function EventProposalDialog({
   const [title, setTitle] = useState<string>("");
   const [date, setDate] = useState<string>("");
 
-  const handleEventNameChange = (event: Event) => {
-    const target = event.target as HTMLInputElement;
-    setTitle(target.value);
+  const handleEventNameChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setTitle(event.target.value);
   };
 
-  const handleEventDateChange = (event: Event) => {
-    const target = event.target as HTMLInputElement;
-    setDate(target.value);
+  const handleEventDateChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setDate(event.target.value);
   };
 
   const handleSubmit = () => {

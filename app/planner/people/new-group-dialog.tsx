@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import { Plus } from "lucide-react";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 
 export function NewGroupDialog({
   newGroupAction,
@@ -24,9 +24,8 @@ export function NewGroupDialog({
 }) {
   const [groupName, setGroupName] = useState<string>("New Group");
 
-  const handleGroupNameChange = (event: Event) => {
-    const target = event.target as HTMLInputElement;
-    setGroupName(target.value);
+  const handleGroupNameChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setGroupName(event.target.value);
   };
 
   return (

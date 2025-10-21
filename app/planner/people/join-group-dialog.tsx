@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import { UserRoundSearch } from "lucide-react";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 
 export function JoinGroupDialog({
   joinGroupAction,
@@ -24,9 +24,10 @@ export function JoinGroupDialog({
 }) {
   const [groupID, setGroupID] = useState<number>(0);
 
-  const handleGroupIDChange = (event: Event) => {
-    const target = event.target as HTMLInputElement;
-    setGroupID(Number.isInteger(target.value) ? Number(target.value) : 0);
+  const handleGroupIDChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setGroupID(
+      Number.isInteger(event.target.value) ? Number(event.target.value) : 0,
+    );
   };
 
   const handleJoinGroup = () => {
