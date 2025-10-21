@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { NewGroupDialog } from "./new-group-dialog";
 import { JoinGroupDialog } from "./join-group-dialog";
 import { createClient } from "@/lib/supabase/client";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 type Group = { id: number; name: string; memberCount: number };
 
@@ -60,7 +60,6 @@ export function GroupManager() {
   };
 
   const handleJoinGroup = async (id: number) => {
-    console.log("Joining group with ID:", id);
     try {
       const supabase = createClient();
       const { data } = await supabase
@@ -78,7 +77,6 @@ export function GroupManager() {
   };
 
   const handleLeaveGroup = async (id: number) => {
-    console.log("Leaving group with ID:", id);
     try {
       const supabase = createClient();
       await supabase.from("Memberships").delete().eq("group_id", id);
@@ -128,9 +126,11 @@ function GroupCard({
   group: Group;
   onLeaveGroup: (id: number) => void;
 }) {
+  const router = useRouter();
+
   return (
-    <Link
-      href={`/planner/calendar/${group.id}`}
+    <div
+      onClick={() => router.push(`/planner/calendar/${group.id}`)}
       className="border border-border p-6 rounded-lg cursor-pointer flex items-center justify-between gap-4 shadow-sm hover:shadow-md transition-shadow"
     >
       <div>
@@ -141,13 +141,26 @@ function GroupCard({
       </div>
       <div className="flex items-center">
         <div className="flex items-center gap-4">
-          <Button variant="outline">Invite Members</Button>
-          <Button variant="default" onClick={() => onLeaveGroup(group.id)}>
+          <Button
+            variant="outline"
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+          >
+            Invite Members
+          </Button>
+          <Button
+            variant="default"
+            onClick={(e) => {
+              e.stopPropagation();
+              onLeaveGroup(group.id);
+            }}
+          >
             Leave
           </Button>
         </div>
         <ChevronRight className="ml-4" />
       </div>
-    </Link>
+    </div>
   );
 }
