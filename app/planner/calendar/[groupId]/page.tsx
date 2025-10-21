@@ -56,15 +56,45 @@ export default async function CalendarPage({
       </section>
 
       <section className="mb-16">
-        <h2 className="text-2xl mb-4">Upcoming Events</h2>
+        <h2 className="text-2xl mb-4">Planned Events</h2>
+        <div className="p-8 bg-secondary mb-16">
+          <ul className="overflow-y-auto">
+            {events
+              .filter((event) => event.status === "planned")
+              .map((event) => (
+                <li key={event.id}>
+                  <strong>{event.startsAt.toLocaleDateString()} </strong>
+                  <em>{event.startsAt.toLocaleTimeString()}</em> - {event.title}
+                </li>
+              ))}
+          </ul>
+        </div>
+
+        <h2 className="text-2xl mb-4">Proposed Events</h2>
+        <div className="p-8 bg-secondary mb-16">
+          <ul className="overflow-y-auto">
+            {events
+              .filter((event) => event.status === "proposed")
+              .map((event) => (
+                <li key={event.id}>
+                  <strong>{event.startsAt.toLocaleDateString()} </strong>
+                  <em>{event.startsAt.toLocaleTimeString()}</em> - {event.title}
+                </li>
+              ))}
+          </ul>
+        </div>
+
+        <h2 className="text-2xl mb-4">Canceled Events</h2>
         <div className="p-8 bg-secondary">
           <ul className="overflow-y-auto">
-            {events.map((event) => (
-              <li key={event.id}>
-                <strong>{event.startsAt.toLocaleDateString()} </strong>
-                <em>{event.startsAt.toLocaleTimeString()}</em> - {event.title}
-              </li>
-            ))}
+            {events
+              .filter((event) => event.status === "canceled")
+              .map((event) => (
+                <li key={event.id}>
+                  <strong>{event.startsAt.toLocaleDateString()} </strong>
+                  <em>{event.startsAt.toLocaleTimeString()}</em> - {event.title}
+                </li>
+              ))}
           </ul>
         </div>
       </section>
