@@ -6,6 +6,7 @@ import { EventProposal, EventProposalDialog } from "./event-proposal-dialog";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { EventCard } from "./event-card";
+import { Button } from "@/components/ui/button";
 
 export type Event = {
   id: number;
@@ -94,27 +95,53 @@ export function EventCalendar({
       </div>
       <div>
         <h3 className="mt-8 mb-2 text-lg font-semibold">Filters:</h3>
-        <ul className="flex gap-8">
-          {statusFilters.map((filter) => (
-            <li key={filter.id}>
-              <input
-                type="checkbox"
-                id={`filter-${filter.id}`}
-                checked={filter.checked}
-                onChange={() => {
-                  setStatusFilters((prevFilters) =>
-                    prevFilters.map((f) =>
-                      f.id === filter.id ? { ...f, checked: !f.checked } : f,
-                    ),
-                  );
-                }}
-              />
-              <label htmlFor={`filter-${filter.id}`} className="ml-2">
-                {filter.name[0].toUpperCase() + filter.name.slice(1)}
-              </label>
-            </li>
-          ))}
-        </ul>
+        <div className="flex gap-4 items-center">
+          <div className="flex gap-4">
+            <Button
+              variant="default"
+              size="sm"
+              onClick={() => {
+                setStatusFilters((prevFilters) =>
+                  prevFilters.map((f) => ({ ...f, checked: true })),
+                );
+              }}
+            >
+              Enable All
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setStatusFilters((prevFilters) =>
+                  prevFilters.map((f) => ({ ...f, checked: false })),
+                );
+              }}
+            >
+              Clear
+            </Button>
+          </div>
+          <ul className="flex gap-8">
+            {statusFilters.map((filter) => (
+              <li key={filter.id}>
+                <input
+                  type="checkbox"
+                  id={`filter-${filter.id}`}
+                  checked={filter.checked}
+                  onChange={() => {
+                    setStatusFilters((prevFilters) =>
+                      prevFilters.map((f) =>
+                        f.id === filter.id ? { ...f, checked: !f.checked } : f,
+                      ),
+                    );
+                  }}
+                />
+                <label htmlFor={`filter-${filter.id}`} className="ml-2">
+                  {filter.name[0].toUpperCase() + filter.name.slice(1)}
+                </label>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );
