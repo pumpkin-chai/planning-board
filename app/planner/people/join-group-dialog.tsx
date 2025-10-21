@@ -22,19 +22,17 @@ export function JoinGroupDialog({
 }: {
   joinGroupAction: (id: number) => void;
 }) {
-  const [groupID, setGroupID] = useState<number>(0);
+  const [groupID, setGroupID] = useState<string>("0");
 
   const handleGroupIDChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setGroupID(
-      Number.isInteger(event.target.value) ? Number(event.target.value) : 0,
-    );
+    setGroupID(event.target.value);
   };
 
   const handleJoinGroup = () => {
     if (!groupID || !Number.isInteger(Number(groupID))) {
       return;
     }
-    joinGroupAction(groupID);
+    joinGroupAction(Number(groupID));
   };
 
   return (
