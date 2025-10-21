@@ -8,7 +8,7 @@ import { JoinGroupDialog } from "./join-group-dialog";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 
-type Group = { id: number; name: string };
+type Group = { id: number; name: string; memberCount: number };
 
 export function GroupManager() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -21,14 +21,14 @@ export function GroupManager() {
       try {
         const supabase = createClient();
         const { data } = await supabase
-          .from("Memberships")
-          .select("Groups:group_id ( id, name )")
-          .overrideTypes<{ Groups: Group }[]>();
+          .from("user_groups")
+          .select("id:group_id, name:group_name, memberCount:member_count")
+          .overrideTypes<Group[]>();
         if (data === null) {
           setGroups([]);
           return;
         }
-        setGroups(data.map((item) => item.Groups));
+        setGroups(data);
       } catch (error) {
         console.error("Error fetching groups:", error);
       } finally {
@@ -135,7 +135,9 @@ function GroupCard({
     >
       <div>
         <h3 className="text-xl font-semibold">{group.name}</h3>
-        <span className="text-sm text-muted-foreground">5 members</span>
+        <span className="text-sm text-muted-foreground">
+          {group.memberCount} {group.memberCount === 1 ? "Member" : "Members"}
+        </span>
       </div>
       <div className="flex items-center">
         <div className="flex items-center gap-4">
