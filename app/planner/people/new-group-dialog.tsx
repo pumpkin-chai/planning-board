@@ -24,8 +24,9 @@ export function NewGroupDialog({
 }) {
   const [groupName, setGroupName] = useState<string>("New Group");
 
-  const handleGroupNameChange = (event: any) => {
-    setGroupName(event.target.value);
+  const handleGroupNameChange = (event: Event) => {
+    const target = event.target as HTMLInputElement;
+    setGroupName(target.value);
   };
 
   return (

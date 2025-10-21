@@ -24,8 +24,9 @@ export function JoinGroupDialog({
 }) {
   const [groupID, setGroupID] = useState<number>(0);
 
-  const handleGroupIDChange = (event: any) => {
-    setGroupID(event.target.value);
+  const handleGroupIDChange = (event: Event) => {
+    const target = event.target as HTMLInputElement;
+    setGroupID(Number.isInteger(target.value) ? Number(target.value) : 0);
   };
 
   const handleJoinGroup = () => {

@@ -25,12 +25,14 @@ export function EventProposalDialog({
   const [title, setTitle] = useState<string>("");
   const [date, setDate] = useState<string>("");
 
-  const handleEventNameChange = (event: any) => {
-    setTitle(event.target.value);
+  const handleEventNameChange = (event: Event) => {
+    const target = event.target as HTMLInputElement;
+    setTitle(target.value);
   };
 
-  const handleEventDateChange = (event: any) => {
-    setDate(event.target.value);
+  const handleEventDateChange = (event: Event) => {
+    const target = event.target as HTMLInputElement;
+    setDate(target.value);
   };
 
   const handleSubmit = () => {
