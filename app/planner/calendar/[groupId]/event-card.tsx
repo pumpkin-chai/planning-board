@@ -13,7 +13,10 @@ export function EventCard({ event }: { event: Event }) {
       className={"p-4 border rounded-md flex items-center gap-4 " + statusStyle}
     >
       <div className="flex-1">
-        <h3 className="font-semibold">{event.title}</h3>
+        <h3 className="font-bold">{event.title}</h3>
+        <p>
+          {event.desc}
+        </p>
         <p className="text-sm text-muted-foreground">
           {event.startsAt.toLocaleTimeString()}
         </p>

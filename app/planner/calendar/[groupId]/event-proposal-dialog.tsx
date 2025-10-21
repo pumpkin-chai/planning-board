@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import { ChangeEvent, useState } from "react";
 
-export type EventProposal = { title: string; startsAt: Date };
+export type EventProposal = { title: string; description: string; startsAt: Date };
 
 export function EventProposalDialog({
   proposeAction,
@@ -24,6 +24,7 @@ export function EventProposalDialog({
 }) {
   const [title, setTitle] = useState<string>("");
   const [date, setDate] = useState<string>("");
+  const [desc, setDesc] = useState<string>("");
 
   const handleEventNameChange = (event: ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
@@ -33,8 +34,12 @@ export function EventProposalDialog({
     setDate(event.target.value);
   };
 
+  const handleEventDescChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setDesc(event.target.value);
+  };
+
   const handleSubmit = () => {
-    proposeAction({ title: title, startsAt: new Date(date) });
+    proposeAction({ title: title, description: desc, startsAt: new Date(date) });
   };
 
   return (
@@ -61,6 +66,14 @@ export function EventProposalDialog({
                 value={title}
                 onChange={handleEventNameChange}
                 required
+              />
+              <Label htmlFor="desc">Description</Label>
+              <Input
+                id="description"
+                type="text"
+                name="description"
+                value={desc}
+                onChange={handleEventDescChange}
               />
               <Label htmlFor="date">Date</Label>
               <Input

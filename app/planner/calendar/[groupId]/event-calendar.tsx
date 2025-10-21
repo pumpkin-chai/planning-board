@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 export type Event = {
   id: number;
   title: string;
+  desc: string;
   startsAt: Date;
   status: string;
   createdBy: string;
@@ -53,6 +54,7 @@ export function EventCalendar({
         .insert({
           group_id: groupId,
           title: proposal.title,
+          description: proposal.description,
           starts_at: proposal.startsAt.toISOString(),
           status: "proposed",
         })

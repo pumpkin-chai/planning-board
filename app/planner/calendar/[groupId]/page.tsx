@@ -27,7 +27,7 @@ export default async function CalendarPage({
 
   const { data: eventData } = await supabase
     .from("Events")
-    .select("id, title, starts_at, status, created_by")
+    .select("id, title, starts_at, status, created_by, description")
     .eq("group_id", groupId);
   console.log("Event Data:", eventData);
   const events: Event[] = eventData
@@ -35,6 +35,7 @@ export default async function CalendarPage({
         return {
           id: event.id,
           title: event.title,
+          desc: event.description, 
           startsAt: new Date(event.starts_at),
           status: event.status,
           createdBy: event.created_by,
