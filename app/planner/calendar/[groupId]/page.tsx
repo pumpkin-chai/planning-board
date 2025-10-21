@@ -1,6 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { EventCalendar, Event } from "./event-calendar";
+import {HoverCard, HoverCardContent, HoverCardTrigger,  } from "@/components/ui/hover-card"
+import { Badge } from "@/components/ui/badge"
 
 export default async function CalendarPage({
   params,
@@ -54,6 +56,29 @@ export default async function CalendarPage({
           <EventCalendar groupId={Number(groupId)} events={events} />
         </div>
       </section>
+
+      <h2 className="text-2xl mb-4">Group Members</h2>
+      <div className="p-8 bg-secondary mb-16">
+        <ul className="overflow-y-auto flex space-x-4">
+          <HoverCard>
+            <HoverCardTrigger>Ian</HoverCardTrigger>
+            <HoverCardContent>
+              <Badge variant="secondary" className="bg-green-600 text-white dark:bg-green-900"
+              >Going</Badge>
+              <br/>"so excited! :P"
+            </HoverCardContent>
+          </HoverCard>
+
+          <HoverCard>
+            <HoverCardTrigger>Kenji</HoverCardTrigger>
+            <HoverCardContent>
+              <Badge variant="secondary" className="bg-green-600 text-white dark:bg-green-900"
+              >Going</Badge>
+              <br/>"pumpkin chai is so locked in"
+            </HoverCardContent>
+          </HoverCard>
+        </ul>
+      </div>
 
       <section className="mb-16">
         <h2 className="text-2xl mb-4">Planned Events</h2>
