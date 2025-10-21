@@ -31,7 +31,7 @@ export default async function Home() {
     redirect("/auth/login");
   }
 
-  type Calendar = { id: number; groupId: number; name: string };
+  type Calendar = { id: number; name: string };
   const calendars: Calendar[] = [];
 
   const notifications: Notification[] = [
@@ -47,43 +47,13 @@ export default async function Home() {
     { id: 10, message: "Notification 10", read: true },
   ];
 
-  const events: MockEvent[] = [
-    {
-      id: 1,
-      groupId: 1,
-      title: "Event 1",
-      date: "2023-10-01",
-      time: "10:00 AM",
-    },
-    {
-      id: 2,
-      groupId: 1,
-      title: "Event 2",
-      date: "2023-10-05",
-      time: "2:00 PM",
-    },
-    {
-      id: 3,
-      groupId: 2,
-      title: "Event 3",
-      date: "2023-10-10",
-      time: "6:00 PM",
-    },
-    {
-      id: 4,
-      groupId: 2,
-      title: "Event 4",
-      date: "2023-10-15",
-      time: "9:00 AM",
-    },
-    {
-      id: 5,
-      groupId: 3,
-      title: "Event 5",
-      date: "2023-10-20",
-      time: "1:00 PM",
-    },
-  ];
+  const { data: groups } = await supabase
+    .from("Memberships")
+    .select("Groups (id, name), Events:group_id (id, title, starts_at, status)")
+    .eq("user_id", data.claims.sub);
+  console.log(groups);
+
+  const events: MockEvent[] = [];
 
   return (
     <div className="px-8 py-3 w-full">
