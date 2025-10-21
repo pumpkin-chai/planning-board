@@ -66,3 +66,17 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  /* Set the size via a custom property */
+  .calendar-cell {
+    width: var(--cell-size);
+    height: var(--cell-size);
+  }
+
+  /* Reusable “no-brackets” utilities that map to Tailwind spacing tokens */
+  .cell-size-11 { --cell-size: theme(spacing.11); }
+  .cell-size-10 { --cell-size: theme(spacing.10); }
+  .cell-size-9  { --cell-size: theme(spacing.9);  }
+  .cell-size-8  { --cell-size: theme(spacing.8);  }
+}
