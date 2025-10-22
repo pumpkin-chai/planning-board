@@ -13,6 +13,7 @@ export type Event = {
   title: string;
   desc: string;
   startsAt: Date;
+  endsAt?: Date;
   status: string;
   createdBy: string;
 };
@@ -56,6 +57,7 @@ export function EventCalendar({
           title: proposal.title,
           description: proposal.description,
           starts_at: proposal.startsAt.toISOString(),
+          ends_at: proposal.endsAt,
           status: "proposed",
         })
         .select()

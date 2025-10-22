@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import { ChangeEvent, useState } from "react";
 
-export type EventProposal = { title: string; description: string; startsAt: Date };
+export type EventProposal = { title: string; description: string; startsAt: Date; endsAt?: Date | undefined};
 
 export function EventProposalDialog({
   proposeAction,
@@ -23,15 +23,20 @@ export function EventProposalDialog({
   proposeAction: (date: EventProposal) => void;
 }) {
   const [title, setTitle] = useState<string>("");
-  const [date, setDate] = useState<string>("");
+  const [startDate, setStartDate] = useState<string>("");
+  const [endDate, setEndDate] = useState<string>("");
   const [desc, setDesc] = useState<string>("");
 
   const handleEventNameChange = (event: ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
   };
 
-  const handleEventDateChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setDate(event.target.value);
+  const handleEventStartChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setStartDate(event.target.value);
+  };
+
+  const handleEventEndChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setEndDate(event.target.value);
   };
 
   const handleEventDescChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -39,7 +44,7 @@ export function EventProposalDialog({
   };
 
   const handleSubmit = () => {
-    proposeAction({ title: title, description: desc, startsAt: new Date(date) });
+    proposeAction({ title: title, description: desc, startsAt: new Date(startDate), endsAt: new Date(endDate) });
   };
 
   return (
@@ -75,14 +80,23 @@ export function EventProposalDialog({
                 value={desc}
                 onChange={handleEventDescChange}
               />
-              <Label htmlFor="date">Date</Label>
+              <Label htmlFor="date">Start Date</Label>
               <Input
                 id="date"
                 type="datetime-local"
                 name="date"
-                value={date}
-                onChange={handleEventDateChange}
+                value={startDate}
+                onChange={handleEventStartChange}
                 required
+              />
+              <Label htmlFor="date">End Date</Label>
+              <Input
+                id="date"
+                type="datetime-local"
+                name="date"
+                value={endDate}
+                defaultValue={undefined}
+                onChange={handleEventEndChange}
               />
             </div>
           </div>

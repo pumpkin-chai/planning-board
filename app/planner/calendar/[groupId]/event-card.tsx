@@ -18,7 +18,7 @@ export function EventCard({ event }: { event: Event }) {
           {event.desc}
         </p>
         <p className="text-sm text-muted-foreground">
-          {event.startsAt.toLocaleTimeString()}
+          {event.startsAt.toLocaleTimeString()} {event.endsAt === undefined ? "" : ("to " + event.endsAt.toLocaleTimeString())}
         </p>
       </div>
       <div className="text-muted-foreground text-sm">
