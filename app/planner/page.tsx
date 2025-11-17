@@ -14,6 +14,8 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 
+type Calendar = { id: number; name: string; memberCount: number };
+
 type GroupEvents = {
   name: string;
   events: { id: number; title: string; startsAt: string; status: string }[];
@@ -35,24 +37,21 @@ export default async function Home() {
     redirect("/auth/login");
   }
 
-  type Calendar = { id: number; groupId: number; name: string };
-  const calendars: Calendar[] = [];
-
   let events: Event[] = [];
 
   const currentTimestamp = new Date().toISOString();
-  const { data: groupData } = await supabase
+  const { data: eventData } = await supabase
     .from("Memberships")
     .select(
-      "group:Groups (name, events:Events (id, title, startsAt:starts_at, status))",
+      "group:Groups (id, name, events:Events (id, title, startsAt:starts_at, status))",
     )
     .eq("user_id", data.claims.sub)
     .gt("Groups.Events.starts_at", currentTimestamp)
     .eq("Groups.Events.status", "planned")
     .overrideTypes<{ group: GroupEvents }[]>();
 
-  if (groupData) {
-    const groups = groupData.map((res) => res.group);
+  if (eventData) {
+    const groups = eventData.map((res) => res.group);
     events = groups
       .map((group) =>
         group.events.map((event) => ({
@@ -64,6 +63,12 @@ export default async function Home() {
       .flat()
       .sort((a, b) => a.startsAt.getTime() - b.startsAt.getTime());
   }
+
+  const { data: calendarData } = await supabase
+    .from("user_groups")
+    .select("id:group_id, name:group_name, memberCount:member_count")
+    .overrideTypes<Calendar[]>();
+  const calendars = calendarData ?? [];
 
   return (
     <div className="px-8 py-3 w-full">
