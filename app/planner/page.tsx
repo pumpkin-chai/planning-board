@@ -1,9 +1,10 @@
 import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
-import { CalendarIcon, BellRing, Calendar1 } from "lucide-react";
+import { CalendarIcon, Calendar1 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 import {
   Empty,
@@ -14,13 +15,21 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 
-type Notification = { id: number; message: string; read: boolean };
-type MockEvent = {
+type Calendar = { id: number; name: string; memberCount: number };
+
+type GroupEvents = {
+  id: number;
+  name: string;
+  events: { id: number; title: string; startsAt: string; status: string }[];
+};
+
+type Event = {
   id: number;
   groupId: number;
+  groupName: string;
   title: string;
-  date: string;
-  time: string;
+  startsAt: Date;
+  status: string;
 };
 
 export default async function Home() {
@@ -31,63 +40,65 @@ export default async function Home() {
     redirect("/auth/login");
   }
 
-  type Calendar = { id: number; groupId: number; name: string };
-  const calendars: Calendar[] = [];
+  let events: Event[] = [];
 
-  const notifications: Notification[] = [
-    { id: 1, message: "Notification 1", read: false },
-    { id: 2, message: "Notification 2", read: true },
-    { id: 3, message: "Notification 3", read: false },
-    { id: 4, message: "Notification 4", read: true },
-    { id: 5, message: "Notification 5", read: false },
-    { id: 6, message: "Notification 6", read: true },
-    { id: 7, message: "Notification 7", read: false },
-    { id: 8, message: "Notification 8", read: true },
-    { id: 9, message: "Notification 9", read: false },
-    { id: 10, message: "Notification 10", read: true },
-  ];
+  const currentTimestamp = new Date().toISOString();
+  const { data: eventData } = await supabase
+    .from("Memberships")
+    .select(
+      "group:Groups (id, name, events:Events (id, title, startsAt:starts_at, status))",
+    )
+    .eq("user_id", data.claims.sub)
+    .gt("Groups.Events.starts_at", currentTimestamp)
+    .eq("Groups.Events.status", "planned")
+    .overrideTypes<{ group: GroupEvents }[]>();
 
-  const events: MockEvent[] = [
-    {
-      id: 1,
-      groupId: 1,
-      title: "Event 1",
-      date: "2023-10-01",
-      time: "10:00 AM",
-    },
-    {
-      id: 2,
-      groupId: 1,
-      title: "Event 2",
-      date: "2023-10-05",
-      time: "2:00 PM",
-    },
-    {
-      id: 3,
-      groupId: 2,
-      title: "Event 3",
-      date: "2023-10-10",
-      time: "6:00 PM",
-    },
-    {
-      id: 4,
-      groupId: 2,
-      title: "Event 4",
-      date: "2023-10-15",
-      time: "9:00 AM",
-    },
-    {
-      id: 5,
-      groupId: 3,
-      title: "Event 5",
-      date: "2023-10-20",
-      time: "1:00 PM",
-    },
-  ];
+  if (eventData) {
+    const groups = eventData.map((res) => res.group);
+    events = groups
+      .map((group) =>
+        group.events.map((event) => ({
+          ...event,
+          startsAt: new Date(event.startsAt),
+          groupName: group.name,
+          groupId: group.id,
+        })),
+      )
+      .flat()
+      .sort((a, b) => a.startsAt.getTime() - b.startsAt.getTime());
+  }
+
+  const { data: calendarData } = await supabase
+    .from("user_groups")
+    .select("id:group_id, name:group_name, memberCount:member_count")
+    .overrideTypes<Calendar[]>();
+  const calendars = calendarData ?? [];
 
   return (
     <div className="px-8 py-3 w-full">
       <h1 className="self-start text-5xl font-bold mb-8">Dashboard</h1>
+
+      <section className="mb-32">
+        <h2 className="text-2xl mb-4">Upcoming Events</h2>
+        <div className="p-4 bg-secondary h-96">
+          {events.length === 0 ? (
+            <Empty className="size-full">
+              <EmptyHeader>
+                <EmptyMedia variant="icon">
+                  <Calendar1 />
+                </EmptyMedia>
+                <EmptyTitle>No upcoming events</EmptyTitle>
+                <EmptyDescription>
+                  You have no upcoming events scheduled.
+                </EmptyDescription>
+              </EmptyHeader>
+            </Empty>
+          ) : (
+            <EventList events={events} />
+          )}
+        </div>
+      </section>
+
       <section className="mb-32">
         <h2 className="text-2xl mb-4">Your Calendars</h2>
         <div className="p-4 bg-secondary h-96">
@@ -111,53 +122,7 @@ export default async function Home() {
               </EmptyContent>
             </Empty>
           ) : (
-            <ul>
-              {calendars.map((calendar) => (
-                <li key={calendar.id}>{calendar.name}</li>
-              ))}
-            </ul>
-          )}
-        </div>
-      </section>
-
-      <section className="mb-32">
-        <h2 className="text-2xl mb-4">Notifications</h2>
-        <div className="p-4 bg-secondary h-96">
-          {notifications.length === 0 ? (
-            <Empty className="size-full">
-              <EmptyHeader>
-                <EmptyMedia variant="icon">
-                  <BellRing />
-                </EmptyMedia>
-                <EmptyTitle>No notifications</EmptyTitle>
-                <EmptyDescription>
-                  You have no new notifications at this time.
-                </EmptyDescription>
-              </EmptyHeader>
-            </Empty>
-          ) : (
-            <NotificationList notifications={notifications} />
-          )}
-        </div>
-      </section>
-
-      <section className="mb-32">
-        <h2 className="text-2xl mb-4">Upcoming Events</h2>
-        <div className="p-4 bg-secondary h-96">
-          {events.length === 0 ? (
-            <Empty className="size-full">
-              <EmptyHeader>
-                <EmptyMedia variant="icon">
-                  <Calendar1 />
-                </EmptyMedia>
-                <EmptyTitle>No upcoming events</EmptyTitle>
-                <EmptyDescription>
-                  You have no upcoming events scheduled.
-                </EmptyDescription>
-              </EmptyHeader>
-            </Empty>
-          ) : (
-            <EventList events={events} />
+            <CalendarList calendars={calendars} />
           )}
         </div>
       </section>
@@ -165,39 +130,7 @@ export default async function Home() {
   );
 }
 
-function NotificationList({
-  notifications,
-}: {
-  notifications: Notification[];
-}) {
-  return (
-    <ul className="overflow-y-auto h-full">
-      {notifications.map((notification) => (
-        <li key={notification.id} className="mb-4 last:mb-0">
-          <NotificationCard notification={notification} />
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-function NotificationCard({ notification }: { notification: Notification }) {
-  return (
-    <div className="p-6 bg-card hover:bg-accent hover:text-accent-foreground transition-colors rounded-lg">
-      <p
-        className={
-          notification.read
-            ? "text-muted-foreground"
-            : "font-bold text-card-foreground"
-        }
-      >
-        {notification.message}
-      </p>
-    </div>
-  );
-}
-
-function EventList({ events }: { events: MockEvent[] }) {
+function EventList({ events }: { events: Event[] }) {
   return (
     <ul className="overflow-y-auto h-full">
       {events.map((event) => (
@@ -210,14 +143,46 @@ function EventList({ events }: { events: MockEvent[] }) {
 }
 
 type EventItemProps = {
-  event: { id: number; title: string; date: string; time: string };
+  event: Event;
 };
 function EventItem({ event }: EventItemProps) {
   return (
-    <div className="p-6 bg-card hover:bg-accent hover:text-accent-foreground transition-colors rounded-lg">
-      <strong>{event.title}</strong> -{" "}
-      {new Date(event.date).toLocaleDateString()}
-      {" at "} {event.time}
-    </div>
+    <Link href={`/planner/calendar/${event.groupId}`}>
+      <div className="p-6 bg-card hover:bg-accent hover:text-accent-foreground transition-colors rounded-lg flex justify-between items-center">
+        <span>
+          <strong>{event.title}</strong> - {event.startsAt.toLocaleDateString()}{" "}
+          {" at "} {event.startsAt.toLocaleTimeString()}
+        </span>
+        <span className="text-muted-foreground text-sm">
+          {event.groupName.toUpperCase()}
+        </span>
+      </div>
+    </Link>
+  );
+}
+
+function CalendarList({ calendars }: { calendars: Calendar[] }) {
+  return (
+    <ul className="overflow-y-auto h-full">
+      {calendars.map((calendar) => (
+        <li key={calendar.id} className="mb-4 last:mb-0">
+          <CalendarItem calendar={calendar} />
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function CalendarItem({ calendar }: { calendar: Calendar }) {
+  return (
+    <Link href={`/planner/calendar/${calendar.id}`}>
+      <div className="p-6 bg-card hover:bg-accent hover:text-accent-foreground transition-colors rounded-lg flex justify-between items-center">
+        <span>{calendar.name}</span>
+        <span className="text-muted-foreground text-sm">
+          {calendar.memberCount}{" "}
+          {calendar.memberCount === 1 ? "Member" : "Members"}
+        </span>
+      </div>
+    </Link>
   );
 }
