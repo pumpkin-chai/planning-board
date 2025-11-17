@@ -61,7 +61,8 @@ export default async function Home() {
           groupName: group.name,
         })),
       )
-      .flat();
+      .flat()
+      .sort((a, b) => a.startsAt.getTime() - b.startsAt.getTime());
   }
 
   return (
