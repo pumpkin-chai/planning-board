@@ -18,12 +18,14 @@ import {
 type Calendar = { id: number; name: string; memberCount: number };
 
 type GroupEvents = {
+  id: number;
   name: string;
   events: { id: number; title: string; startsAt: string; status: string }[];
 };
 
 type Event = {
   id: number;
+  groupId: number;
   groupName: string;
   title: string;
   startsAt: Date;
@@ -59,6 +61,7 @@ export default async function Home() {
           ...event,
           startsAt: new Date(event.startsAt),
           groupName: group.name,
+          groupId: group.id,
         })),
       )
       .flat()
@@ -144,15 +147,17 @@ type EventItemProps = {
 };
 function EventItem({ event }: EventItemProps) {
   return (
-    <div className="p-6 bg-card hover:bg-accent hover:text-accent-foreground transition-colors rounded-lg flex justify-between items-center">
-      <span>
-        <strong>{event.title}</strong> - {event.startsAt.toLocaleDateString()}{" "}
-        {" at "} {event.startsAt.toLocaleTimeString()}
-      </span>
-      <span className="text-muted-foreground text-sm">
-        {event.groupName.toUpperCase()}
-      </span>
-    </div>
+    <Link href={`/planner/calendar/${event.groupId}`}>
+      <div className="p-6 bg-card hover:bg-accent hover:text-accent-foreground transition-colors rounded-lg flex justify-between items-center">
+        <span>
+          <strong>{event.title}</strong> - {event.startsAt.toLocaleDateString()}{" "}
+          {" at "} {event.startsAt.toLocaleTimeString()}
+        </span>
+        <span className="text-muted-foreground text-sm">
+          {event.groupName.toUpperCase()}
+        </span>
+      </div>
+    </Link>
   );
 }
 
