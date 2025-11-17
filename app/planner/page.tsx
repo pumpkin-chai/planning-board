@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { CalendarIcon, Calendar1 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 import {
   Empty,
@@ -169,12 +170,14 @@ function CalendarList({ calendars }: { calendars: Calendar[] }) {
 
 function CalendarItem({ calendar }: { calendar: Calendar }) {
   return (
-    <div className="p-6 bg-card hover:bg-accent hover:text-accent-foreground transition-colors rounded-lg flex justify-between items-center">
-      <span>{calendar.name}</span>
-      <span className="text-muted-foreground text-sm">
-        {calendar.memberCount}{" "}
-        {calendar.memberCount === 1 ? "Member" : "Members"}
-      </span>
-    </div>
+    <Link href={`/planner/calendar/${calendar.id}`}>
+      <div className="p-6 bg-card hover:bg-accent hover:text-accent-foreground transition-colors rounded-lg flex justify-between items-center">
+        <span>{calendar.name}</span>
+        <span className="text-muted-foreground text-sm">
+          {calendar.memberCount}{" "}
+          {calendar.memberCount === 1 ? "Member" : "Members"}
+        </span>
+      </div>
+    </Link>
   );
 }
