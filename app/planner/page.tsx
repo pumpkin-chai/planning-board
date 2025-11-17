@@ -118,11 +118,7 @@ export default async function Home() {
               </EmptyContent>
             </Empty>
           ) : (
-            <ul>
-              {calendars.map((calendar) => (
-                <li key={calendar.id}>{calendar.name}</li>
-              ))}
-            </ul>
+            <CalendarList calendars={calendars} />
           )}
         </div>
       </section>
@@ -154,6 +150,30 @@ function EventItem({ event }: EventItemProps) {
       </span>
       <span className="text-muted-foreground text-sm">
         {event.groupName.toUpperCase()}
+      </span>
+    </div>
+  );
+}
+
+function CalendarList({ calendars }: { calendars: Calendar[] }) {
+  return (
+    <ul className="overflow-y-auto h-full">
+      {calendars.map((calendar) => (
+        <li key={calendar.id} className="mb-4 last:mb-0">
+          <CalendarItem calendar={calendar} />
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function CalendarItem({ calendar }: { calendar: Calendar }) {
+  return (
+    <div className="p-6 bg-card hover:bg-accent hover:text-accent-foreground transition-colors rounded-lg flex justify-between items-center">
+      <span>{calendar.name}</span>
+      <span className="text-muted-foreground text-sm">
+        {calendar.memberCount}{" "}
+        {calendar.memberCount === 1 ? "Member" : "Members"}
       </span>
     </div>
   );
