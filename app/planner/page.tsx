@@ -15,12 +15,18 @@ import {
 } from "@/components/ui/empty";
 
 type Notification = { id: number; message: string; read: boolean };
-type MockEvent = {
+
+type GroupEvents = {
+  name: string;
+  events: { id: number; title: string; startsAt: string; status: string }[];
+};
+
+type Event = {
   id: number;
-  groupId: number;
+  groupName: string;
   title: string;
-  date: string;
-  time: string;
+  startsAt: Date;
+  status: string;
 };
 
 export default async function Home() {
@@ -47,43 +53,31 @@ export default async function Home() {
     { id: 10, message: "Notification 10", read: true },
   ];
 
-  const events: MockEvent[] = [
-    {
-      id: 1,
-      groupId: 1,
-      title: "Event 1",
-      date: "2023-10-01",
-      time: "10:00 AM",
-    },
-    {
-      id: 2,
-      groupId: 1,
-      title: "Event 2",
-      date: "2023-10-05",
-      time: "2:00 PM",
-    },
-    {
-      id: 3,
-      groupId: 2,
-      title: "Event 3",
-      date: "2023-10-10",
-      time: "6:00 PM",
-    },
-    {
-      id: 4,
-      groupId: 2,
-      title: "Event 4",
-      date: "2023-10-15",
-      time: "9:00 AM",
-    },
-    {
-      id: 5,
-      groupId: 3,
-      title: "Event 5",
-      date: "2023-10-20",
-      time: "1:00 PM",
-    },
-  ];
+  let events: Event[] = [];
+
+  const currentTimestamp = new Date().toISOString();
+  const { data: groupData } = await supabase
+    .from("Memberships")
+    .select(
+      "group:Groups (name, events:Events (id, title, startsAt:starts_at, status))",
+    )
+    .eq("user_id", data.claims.sub)
+    .gt("Groups.Events.starts_at", currentTimestamp)
+    .eq("Groups.Events.status", "planned")
+    .overrideTypes<{ group: GroupEvents }[]>();
+
+  if (groupData) {
+    const groups = groupData.map((res) => res.group);
+    events = groups
+      .map((group) =>
+        group.events.map((event) => ({
+          ...event,
+          startsAt: new Date(event.startsAt),
+          groupName: group.name,
+        })),
+      )
+      .flat();
+  }
 
   return (
     <div className="px-8 py-3 w-full">
@@ -197,7 +191,7 @@ function NotificationCard({ notification }: { notification: Notification }) {
   );
 }
 
-function EventList({ events }: { events: MockEvent[] }) {
+function EventList({ events }: { events: Event[] }) {
   return (
     <ul className="overflow-y-auto h-full">
       {events.map((event) => (
@@ -210,14 +204,18 @@ function EventList({ events }: { events: MockEvent[] }) {
 }
 
 type EventItemProps = {
-  event: { id: number; title: string; date: string; time: string };
+  event: Event;
 };
 function EventItem({ event }: EventItemProps) {
   return (
-    <div className="p-6 bg-card hover:bg-accent hover:text-accent-foreground transition-colors rounded-lg">
-      <strong>{event.title}</strong> -{" "}
-      {new Date(event.date).toLocaleDateString()}
-      {" at "} {event.time}
+    <div className="p-6 bg-card hover:bg-accent hover:text-accent-foreground transition-colors rounded-lg flex justify-between items-center">
+      <span>
+        <strong>{event.title}</strong> - {event.startsAt.toLocaleDateString()}{" "}
+        {" at "} {event.startsAt.toLocaleTimeString()}
+      </span>
+      <span className="text-muted-foreground text-sm">
+        {event.groupName.toUpperCase()}
+      </span>
     </div>
   );
 }
