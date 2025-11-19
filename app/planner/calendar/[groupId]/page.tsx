@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { EventCalendar, Event } from "./event-calendar";
+import { InviteMemberDialog } from "./invite-member-dialog";
 
 export default async function CalendarPage({
   params,
@@ -47,6 +48,10 @@ export default async function CalendarPage({
       <h1 className="self-start text-5xl font-bold mb-8">
         {groupData ? groupData.name : "Calendar"}
       </h1>
+
+      <section className="mb-4">
+        <InviteMemberDialog groupId={groupId} inviterId={user.id} />
+      </section>
 
       <section className="mb-32">
         <h2 className="text-2xl mb-4">Calendar</h2>
