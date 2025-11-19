@@ -2,18 +2,24 @@ import Link from "next/link";
 import { Button } from "./ui/button";
 import { createClient } from "@/lib/supabase/server";
 import { LogoutButton } from "./logout-button";
+import { redirect } from "next/navigation";
 
 export async function AuthButton() {
   const supabase = await createClient();
 
-  // You can also use getUser() which will be slower.
-  const { data } = await supabase.auth.getClaims();
+  const { data: authData, error } = await supabase.auth.getClaims();
+  if (error || !authData?.claims) {
+    redirect("/auth/login");
+  }
+  const { data } = await supabase
+    .from("profiles")
+    .select("username")
+    .eq("id", authData.claims.sub)
+    .single();
 
-  const user = data?.claims;
-
-  return user ? (
+  return data ? (
     <div className="flex items-center gap-4 text-sm">
-      {user.email}
+      {data.username}
       <LogoutButton />
     </div>
   ) : (
