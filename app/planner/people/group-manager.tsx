@@ -142,14 +142,6 @@ function GroupCard({
       </div>
       <div className="flex items-center">
         <div className="flex items-center gap-4">
-          <Button
-            variant="outline"
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-          >
-            Invite Members
-          </Button>
           {group.role === "member" && (
             <Button
               variant="default"
