@@ -150,7 +150,7 @@ function GroupCard({
                 onLeaveGroup(group.id);
               }}
             >
-              Leave
+              Leave Group
             </Button>
           )}
         </div>
