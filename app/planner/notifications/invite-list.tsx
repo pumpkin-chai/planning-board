@@ -65,7 +65,10 @@ export function InviteList() {
   return (
     <ul>
       {invites.map((invite) => (
-        <li key={`${invite.group}-${invite.inviter}`}>
+        <li
+          key={`${invite.group}-${invite.inviter}`}
+          className="mb-4 last:mb-0"
+        >
           <Invite
             inviter={invite.inviter}
             group={invite.group}
@@ -97,8 +100,14 @@ export function Invite({
   declineAction: () => void;
 }) {
   return (
-    <div className="flex items-center justify-between bg-background p-4 rounded-lg">
-      <div>
+    <div
+      className={`p-6 ${status === "pending" ? "bg-card" : "bg-muted border border-border"} rounded-lg flex justify-between items-center`}
+    >
+      <div
+        className={
+          status === "pending" ? "text-foreground" : "text-muted-foreground"
+        }
+      >
         <span className="font-bold">{inviter}</span> invited you to{" "}
         <span className="underline">{group}</span>
       </div>
