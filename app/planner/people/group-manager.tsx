@@ -8,7 +8,9 @@ import { JoinGroupDialog } from "./join-group-dialog";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 
-type Group = { id: number; name: string; memberCount: number };
+type Role = "admin" | "member";
+
+type Group = { id: number; name: string; memberCount: number; role: Role };
 
 export function GroupManager() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -22,7 +24,10 @@ export function GroupManager() {
         const supabase = createClient();
         const { data } = await supabase
           .from("user_groups")
-          .select("id:group_id, name:group_name, memberCount:member_count")
+          .select(
+            "id:group_id, name:group_name, memberCount:member_count, role",
+          )
+          .order("role")
           .overrideTypes<Group[]>();
         if (data === null) {
           setGroups([]);
@@ -48,11 +53,7 @@ export function GroupManager() {
         .select()
         .single();
       if (data) {
-        const { data: membershipAddData } = await supabase
-          .from("Memberships")
-          .insert({ group_id: data.id });
-        setGroups((prevGroups) => [...prevGroups, data]);
-        console.log("Membership insert data:", membershipAddData);
+        setGroups((prevGroups) => [...prevGroups, { ...data, memberCount: 1 }]);
       }
     } catch (error) {
       console.error("Error creating group:", error);
@@ -141,23 +142,17 @@ function GroupCard({
       </div>
       <div className="flex items-center">
         <div className="flex items-center gap-4">
-          <Button
-            variant="outline"
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-          >
-            Invite Members
-          </Button>
-          <Button
-            variant="default"
-            onClick={(e) => {
-              e.stopPropagation();
-              onLeaveGroup(group.id);
-            }}
-          >
-            Leave
-          </Button>
+          {group.role === "member" && (
+            <Button
+              variant="default"
+              onClick={(e) => {
+                e.stopPropagation();
+                onLeaveGroup(group.id);
+              }}
+            >
+              Leave Group
+            </Button>
+          )}
         </div>
         <ChevronRight className="ml-4" />
       </div>
