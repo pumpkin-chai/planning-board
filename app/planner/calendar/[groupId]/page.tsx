@@ -6,7 +6,7 @@ import { InviteMemberDialog } from "./invite-member-dialog";
 export default async function CalendarPage({
   params,
 }: {
-  params: Promise<{ groupId: string[] }>;
+  params: Promise<{ groupId: string }>;
 }) {
   const { groupId } = await params;
 
@@ -53,7 +53,7 @@ export default async function CalendarPage({
 
       {groupData?.role === "admin" && (
         <section className="mb-4">
-          <InviteMemberDialog groupId={groupId} inviterId={user.id} />
+          <InviteMemberDialog groupId={Number(groupId)} inviterId={user.id} />
         </section>
       )}
 
