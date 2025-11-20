@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { EventCalendar, Event } from "./event-calendar";
+import { InviteMemberDialog } from "./invite-member-dialog";
 
 export default async function CalendarPage({
   params,
@@ -19,10 +20,12 @@ export default async function CalendarPage({
   }
 
   const { data: groupData } = await supabase
-    .from("Groups")
-    .select("name")
-    .eq("id", groupId)
-    .single();
+    .from("Memberships")
+    .select("role, group:Groups(name)")
+    .eq("user_id", user.id)
+    .eq("group_id", groupId)
+    .single()
+    .overrideTypes<{ role: string; group: { name: string } }>();
   console.log("Group Data:", groupData);
 
   const { data: eventData } = await supabase
@@ -45,8 +48,14 @@ export default async function CalendarPage({
   return (
     <div className="px-8 py-3 w-full">
       <h1 className="self-start text-5xl font-bold mb-8">
-        {groupData ? groupData.name : "Calendar"}
+        {groupData ? groupData.group.name : "Calendar"}
       </h1>
+
+      {groupData?.role === "admin" && (
+        <section className="mb-4">
+          <InviteMemberDialog groupId={groupId} inviterId={user.id} />
+        </section>
+      )}
 
       <section className="mb-32">
         <h2 className="text-2xl mb-4">Calendar</h2>
