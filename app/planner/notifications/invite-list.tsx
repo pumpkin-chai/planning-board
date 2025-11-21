@@ -3,9 +3,10 @@
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { Check, X } from "lucide-react";
-import { InviteStatus } from "./actions";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+
+type InviteStatus = "pending" | "accepted" | "declined";
 
 type Invite = {
   inviter: string;

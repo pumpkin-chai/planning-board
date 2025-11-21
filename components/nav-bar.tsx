@@ -1,11 +1,9 @@
-import { hasEnvVars } from "@/lib/utils";
 import {
   NavigationMenu,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
-import { EnvVarWarning } from "@/components/env-var-warning";
 import { AuthButton } from "@/components/auth-button";
 import { Mail } from "lucide-react";
 
@@ -33,7 +31,7 @@ export default function NavBar() {
             </NavigationMenuLink>
           </NavigationMenuItem>
         </NavigationMenuList>
-        {!hasEnvVars ? <EnvVarWarning /> : <AuthButton />}
+        <AuthButton />
       </div>
     </NavigationMenu>
   );
