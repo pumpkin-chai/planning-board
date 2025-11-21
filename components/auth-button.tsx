@@ -2,24 +2,24 @@ import Link from "next/link";
 import { Button } from "./ui/button";
 import { createClient } from "@/lib/supabase/server";
 import { LogoutButton } from "./logout-button";
-import { redirect } from "next/navigation";
 
 export async function AuthButton() {
   const supabase = await createClient();
 
-  const { data: authData, error } = await supabase.auth.getClaims();
-  if (error || !authData?.claims) {
-    redirect("/auth/login");
+  const { data: authData } = await supabase.auth.getClaims();
+  let user = null;
+  if (authData) {
+    const { data } = await supabase
+      .from("profiles")
+      .select("username")
+      .eq("id", authData.claims.sub)
+      .single();
+    user = data?.username;
   }
-  const { data } = await supabase
-    .from("profiles")
-    .select("username")
-    .eq("id", authData.claims.sub)
-    .single();
 
-  return data ? (
+  return user ? (
     <div className="flex items-center gap-4 text-sm">
-      {data.username}
+      {user}
       <LogoutButton />
     </div>
   ) : (
