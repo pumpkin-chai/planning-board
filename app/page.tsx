@@ -37,7 +37,7 @@ export default async function Info() {
       )}
 
       <div className="w-screen h-screen flex flex-col items-center justify-center pt-5">
-        <div className="w-[80%] h-[90%] flex flex-col items-center justify-center py-12 bg-gradient-to-br from-gray-500 via-white to-gray-500 rounded-2xl">
+        <section className="w-[80%] h-[90%] flex flex-col items-center justify-center py-12 bg-gradient-to-br from-gray-500 via-white to-gray-500 rounded-2xl">
           <h1 className="text-center text-4xl font-bold">
             Make hangouts happen with one simple planner!
           </h1>
@@ -45,21 +45,24 @@ export default async function Info() {
           <h3 className="text-center justify-center py-1 text-2xl">
             Coordinate with any or all friends with ease
           </h3>
-          {uid ? (
-            <Button asChild size="lg" variant="default">
-              <Link href="/planner">Go to Dashboard</Link>
-            </Button>
-          ) : (
-            <ButtonGroup className="flex justify-center items-center pt-5">
-              <Button asChild size="lg" variant="outline">
-                <Link href="../auth/sign-up">Sign Up</Link>
-              </Button>
+
+          <div className="flex gap-2 mt-8">
+            {uid ? (
               <Button asChild size="lg" variant="default">
-                <Link href="../auth/login">Login</Link>
+                <Link href="/planner">Go to Dashboard</Link>
               </Button>
-            </ButtonGroup>
-          )}
-        </div>
+            ) : (
+              <>
+                <Button asChild size="lg" variant={"outline"}>
+                  <Link href="/auth/login">Sign in</Link>
+                </Button>
+                <Button asChild size="lg" variant={"default"}>
+                  <Link href="/auth/sign-up">Sign up</Link>
+                </Button>
+              </>
+            )}
+          </div>
+        </section>
 
         <div className="max-w-[80%] flex pt-5">
           <Card className="mr-5">
