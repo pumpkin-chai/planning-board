@@ -1,7 +1,5 @@
-import { EnvVarWarning } from "@/components/env-var-warning";
 import { AuthButton } from "@/components/auth-button";
 import { ThemeSwitcher } from "@/components/theme-switcher";
-import { hasEnvVars } from "@/lib/utils";
 import Link from "next/link";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { Button } from "@/components/ui/button";
@@ -26,7 +24,7 @@ export default function Info() {
           <div className="flex gap-5 items-center font-bold text-lg">
             <Link href={"/"}>GroupPlan</Link>
           </div>
-          {!hasEnvVars ? <EnvVarWarning /> : <AuthButton />}
+          <AuthButton />
         </div>
       </nav>
 
