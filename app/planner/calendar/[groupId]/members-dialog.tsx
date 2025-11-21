@@ -61,12 +61,12 @@ export function MembersDialog({
         <DialogTrigger asChild>
           <button className={className}>{label}</button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="w-full sm:w-3/4 md:w-2/3 h-1/2">
           <DialogHeader className="sr-only">
             <DialogTitle>Members</DialogTitle>
             <DialogDescription>Members of this group.</DialogDescription>
           </DialogHeader>
-          <ScrollArea className="h-[200px] w-[350px]">
+          <ScrollArea className="w-full mt-4">
             <ul>
               {members.map((member) => {
                 let name = "";
