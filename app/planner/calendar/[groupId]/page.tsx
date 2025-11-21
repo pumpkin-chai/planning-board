@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { EventCalendar, Event } from "./event-calendar";
 import { InviteMemberDialog } from "./invite-member-dialog";
+import { MembersDialog } from "./members-dialog";
 
 export default async function CalendarPage({
   params,
@@ -47,9 +48,11 @@ export default async function CalendarPage({
 
   return (
     <div className="px-8 py-3 w-full">
-      <h1 className="self-start text-5xl font-bold mb-8">
+      <h1 className="self-start text-5xl font-bold mb-2">
         {groupData ? groupData.group.name : "Calendar"}
       </h1>
+
+      <MembersDialog className="mb-8 hover:underline" label="Members" />
 
       {groupData?.role === "admin" && (
         <section className="mb-4">
