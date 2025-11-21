@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { EventCalendar, Event } from "./event-calendar";
 import { InviteMemberDialog } from "./invite-member-dialog";
+import { MembersDialog } from "./members-dialog";
 
 export default async function CalendarPage({
   params,
@@ -19,20 +20,34 @@ export default async function CalendarPage({
     redirect("/auth/login");
   }
 
-  const { data: groupData } = await supabase
+  const { data: groupInfo, error: groupInfoError } = await supabase
+    .from("group_info_view")
+    .select("name, memberCount:member_count")
+    .eq("id", groupId)
+    .single()
+    .overrideTypes<{ name: string; memberCount: number }>();
+  if (groupInfoError) {
+    console.error(groupInfoError.message);
+    redirect("/planner/people");
+  }
+
+  const { data: membershipData, error: membershipInfoError } = await supabase
     .from("Memberships")
-    .select("role, group:Groups(name)")
+    .select("role")
     .eq("user_id", user.id)
     .eq("group_id", groupId)
     .single()
-    .overrideTypes<{ role: string; group: { name: string } }>();
-  console.log("Group Data:", groupData);
+    .overrideTypes<{ role: string }>();
+  if (membershipInfoError) {
+    console.error(membershipInfoError.message);
+    redirect("/planner/people");
+  }
 
   const { data: eventData } = await supabase
     .from("Events")
     .select("id, title, starts_at, status, created_by")
     .eq("group_id", groupId);
-  console.log("Event Data:", eventData);
+
   const events: Event[] = eventData
     ? eventData.map((event) => {
         return {
@@ -47,11 +62,15 @@ export default async function CalendarPage({
 
   return (
     <div className="px-8 py-3 w-full">
-      <h1 className="self-start text-5xl font-bold mb-8">
-        {groupData ? groupData.group.name : "Calendar"}
-      </h1>
+      <h1 className="self-start text-5xl font-bold mb-2">{groupInfo.name}</h1>
 
-      {groupData?.role === "admin" && (
+      <MembersDialog
+        className="mb-8 hover:underline"
+        groupId={Number(groupId)}
+        label={`${groupInfo.memberCount} ${groupInfo.memberCount === 1 ? "Member" : "Members"}`}
+      />
+
+      {membershipData?.role === "admin" && (
         <section className="mb-4">
           <InviteMemberDialog groupId={Number(groupId)} inviterId={user.id} />
         </section>
