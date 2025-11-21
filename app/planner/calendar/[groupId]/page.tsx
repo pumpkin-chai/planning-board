@@ -66,6 +66,7 @@ export default async function CalendarPage({
 
       <MembersDialog
         className="mb-8 hover:underline"
+        groupId={Number(groupId)}
         label={`${groupInfo.memberCount} ${groupInfo.memberCount === 1 ? "Member" : "Members"}`}
       />
 

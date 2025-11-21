@@ -8,14 +8,53 @@ import {
   DialogTrigger,
   DialogDescription,
 } from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
+import { createClient } from "@/lib/supabase/client";
+import { useEffect, useState } from "react";
+
+type Member = {
+  user: {
+    username: string;
+    firstName?: string;
+    lastName?: string;
+  };
+  role: string;
+};
 
 export function MembersDialog({
   label,
   className,
+  groupId,
 }: {
   label: string;
   className?: string;
+  groupId: number;
 }) {
+  const supabase = createClient();
+
+  const [members, setMembers] = useState<Member[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data, error } = await supabase
+        .from("Memberships")
+        .select(
+          "user:profiles(username, firstName:first_name, lastName:last_name), role",
+        )
+        .eq("group_id", groupId)
+        .overrideTypes<Member[]>();
+
+      if (error) {
+        console.error(error.message);
+      } else {
+        setMembers(data);
+      }
+    };
+
+    fetchData();
+  }, [supabase]);
+
   return (
     <Dialog>
       <form>
@@ -25,13 +64,38 @@ export function MembersDialog({
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader className="sr-only">
             <DialogTitle>Members</DialogTitle>
-            <DialogDescription>
-              Members of this group.
-            </DialogDescription>
+            <DialogDescription>Members of this group.</DialogDescription>
           </DialogHeader>
-          <div className="grid gap-4">
-            <div className="grid gap-3">fjdskfjkasdl</div>
-          </div>
+          <ScrollArea className="h-[200px] w-[350px]">
+            <ul>
+              {members.map((member) => {
+                let name = "";
+                if (member.user.firstName) {
+                  name += member.user.firstName;
+                }
+                if (member.user.lastName) {
+                  name += ` ${member.user.lastName}`;
+                }
+
+                return (
+                  <li key={member.user.username}>
+                    <div className="flex justify-between items-center">
+                      <div>
+                        {name && (
+                          <span className="text-sm font-bold">{name} </span>
+                        )}
+                        <span className="text-sm italic">
+                          {member.user.username}
+                        </span>
+                      </div>
+                      <span className="text-sm">{member.role}</span>
+                    </div>
+                    <Separator className="my-2" />
+                  </li>
+                );
+              })}
+            </ul>
+          </ScrollArea>
         </DialogContent>
       </form>
     </Dialog>
