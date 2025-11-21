@@ -6,6 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogDescription,
 } from "@/components/ui/dialog";
 
 export function MembersDialog({
@@ -22,8 +23,11 @@ export function MembersDialog({
           <button className={className}>{label}</button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
+          <DialogHeader className="sr-only">
             <DialogTitle>Members</DialogTitle>
+            <DialogDescription>
+              Members of this group.
+            </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4">
             <div className="grid gap-3">fjdskfjkasdl</div>
