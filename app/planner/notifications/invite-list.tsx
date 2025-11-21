@@ -32,7 +32,7 @@ export function InviteList() {
     };
 
     getData();
-  }, []);
+  }, [supabase]);
 
   const setStatus = async (
     inviter: string,

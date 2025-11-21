@@ -53,7 +53,7 @@ export function MembersDialog({
     };
 
     fetchData();
-  }, [supabase]);
+  }, [supabase, groupId]);
 
   return (
     <Dialog>
