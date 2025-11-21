@@ -15,18 +15,18 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { createClient } from "@/lib/supabase/server";
+import NavBar from "@/components/nav-bar";
 
-export default function Info() {
+export default async function Info() {
+  const supabase = await createClient();
+
+  const { data } = await supabase.auth.getClaims();
+  const uid = data?.claims.sub;
+
   return (
     <main className="min-h-screen flex flex-col items-center">
-      <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
-        <div className="w-full max-w-5xl flex justify-between items-center p-3 px-5 text-sm">
-          <div className="flex gap-5 items-center font-bold text-lg">
-            <Link href={"/"}>GroupPlan</Link>
-          </div>
-          <AuthButton />
-        </div>
-      </nav>
+      <NavBar />
 
       <div className="w-screen h-screen flex flex-col items-center justify-center pt-5">
         <div className="w-[80%] h-[90%] flex flex-col items-center justify-center py-12 bg-gradient-to-br from-gray-500 via-white to-gray-500 rounded-2xl">
@@ -37,14 +37,20 @@ export default function Info() {
           <h3 className="text-center justify-center py-1 text-2xl">
             Coordinate with any or all friends with ease
           </h3>
-          <ButtonGroup className="flex justify-center items-center pt-5">
-            <Button asChild size="lg" variant="outline">
-              <Link href="../auth/sign-up">Sign Up</Link>
-            </Button>
+          {uid ? (
             <Button asChild size="lg" variant="default">
-              <Link href="../auth/login">Login</Link>
+              <Link href="/planner">Go to Dashboard</Link>
             </Button>
-          </ButtonGroup>
+          ) : (
+            <ButtonGroup className="flex justify-center items-center pt-5">
+              <Button asChild size="lg" variant="outline">
+                <Link href="../auth/sign-up">Sign Up</Link>
+              </Button>
+              <Button asChild size="lg" variant="default">
+                <Link href="../auth/login">Login</Link>
+              </Button>
+            </ButtonGroup>
+          )}
         </div>
 
         <div className="max-w-[80%] flex pt-5">
