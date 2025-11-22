@@ -40,28 +40,28 @@ export function NavBar({ className }: { className?: string }) {
 export function NavBarMobile({ className }: { className?: string }) {
   return (
     <div
-      className={`fixed left-0 bottom-0 bg-background w-screen flex justify-center ${className}`}
+      className={`fixed left-0 bottom-0 bg-background w-screen flex justify-center border-t border-border ${className}`}
     >
       <NavigationMenu>
-        <NavigationMenuList>
+        <NavigationMenuList className="gap-6">
           <NavigationMenuItem>
             <NavigationMenuLink href="/planner">
-              <House />
+              <House className="size-[20px]" />
             </NavigationMenuLink>
           </NavigationMenuItem>
           <NavigationMenuItem>
             <NavigationMenuLink href="/planner/people">
-              <Calendar />
+              <Calendar className="size-[20px]" />
             </NavigationMenuLink>
           </NavigationMenuItem>
           <NavigationMenuItem>
             <NavigationMenuLink href="/planner/notifications">
-              <Mail />
+              <Mail className="size-[20px]" />
             </NavigationMenuLink>
           </NavigationMenuItem>
           <NavigationMenuItem>
             <NavigationMenuLink href="/planner/account">
-              <CircleUser />
+              <CircleUser className="size-[20px]" />
             </NavigationMenuLink>
           </NavigationMenuItem>
         </NavigationMenuList>
