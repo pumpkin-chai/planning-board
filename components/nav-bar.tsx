@@ -39,33 +39,31 @@ export function NavBar({ className }: { className?: string }) {
 
 export function NavBarMobile({ className }: { className?: string }) {
   return (
-    <div
-      className={`fixed left-0 bottom-0 bg-background w-screen flex justify-center border-t border-border ${className}`}
+    <NavigationMenu
+      className={`max-w-screen fixed left-0 bottom-0 p-4 bg-background w-screen flex justify-center border-t border-border ${className}`}
     >
-      <NavigationMenu>
-        <NavigationMenuList className="gap-6">
-          <NavigationMenuItem>
-            <NavigationMenuLink href="/planner">
-              <House className="size-[20px]" />
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink href="/planner/people">
-              <Calendar className="size-[20px]" />
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink href="/planner/notifications">
-              <Mail className="size-[20px]" />
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink href="/planner/account">
-              <CircleUser className="size-[20px]" />
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-        </NavigationMenuList>
-      </NavigationMenu>
-    </div>
+      <NavigationMenuList className="gap-6">
+        <NavigationMenuItem>
+          <NavigationMenuLink href="/planner">
+            <House className="size-[20px]" />
+          </NavigationMenuLink>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <NavigationMenuLink href="/planner/people">
+            <Calendar className="size-[20px]" />
+          </NavigationMenuLink>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <NavigationMenuLink href="/planner/notifications">
+            <Mail className="size-[20px]" />
+          </NavigationMenuLink>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <NavigationMenuLink href="/planner/account">
+            <CircleUser className="size-[20px]" />
+          </NavigationMenuLink>
+        </NavigationMenuItem>
+      </NavigationMenuList>
+    </NavigationMenu>
   );
 }
