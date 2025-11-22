@@ -15,7 +15,6 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { createClient } from "@/lib/supabase/server";
-import NavBar from "@/components/nav-bar";
 import { NavigationMenu } from "@/components/ui/navigation-menu";
 
 export default async function Info() {
@@ -26,14 +25,10 @@ export default async function Info() {
 
   return (
     <main className="min-h-screen flex flex-col items-center">
-      {uid ? (
-        <NavBar />
-      ) : (
-        <NavigationMenu className="min-w-full">
-          <span className="text-xl font-bold">GroupPlan</span>
-          <AuthButton />
-        </NavigationMenu>
-      )}
+      <NavigationMenu className="min-w-full">
+        <span className="text-xl font-bold">GroupPlan</span>
+        <AuthButton />
+      </NavigationMenu>
 
       <div className="w-screen h-screen flex flex-col items-center justify-center pt-5">
         <section className="w-[80%] h-[90%] flex flex-col items-center justify-center py-12 bg-gradient-to-br from-gray-500 via-white to-gray-500 rounded-2xl">
