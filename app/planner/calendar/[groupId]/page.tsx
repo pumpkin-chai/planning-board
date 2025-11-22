@@ -63,7 +63,7 @@ export default async function CalendarPage({
     : [];
 
   return (
-    <div className="px-8 py-3 w-full">
+    <div className="px-4 sm:px-8 py-3 w-full">
       <h1 className="self-start text-5xl font-bold mb-2">{groupInfo.name}</h1>
 
       <MembersDialog
@@ -80,7 +80,7 @@ export default async function CalendarPage({
 
       <section className="mb-32">
         <h2 className="text-2xl mb-4">Calendar</h2>
-        <div className="p-8 bg-secondary">
+        <div className="sm:p-8 sm:bg-secondary">
           <EventCalendar groupId={Number(groupId)} events={events} />
         </div>
       </section>

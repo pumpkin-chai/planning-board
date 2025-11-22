@@ -99,8 +99,8 @@ export function EventCalendar({
       </div>
       <div>
         <h3 className="mt-8 mb-2 text-lg font-semibold">Filters:</h3>
-        <div className="flex gap-4 items-center">
-          <div className="flex gap-4">
+        <div className="sm:flex gap-4 items-center">
+          <div className="flex gap-4 mb-4 sm:mb-0">
             <Button
               variant="default"
               size="sm"
@@ -124,7 +124,7 @@ export function EventCalendar({
               Clear
             </Button>
           </div>
-          <ul className="flex gap-8">
+          <ul className="flex flex-wrap gap-x-8 gap-y-2">
             {statusFilters.map((filter) => (
               <li key={filter.id}>
                 <input
