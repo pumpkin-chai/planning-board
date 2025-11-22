@@ -6,28 +6,35 @@ import {
 } from "@/components/ui/navigation-menu";
 import { AuthButton } from "@/components/auth-button";
 import { Mail, House, Calendar, CircleUser } from "lucide-react";
+import Link from "next/link";
 
 export function NavBar({ className }: { className?: string }) {
   return (
     <NavigationMenu className={`min-w-full ${className}`}>
       <NavigationMenuList>
         <NavigationMenuItem>
-          <NavigationMenuLink href="/planner">Home</NavigationMenuLink>
+          <NavigationMenuLink asChild>
+            <Link href="/planner">Home</Link>
+          </NavigationMenuLink>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <NavigationMenuLink href="/planner/people">People</NavigationMenuLink>
+          <NavigationMenuLink asChild>
+            <Link href="/planner/people">People</Link>
+          </NavigationMenuLink>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <NavigationMenuLink href="/planner/account">
-            Account
+          <NavigationMenuLink asChild>
+            <Link href="/planner/account">Account</Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
       </NavigationMenuList>
       <div className="flex items-center gap-4">
         <NavigationMenuList>
           <NavigationMenuItem>
-            <NavigationMenuLink href="/planner/notifications">
-              <Mail />
+            <NavigationMenuLink asChild>
+              <Link href="/planner/notifications">
+                <Mail />
+              </Link>
             </NavigationMenuLink>
           </NavigationMenuItem>
         </NavigationMenuList>
@@ -44,23 +51,31 @@ export function NavBarMobile({ className }: { className?: string }) {
     >
       <NavigationMenuList className="gap-6">
         <NavigationMenuItem>
-          <NavigationMenuLink href="/planner">
-            <House className="size-[20px]" />
+          <NavigationMenuLink asChild>
+            <Link href="/planner">
+              <House className="size-[20px]" />
+            </Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <NavigationMenuLink href="/planner/people">
-            <Calendar className="size-[20px]" />
+          <NavigationMenuLink asChild>
+            <Link href="/planner/people">
+              <Calendar className="size-[20px]" />
+            </Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <NavigationMenuLink href="/planner/notifications">
-            <Mail className="size-[20px]" />
+          <NavigationMenuLink asChild>
+            <Link href="/planner/notifications">
+              <Mail className="size-[20px]" />
+            </Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <NavigationMenuLink href="/planner/account">
-            <CircleUser className="size-[20px]" />
+          <NavigationMenuLink asChild>
+            <Link href="/planner/account">
+              <CircleUser className="size-[20px]" />
+            </Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
       </NavigationMenuList>
