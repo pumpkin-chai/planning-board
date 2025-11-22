@@ -5,11 +5,11 @@ import {
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
 import { AuthButton } from "@/components/auth-button";
-import { Mail } from "lucide-react";
+import { Mail, House, Calendar, CircleUser } from "lucide-react";
 
-export default function NavBar() {
+export function NavBar({ className }: { className?: string }) {
   return (
-    <NavigationMenu className="min-w-full">
+    <NavigationMenu className={`min-w-full ${className}`}>
       <NavigationMenuList>
         <NavigationMenuItem>
           <NavigationMenuLink href="/planner">Home</NavigationMenuLink>
@@ -34,5 +34,38 @@ export default function NavBar() {
         <AuthButton />
       </div>
     </NavigationMenu>
+  );
+}
+
+export function NavBarMobile({ className }: { className?: string }) {
+  return (
+    <div
+      className={`fixed left-0 bottom-0 bg-background w-screen flex justify-center ${className}`}
+    >
+      <NavigationMenu>
+        <NavigationMenuList>
+          <NavigationMenuItem>
+            <NavigationMenuLink href="/planner">
+              <House />
+            </NavigationMenuLink>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
+            <NavigationMenuLink href="/planner/people">
+              <Calendar />
+            </NavigationMenuLink>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
+            <NavigationMenuLink href="/planner/notifications">
+              <Mail />
+            </NavigationMenuLink>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
+            <NavigationMenuLink href="/planner/account">
+              <CircleUser />
+            </NavigationMenuLink>
+          </NavigationMenuItem>
+        </NavigationMenuList>
+      </NavigationMenu>
+    </div>
   );
 }
