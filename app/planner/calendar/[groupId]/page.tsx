@@ -45,7 +45,7 @@ export default async function CalendarPage({
 
   const { data: eventData } = await supabase
     .from("Events")
-    .select("id, title, starts_at, status, created_by")
+    .select("id, title, starts_at, ends_at, status, created_by, description")
     .eq("group_id", groupId);
 
   const events: Event[] = eventData
@@ -53,7 +53,9 @@ export default async function CalendarPage({
         return {
           id: event.id,
           title: event.title,
+          desc: event.description, 
           startsAt: new Date(event.starts_at),
+          ...(event.ends_at === null ? {endsAt: undefined} : {endsAt: new Date(event.ends_at)}),
           status: event.status,
           createdBy: event.created_by,
         };
@@ -61,7 +63,7 @@ export default async function CalendarPage({
     : [];
 
   return (
-    <div className="px-8 py-3 w-full">
+    <div className="px-4 sm:px-8 py-3 w-full">
       <h1 className="self-start text-5xl font-bold mb-2">{groupInfo.name}</h1>
 
       <MembersDialog
@@ -78,7 +80,7 @@ export default async function CalendarPage({
 
       <section className="mb-32">
         <h2 className="text-2xl mb-4">Calendar</h2>
-        <div className="p-8 bg-secondary">
+        <div className="sm:p-8 sm:bg-secondary">
           <EventCalendar groupId={Number(groupId)} events={events} />
         </div>
       </section>
