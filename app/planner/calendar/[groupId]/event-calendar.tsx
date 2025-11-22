@@ -72,33 +72,32 @@ export function EventCalendar({
 
   return (
     <div>
-      <div className="flex flex-wrap gap-6">
-        <Calendar
-          mode="single"
-          selected={date}
-          onSelect={setDate}
-          className="rounded-md border shadow-sm flex-1 min-w-[300px]"
-          captionLayout="dropdown"
-        />
-        <div className="flex-1 flex flex-col min-w-[300px] gap-4">
-          <ul className="space-y-2 flex-1 overflow-y-auto">
-            {selectedEvents.length > 0 ? (
-              selectedEvents
-                .filter((event) => enabledFilters.has(event.status))
-                .map((event) => (
-                  <li key={event.id}>
-                    <EventCard event={event} />
-                  </li>
-                ))
-            ) : (
-              <li>No events for this date.</li>
-            )}
-          </ul>
-          <EventProposalDialog proposeAction={handlePropose} />
-        </div>
+      <Calendar
+        mode="single"
+        selected={date}
+        onSelect={setDate}
+        className="rounded-md border shadow-sm w-full max-w-[600px] m-auto"
+        captionLayout="dropdown"
+      />
+      <div className="flex-1 flex flex-col min-w-[300px] gap-4 mt-8">
+        <h3 className="mb-2 text-lg font-semibold">Events</h3>
+        <ul className="space-y-2 flex-1 overflow-y-auto">
+          {selectedEvents.length > 0 ? (
+            selectedEvents
+              .filter((event) => enabledFilters.has(event.status))
+              .map((event) => (
+                <li key={event.id}>
+                  <EventCard event={event} />
+                </li>
+              ))
+          ) : (
+            <li>No events for this date.</li>
+          )}
+        </ul>
+        <EventProposalDialog proposeAction={handlePropose} />
       </div>
       <div>
-        <h3 className="mt-8 mb-2 text-lg font-semibold">Filters:</h3>
+        <h3 className="mt-8 mb-2 text-lg font-semibold">Filters</h3>
         <div className="sm:flex gap-4 items-center">
           <div className="flex gap-4 mb-4 sm:mb-0">
             <Button
