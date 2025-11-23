@@ -128,7 +128,12 @@ function EventList({ events }: { events: Event[] }) {
             <ItemContent>
               <ItemTitle>{event.title}</ItemTitle>
               <ItemDescription>
-                Starts {event.startsAt.toLocaleString()}
+                {event.startsAt.toLocaleString()}
+                {event.endsAt &&
+                  " to " +
+                    (event.endsAt > event.startsAt
+                      ? event.endsAt.toLocaleTimeString()
+                      : event.endsAt.toLocaleString())}
               </ItemDescription>
             </ItemContent>
           </Item>
