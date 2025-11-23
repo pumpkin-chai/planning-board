@@ -32,13 +32,14 @@ export default async function Info() {
         <AuthButton />
       </NavigationMenu>
       <main>
-        <section className="flex flex-col justify-center items-center p-12 h-dvh bg-gradient-to-br from-gray-500 via-white to-gray-500">
+        <section className="flex flex-col justify-center items-center p-12 h-screen bg-gradient-to-br from-secondary via-card to-secondary">
           <h1 className="text-center text-5xl sm:text-6xl font-bold mb-4 sm:mb-8">
             Make hangouts happen
           </h1>
 
           <h3 className="text-center justify-center text-xl">
-            Coordinate with any or all friends with ease
+            A shared calendar and event planning app for indecisive friend
+            groups
           </h3>
 
           <div className="flex gap-2 mt-8">
