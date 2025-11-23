@@ -26,7 +26,9 @@ export default async function Info() {
   return (
     <>
       <NavigationMenu className="max-w-screen fixed w-screen top-0 left-0 bg-background">
-        <span className="text-xl font-bold">GroupPlan</span>
+        <Link href="/planner" className="text-xl font-bold">
+          GroupPlan
+        </Link>
         <AuthButton />
       </NavigationMenu>
       <main>
