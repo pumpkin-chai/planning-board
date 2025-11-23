@@ -3,6 +3,12 @@ import { redirect } from "next/navigation";
 import { EventCalendar, Event } from "./event-calendar";
 import { InviteMemberDialog } from "./invite-member-dialog";
 import { MembersDialog } from "./members-dialog";
+import {
+  Item,
+  ItemContent,
+  ItemDescription,
+  ItemTitle,
+} from "@/components/ui/item";
 
 export default async function CalendarPage({
   params,
@@ -53,9 +59,11 @@ export default async function CalendarPage({
         return {
           id: event.id,
           title: event.title,
-          desc: event.description, 
+          desc: event.description,
           startsAt: new Date(event.starts_at),
-          ...(event.ends_at === null ? {endsAt: undefined} : {endsAt: new Date(event.ends_at)}),
+          ...(event.ends_at === null
+            ? { endsAt: undefined }
+            : { endsAt: new Date(event.ends_at) }),
           status: event.status,
           createdBy: event.created_by,
         };
@@ -87,47 +95,45 @@ export default async function CalendarPage({
 
       <section className="mb-16">
         <h2 className="text-2xl mb-4">Planned Events</h2>
-        <div className="p-8 bg-secondary mb-16">
-          <ul className="overflow-y-auto">
-            {events
-              .filter((event) => event.status === "planned")
-              .map((event) => (
-                <li key={event.id}>
-                  <strong>{event.startsAt.toLocaleDateString()} </strong>
-                  <em>{event.startsAt.toLocaleTimeString()}</em> - {event.title}
-                </li>
-              ))}
-          </ul>
+        <div className="p-6 bg-secondary mb-16">
+          <EventList
+            events={events.filter((event) => event.status === "planned")}
+          />
         </div>
 
         <h2 className="text-2xl mb-4">Proposed Events</h2>
-        <div className="p-8 bg-secondary mb-16">
-          <ul className="overflow-y-auto">
-            {events
-              .filter((event) => event.status === "proposed")
-              .map((event) => (
-                <li key={event.id}>
-                  <strong>{event.startsAt.toLocaleDateString()} </strong>
-                  <em>{event.startsAt.toLocaleTimeString()}</em> - {event.title}
-                </li>
-              ))}
-          </ul>
+        <div className="p-6 bg-secondary mb-16">
+          <EventList
+            events={events.filter((event) => event.status === "proposed")}
+          />
         </div>
 
         <h2 className="text-2xl mb-4">Canceled Events</h2>
-        <div className="p-8 bg-secondary">
-          <ul className="overflow-y-auto">
-            {events
-              .filter((event) => event.status === "canceled")
-              .map((event) => (
-                <li key={event.id}>
-                  <strong>{event.startsAt.toLocaleDateString()} </strong>
-                  <em>{event.startsAt.toLocaleTimeString()}</em> - {event.title}
-                </li>
-              ))}
-          </ul>
+        <div className="p-6 bg-secondary">
+          <EventList
+            events={events.filter((event) => event.status === "canceled")}
+          />
         </div>
       </section>
     </div>
+  );
+}
+
+function EventList({ events }: { events: Event[] }) {
+  return (
+    <ul className="overflow-y-auto">
+      {events.map((event) => (
+        <li key={event.id} className="mb-3 last:mb-0">
+          <Item className="bg-card">
+            <ItemContent>
+              <ItemTitle>{event.title}</ItemTitle>
+              <ItemDescription>
+                Starts {event.startsAt.toLocaleString()}
+              </ItemDescription>
+            </ItemContent>
+          </Item>
+        </li>
+      ))}
+    </ul>
   );
 }
