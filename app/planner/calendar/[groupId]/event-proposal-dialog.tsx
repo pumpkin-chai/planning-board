@@ -1,5 +1,7 @@
 "use client";
 
+import { toast } from "sonner";
+
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -40,19 +42,23 @@ export function EventProposalDialog({ group }: { group: number }) {
     setLoading(true);
 
     const propose = async () => {
-      const { data } = await supabase
-        .from("Events")
-        .insert({
-          group_id: group,
-          title: proposal.title,
-          description: proposal.description,
-          starts_at: proposal.startsAt,
-          ends_at: proposal.endsAt,
-          status: "proposed",
-        })
-        .select()
-        .single();
-      if (data) {
+      const { error } = await supabase.from("Events").insert({
+        group_id: group,
+        title: proposal.title,
+        description: proposal.description,
+        starts_at: proposal.startsAt,
+        ends_at: proposal.endsAt,
+        status: "proposed",
+      });
+
+      if (error) {
+        toast.error("Event proposal failed", {
+          description: `Failed to propose "${proposal.title}." Please try again later.`,
+        });
+      } else {
+        toast.success("Event proposed", {
+          description: `"${proposal.title}" proposed for ${proposal.startsAt.toLocaleString()}`,
+        });
         router.refresh();
       }
 
