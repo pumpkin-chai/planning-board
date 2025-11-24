@@ -25,7 +25,7 @@ export type Event = {
   startsAt: Date;
   endsAt: Date | null;
   status: string;
-  creator: { username: string };
+  creator: { username: string; currentUser: boolean };
 };
 
 export function EventCalendar({

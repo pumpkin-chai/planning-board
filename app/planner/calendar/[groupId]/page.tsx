@@ -3,20 +3,7 @@ import { redirect } from "next/navigation";
 import { EventCalendar, Event, EventResult } from "./event-calendar";
 import { InviteMemberDialog } from "./invite-member-dialog";
 import { MembersDialog } from "./members-dialog";
-import {
-  Item,
-  ItemContent,
-  ItemDescription,
-  ItemFooter,
-  ItemTitle,
-} from "@/components/ui/item";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { DialogDescription, DialogTitle } from "@radix-ui/react-dialog";
+import { EventCard } from "./event-card";
 
 export default async function CalendarPage({
   params,
@@ -47,11 +34,11 @@ export default async function CalendarPage({
 
   const { data: membershipData, error: membershipInfoError } = await supabase
     .from("Memberships")
-    .select("role")
+    .select("user:profiles(username), role")
     .eq("user_id", user.id)
     .eq("group_id", groupId)
     .single()
-    .overrideTypes<{ role: string }>();
+    .overrideTypes<{ user: { username: string }; role: string }>();
   if (membershipInfoError) {
     console.error(membershipInfoError.message);
     redirect("/planner/people");
@@ -70,6 +57,10 @@ export default async function CalendarPage({
         ...event,
         startsAt: new Date(event.startsAt),
         endsAt: event.endsAt ? new Date(event.endsAt) : null,
+        creator: {
+          username: event.creator.username,
+          currentUser: event.creator.username === membershipData.user.username,
+        },
       }))
     : [];
 
@@ -127,41 +118,7 @@ function EventList({ events }: { events: Event[] }) {
     <ul className="overflow-y-auto">
       {events.map((event) => (
         <li key={event.id} className="mb-2 sm:mb-3 last:mb-0">
-          <Dialog>
-            <DialogTrigger asChild>
-              <Item className="bg-card hover:bg-accent">
-                <ItemContent>
-                  <ItemTitle>{event.title}</ItemTitle>
-                  <ItemDescription>
-                    {event.startsAt.toLocaleString()}
-                    {event.endsAt &&
-                      " to " +
-                        (event.endsAt > event.startsAt
-                          ? event.endsAt.toLocaleTimeString()
-                          : event.endsAt.toLocaleString())}{" "}
-                  </ItemDescription>
-                  <ItemFooter>
-                    <p>
-                      by{" "}
-                      <span className="underline">
-                        {event.creator.username}
-                      </span>
-                    </p>
-                  </ItemFooter>
-                </ItemContent>
-              </Item>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader className="sr-only">
-                <DialogTitle>
-                  {event.status[0].toUpperCase() + event.status.slice(1)} Event
-                </DialogTitle>
-                <DialogDescription>
-                  Event information for {event.title}
-                </DialogDescription>
-              </DialogHeader>
-            </DialogContent>
-          </Dialog>
+          <EventCard event={event} />
         </li>
       ))}
     </ul>
