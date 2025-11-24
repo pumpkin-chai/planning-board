@@ -1,12 +1,13 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import { EventCalendar, Event } from "./event-calendar";
+import { EventCalendar, Event, EventResult } from "./event-calendar";
 import { InviteMemberDialog } from "./invite-member-dialog";
 import { MembersDialog } from "./members-dialog";
 import {
   Item,
   ItemContent,
   ItemDescription,
+  ItemFooter,
   ItemTitle,
 } from "@/components/ui/item";
 
@@ -51,23 +52,18 @@ export default async function CalendarPage({
 
   const { data: eventData } = await supabase
     .from("Events")
-    .select("id, title, starts_at, ends_at, status, created_by, description")
-    .eq("group_id", groupId);
+    .select(
+      "id, title, startsAt:starts_at, endsAt:ends_at, status, creator:profiles(username), description",
+    )
+    .eq("group_id", groupId)
+    .overrideTypes<EventResult[]>();
 
   const events: Event[] = eventData
-    ? eventData.map((event) => {
-        return {
-          id: event.id,
-          title: event.title,
-          desc: event.description,
-          startsAt: new Date(event.starts_at),
-          ...(event.ends_at === null
-            ? { endsAt: undefined }
-            : { endsAt: new Date(event.ends_at) }),
-          status: event.status,
-          createdBy: event.created_by,
-        };
-      })
+    ? eventData.map((event) => ({
+        ...event,
+        startsAt: new Date(event.startsAt),
+        endsAt: event.endsAt ? new Date(event.endsAt) : null,
+      }))
     : [];
 
   return (
@@ -128,12 +124,18 @@ function EventList({ events }: { events: Event[] }) {
             <ItemContent>
               <ItemTitle>{event.title}</ItemTitle>
               <ItemDescription>
-                {event.startsAt.toLocaleString()}
-                {event.endsAt &&
-                  " to " +
-                    (event.endsAt > event.startsAt
-                      ? event.endsAt.toLocaleTimeString()
-                      : event.endsAt.toLocaleString())}
+                <p>
+                  {event.startsAt.toLocaleString()}
+                  {event.endsAt &&
+                    " to " +
+                      (event.endsAt > event.startsAt
+                        ? event.endsAt.toLocaleTimeString()
+                        : event.endsAt.toLocaleString())}{" "}
+                </p>
+                <p>
+                  Proposed by{" "}
+                  <span className="underline">{event.creator.username}</span>
+                </p>
               </ItemDescription>
             </ItemContent>
           </Item>

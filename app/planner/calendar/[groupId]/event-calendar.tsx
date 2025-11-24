@@ -8,14 +8,24 @@ import { useRouter } from "next/navigation";
 import { EventCard } from "./event-card";
 import { Button } from "@/components/ui/button";
 
+export type EventResult = {
+  id: number;
+  title: string;
+  desc: string;
+  startsAt: string;
+  endsAt?: string | null;
+  status: string;
+  creator: { username: string };
+};
+
 export type Event = {
   id: number;
   title: string;
   desc: string;
   startsAt: Date;
-  endsAt?: Date;
+  endsAt: Date | null;
   status: string;
-  createdBy: string;
+  creator: { username: string };
 };
 
 export function EventCalendar({
