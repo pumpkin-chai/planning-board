@@ -13,25 +13,48 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { ChangeEvent, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
 
 export type EventProposal = {
   title: string;
   description: string;
   startsAt: Date;
-  endsAt?: Date | undefined;
+  endsAt: Date | null;
 };
 
-export function EventProposalDialog({
-  proposeAction,
-}: {
-  proposeAction: (date: EventProposal) => void;
-}) {
+export function EventProposalDialog({ group }: { group: number }) {
+  const router = useRouter();
+  const supabase = createClient();
+
   const [open, setOpen] = useState<boolean>(false);
   const [failed, setFailed] = useState<boolean>(false);
   const [title, setTitle] = useState<string>("");
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
   const [desc, setDesc] = useState<string>("");
+
+  const handlePropose = (proposal: EventProposal) => {
+    const propose = async () => {
+      const { data } = await supabase
+        .from("Events")
+        .insert({
+          group_id: group,
+          title: proposal.title,
+          description: proposal.description,
+          starts_at: proposal.startsAt,
+          ends_at: proposal.endsAt,
+          status: "proposed",
+        })
+        .select()
+        .single();
+      if (data) {
+        router.refresh();
+      }
+    };
+
+    propose();
+  };
 
   const handleEventNameChange = (event: ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
@@ -54,11 +77,11 @@ export function EventProposalDialog({
       setFailed(true);
       return;
     }
-    proposeAction({
+    handlePropose({
       title: title,
       description: desc,
       startsAt: new Date(startDate),
-      endsAt: new Date(endDate),
+      endsAt: endDate ? new Date(endDate) : null,
     });
   };
 

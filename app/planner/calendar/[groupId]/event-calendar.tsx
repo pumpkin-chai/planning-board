@@ -2,9 +2,7 @@
 
 import { Calendar } from "@/components/ui/calendar";
 import { useState } from "react";
-import { EventProposal, EventProposalDialog } from "./event-proposal-dialog";
-import { createClient } from "@/lib/supabase/client";
-import { useRouter } from "next/navigation";
+import { EventProposalDialog } from "./event-proposal-dialog";
 import { Button } from "@/components/ui/button";
 import { EventList } from "./event-list";
 
@@ -35,9 +33,6 @@ export function EventCalendar({
   groupId: number;
   events: Event[];
 }) {
-  const router = useRouter();
-  const supabase = createClient();
-
   const [date, setDate] = useState<Date | undefined>(new Date());
   const selectedEvents = events.filter(
     (event) => event.startsAt.toDateString() === date?.toDateString(),
@@ -55,30 +50,6 @@ export function EventCalendar({
       .filter((filter) => filter.checked)
       .map((filter) => filter.name),
   );
-
-  const handlePropose = (proposal: EventProposal) => {
-    console.log("Proposed Event:", proposal);
-
-    const propose = async () => {
-      const { data } = await supabase
-        .from("Events")
-        .insert({
-          group_id: groupId,
-          title: proposal.title,
-          description: proposal.description,
-          starts_at: proposal.startsAt.toISOString(),
-          ends_at: proposal.endsAt,
-          status: "proposed",
-        })
-        .select()
-        .single();
-      if (data) {
-        router.refresh();
-      }
-    };
-
-    propose();
-  };
 
   return (
     <div>
@@ -102,7 +73,7 @@ export function EventCalendar({
             <li>No events for this date.</li>
           )}
         </ul>
-        <EventProposalDialog proposeAction={handlePropose} />
+        <EventProposalDialog group={groupId} />
       </div>
       <div>
         <h3 className="mt-8 mb-2 text-lg font-semibold">Filters</h3>
