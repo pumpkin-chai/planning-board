@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import { EditProfileDialogue } from "./edit-profile-dialog";
+import { EditProfileDialog } from "./edit-profile-dialog";
 
 export default async function Account() {
   const supabase = await createClient();
@@ -13,22 +13,27 @@ export default async function Account() {
     redirect("/auth/login");
   }
 
-  const { data: profileInfo } = await supabase
+  const { data: profile, error: profileFetchError } = await supabase
     .from("profiles")
-    .select("id, username, first_name, last_name")
+    .select("username, firstName:first_name, lastName:last_name")
     .eq("id", user.id)
-    .single()
-    .overrideTypes<{ name: string; memberCount: number }>();
+    .single();
+
+  if (profileFetchError) {
+    console.error(profileFetchError);
+    return <p>Error loading profile</p>;
+  }
 
   return (
     <div className="px-8 py-3 w-full">
-      <h1 className="self-start text-5xl font-bold mb-8">My Profile</h1>
-      
-      
+      <h1 className="self-start text-5xl font-bold mb-8">Profile</h1>
+
       <section>
-        <h1>
-          <EditProfileDialogue uid={user.id} user_name={profileInfo?.username} firstname={profileInfo?.first_name} lastname={profileInfo?.last_name}/>
-        </h1>
+        <EditProfileDialog
+          username={profile.username}
+          firstName={profile.firstName}
+          lastName={profile.lastName}
+        />
       </section>
     </div>
   );
