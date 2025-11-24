@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/item";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogFooter,
   DialogHeader,
@@ -18,6 +17,8 @@ import {
 } from "@/components/ui/dialog";
 import { DialogDescription, DialogTitle } from "@radix-ui/react-dialog";
 import { Button } from "@/components/ui/button";
+import { createClient } from "@/lib/supabase/client";
+import { useState } from "react";
 
 export function EventCard({ event }: { event: Event }) {
   let statusStyle: string = "";
@@ -27,8 +28,34 @@ export function EventCard({ event }: { event: Event }) {
     statusStyle = "text-red-600";
   }
 
+  const supabase = createClient();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [open, setOpen] = useState<boolean>(false);
+
+  const handleDelete = () => {
+    setLoading(true);
+
+    const deleteEvent = async () => {
+      const { error } = await supabase
+        .from("Events")
+        .delete()
+        .eq("id", event.id);
+
+      if (error) {
+        console.error(`Error deleting event ${event.title}`);
+      } else {
+        console.log(`Successfully deleted ${event.title}`);
+        setOpen(false);
+      }
+
+      setLoading(false);
+    };
+
+    deleteEvent();
+  };
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Item className="bg-card hover:bg-accent">
           <ItemContent>
@@ -66,9 +93,13 @@ export function EventCard({ event }: { event: Event }) {
 
         <DialogFooter>
           {event.creator.currentUser ? (
-            <DialogClose asChild>
-              <Button variant="destructive">Delete Event</Button>
-            </DialogClose>
+            <Button
+              variant="destructive"
+              onClick={handleDelete}
+              disabled={loading}
+            >
+              Delete Event
+            </Button>
           ) : (
             <Button>Mark as going</Button>
           )}
