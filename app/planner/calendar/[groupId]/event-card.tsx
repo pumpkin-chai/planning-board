@@ -70,9 +70,7 @@ export function EventCard({ event }: { event: Event }) {
               <Button variant="destructive">Delete Event</Button>
             </DialogClose>
           ) : (
-            <DialogClose asChild>
-              <Button>Mark as going</Button>
-            </DialogClose>
+            <Button>Mark as going</Button>
           )}
         </DialogFooter>
       </DialogContent>
