@@ -10,6 +10,13 @@ import {
   ItemFooter,
   ItemTitle,
 } from "@/components/ui/item";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { DialogDescription, DialogTitle } from "@radix-ui/react-dialog";
 
 export default async function CalendarPage({
   params,
@@ -120,25 +127,41 @@ function EventList({ events }: { events: Event[] }) {
     <ul className="overflow-y-auto">
       {events.map((event) => (
         <li key={event.id} className="mb-2 sm:mb-3 last:mb-0">
-          <Item className="bg-card">
-            <ItemContent>
-              <ItemTitle>{event.title}</ItemTitle>
-              <ItemDescription>
-                <p>
-                  {event.startsAt.toLocaleString()}
-                  {event.endsAt &&
-                    " to " +
-                      (event.endsAt > event.startsAt
-                        ? event.endsAt.toLocaleTimeString()
-                        : event.endsAt.toLocaleString())}{" "}
-                </p>
-                <p>
-                  Proposed by{" "}
-                  <span className="underline">{event.creator.username}</span>
-                </p>
-              </ItemDescription>
-            </ItemContent>
-          </Item>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Item className="bg-card hover:bg-accent">
+                <ItemContent>
+                  <ItemTitle>{event.title}</ItemTitle>
+                  <ItemDescription>
+                    {event.startsAt.toLocaleString()}
+                    {event.endsAt &&
+                      " to " +
+                        (event.endsAt > event.startsAt
+                          ? event.endsAt.toLocaleTimeString()
+                          : event.endsAt.toLocaleString())}{" "}
+                  </ItemDescription>
+                  <ItemFooter>
+                    <p>
+                      by{" "}
+                      <span className="underline">
+                        {event.creator.username}
+                      </span>
+                    </p>
+                  </ItemFooter>
+                </ItemContent>
+              </Item>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader className="sr-only">
+                <DialogTitle>
+                  {event.status[0].toUpperCase() + event.status.slice(1)} Event
+                </DialogTitle>
+                <DialogDescription>
+                  Event information for {event.title}
+                </DialogDescription>
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
         </li>
       ))}
     </ul>
