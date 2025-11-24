@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -15,13 +14,20 @@ import {
 } from "@/components/ui/dialog";
 import { ChangeEvent, useState } from "react";
 
-export type EventProposal = { title: string; description: string; startsAt: Date; endsAt?: Date | undefined};
+export type EventProposal = {
+  title: string;
+  description: string;
+  startsAt: Date;
+  endsAt?: Date | undefined;
+};
 
 export function EventProposalDialog({
   proposeAction,
 }: {
   proposeAction: (date: EventProposal) => void;
 }) {
+  const [open, setOpen] = useState<boolean>(false);
+  const [failed, setFailed] = useState<boolean>(false);
   const [title, setTitle] = useState<string>("");
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
@@ -44,11 +50,27 @@ export function EventProposalDialog({
   };
 
   const handleSubmit = () => {
-    proposeAction({ title: title, description: desc, startsAt: new Date(startDate), endsAt: new Date(endDate) });
+    if (!title || !startDate) {
+      setFailed(true);
+      return;
+    }
+    proposeAction({
+      title: title,
+      description: desc,
+      startsAt: new Date(startDate),
+      endsAt: new Date(endDate),
+    });
+  };
+
+  const handleOpenChange = (open: boolean) => {
+    if (open === false) {
+      setFailed(false);
+    }
+    setOpen(open);
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <form>
         <DialogTrigger asChild>
           <Button variant="default">Propose Event</Button>
@@ -70,6 +92,11 @@ export function EventProposalDialog({
                 placeholder="Event Name"
                 value={title}
                 onChange={handleEventNameChange}
+                className={
+                  failed && !title
+                    ? "border-red-500 focus-visible:ring-red-300"
+                    : ""
+                }
                 required
               />
               <Label htmlFor="desc">Description</Label>
@@ -87,6 +114,11 @@ export function EventProposalDialog({
                 name="date"
                 value={startDate}
                 onChange={handleEventStartChange}
+                className={
+                  failed && !startDate
+                    ? "border-red-500 focus-visible:ring-red-300"
+                    : ""
+                }
                 required
               />
               <Label htmlFor="date">End Date</Label>
@@ -99,11 +131,16 @@ export function EventProposalDialog({
                 onChange={handleEventEndChange}
               />
             </div>
+            {failed && (!title || !startDate) && (
+              <p className="text-sm text-red-500">
+                Please fill in all required fields.
+              </p>
+            )}
           </div>
           <DialogFooter>
-            <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
-            </DialogClose>
+            <Button variant="outline" onClick={() => handleOpenChange(false)}>
+              Cancel
+            </Button>
             <Button type="submit" onClick={handleSubmit}>
               Create Proposal
             </Button>
