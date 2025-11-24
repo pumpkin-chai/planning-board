@@ -27,14 +27,18 @@ export function EventProposalDialog({ group }: { group: number }) {
   const router = useRouter();
   const supabase = createClient();
 
+  const [loading, setLoading] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
   const [failed, setFailed] = useState<boolean>(false);
+
   const [title, setTitle] = useState<string>("");
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
   const [desc, setDesc] = useState<string>("");
 
   const handlePropose = (proposal: EventProposal) => {
+    setLoading(true);
+
     const propose = async () => {
       const { data } = await supabase
         .from("Events")
@@ -51,6 +55,8 @@ export function EventProposalDialog({ group }: { group: number }) {
       if (data) {
         router.refresh();
       }
+
+      setLoading(false);
     };
 
     propose();
@@ -164,7 +170,7 @@ export function EventProposalDialog({ group }: { group: number }) {
             <Button variant="outline" onClick={() => handleOpenChange(false)}>
               Cancel
             </Button>
-            <Button type="submit" onClick={handleSubmit}>
+            <Button type="submit" onClick={handleSubmit} disabled={loading}>
               Create Proposal
             </Button>
           </DialogFooter>
