@@ -5,8 +5,8 @@ import { useState } from "react";
 import { EventProposal, EventProposalDialog } from "./event-proposal-dialog";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
-import { EventCard } from "./event-card";
 import { Button } from "@/components/ui/button";
+import { EventList } from "./event-list";
 
 export type EventResult = {
   id: number;
@@ -93,13 +93,11 @@ export function EventCalendar({
         <h3 className="mb-2 text-lg font-semibold">Events</h3>
         <ul className="space-y-2 flex-1 overflow-y-auto">
           {selectedEvents.length > 0 ? (
-            selectedEvents
-              .filter((event) => enabledFilters.has(event.status))
-              .map((event) => (
-                <li key={event.id}>
-                  <EventCard event={event} />
-                </li>
-              ))
+            <EventList
+              events={selectedEvents.filter((event) =>
+                enabledFilters.has(event.status),
+              )}
+            />
           ) : (
             <li>No events for this date.</li>
           )}

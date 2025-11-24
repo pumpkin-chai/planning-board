@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { EventCalendar, Event, EventResult } from "./event-calendar";
 import { InviteMemberDialog } from "./invite-member-dialog";
 import { MembersDialog } from "./members-dialog";
-import { EventCard } from "./event-card";
+import { EventList } from "./event-list";
 
 export default async function CalendarPage({
   params,
@@ -110,17 +110,5 @@ export default async function CalendarPage({
         </div>
       </section>
     </div>
-  );
-}
-
-function EventList({ events }: { events: Event[] }) {
-  return (
-    <ul className="overflow-y-auto">
-      {events.map((event) => (
-        <li key={event.id} className="mb-2 sm:mb-3 last:mb-0">
-          <EventCard event={event} />
-        </li>
-      ))}
-    </ul>
   );
 }

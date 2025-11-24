@@ -20,7 +20,25 @@ import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 import { useState } from "react";
 
-export function EventCard({ event }: { event: Event }) {
+export function EventList({ events }: { events: Event[] }) {
+  return (
+    <ul className="overflow-y-auto">
+      {events.map((event) => (
+        <li key={event.id} className="mb-2 sm:mb-3 last:mb-0">
+          <EventCard event={event} />
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function EventCard({
+  event,
+  onDelete,
+}: {
+  event: Event;
+  onDelete?: () => void;
+}) {
   const supabase = createClient();
   const [loading, setLoading] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
@@ -39,6 +57,7 @@ export function EventCard({ event }: { event: Event }) {
       } else {
         console.log(`Successfully deleted ${event.title}`);
         setOpen(false);
+        onDelete && onDelete();
       }
 
       setLoading(false);
