@@ -12,7 +12,7 @@ export default function ProtectedLayout({
       <NavBar className="hidden sm:flex" />
       <main className="min-h-screen flex flex-col items-center mb-32 sm:mb-0">
         {children}
-        <Toaster />
+        <Toaster position="top-center" />
       </main>
       <footer className="hidden sm:flex w-full items-center justify-center border-t mx-auto text-center text-xs gap-8 py-16">
         <ThemeSwitcher />
