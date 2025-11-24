@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export function EventList({ events }: { events: Event[] }) {
   const router = useRouter();
@@ -56,9 +57,13 @@ function EventCard({
         .eq("id", event.id);
 
       if (error) {
-        console.error(`Error deleting event ${event.title}`);
+        toast.error("Event deletion failed", {
+          description: `Failed to delete event "${event.title}." Please try again later.`,
+        });
       } else {
-        console.log(`Successfully deleted ${event.title}`);
+        toast.success("Event successfully deleted", {
+          description: `Successfully deleted event "${event.title}."`,
+        });
         setOpen(false);
         onDelete?.();
       }
