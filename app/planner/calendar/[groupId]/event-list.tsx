@@ -57,7 +57,7 @@ function EventCard({
       } else {
         console.log(`Successfully deleted ${event.title}`);
         setOpen(false);
-        onDelete && onDelete();
+        onDelete?.();
       }
 
       setLoading(false);
