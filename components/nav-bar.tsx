@@ -47,34 +47,34 @@ export function NavBar({ className }: { className?: string }) {
 export function NavBarMobile({ className }: { className?: string }) {
   return (
     <NavigationMenu
-      className={`max-w-screen fixed left-0 bottom-0 p-4 bg-background w-screen flex justify-center border-t border-border ${className}`}
+      className={`block max-w-screen fixed left-0 bottom-0 py-2 px-3 bg-background w-screen justify-center border-t border-border ${className}`}
     >
-      <NavigationMenuList className="gap-6">
-        <NavigationMenuItem>
+      <NavigationMenuList className="gap-3">
+        <NavigationMenuItem className="flex-1">
           <NavigationMenuLink asChild>
             <Link href="/planner">
-              <House className="size-[20px]" />
+              <House className="size-[20px] mx-auto" />
             </Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
-        <NavigationMenuItem>
+        <NavigationMenuItem className="flex-1">
           <NavigationMenuLink asChild>
             <Link href="/planner/people">
-              <Calendar className="size-[20px]" />
+              <Calendar className="size-[20px] mx-auto" />
             </Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
-        <NavigationMenuItem>
+        <NavigationMenuItem className="flex-1">
           <NavigationMenuLink asChild>
             <Link href="/planner/notifications">
-              <Mail className="size-[20px]" />
+              <Mail className="size-[20px] mx-auto" />
             </Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
-        <NavigationMenuItem>
+        <NavigationMenuItem className="flex-1">
           <NavigationMenuLink asChild>
             <Link href="/planner/account">
-              <CircleUser className="size-[20px]" />
+              <CircleUser className="size-[20px] mx-auto" />
             </Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
