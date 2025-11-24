@@ -28,18 +28,19 @@ export function NavBar({ className }: { className?: string }) {
           </NavigationMenuLink>
         </NavigationMenuItem>
       </NavigationMenuList>
-      <div className="flex items-center gap-4">
-        <NavigationMenuList>
-          <NavigationMenuItem>
-            <NavigationMenuLink asChild>
-              <Link href="/planner/notifications">
-                <Mail />
-              </Link>
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-        </NavigationMenuList>
-        <AuthButton />
-      </div>
+
+      <NavigationMenuList>
+        <NavigationMenuItem>
+          <NavigationMenuLink asChild>
+            <Link href="/planner/notifications">
+              <Mail />
+            </Link>
+          </NavigationMenuLink>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <AuthButton />
+        </NavigationMenuItem>
+      </NavigationMenuList>
     </NavigationMenu>
   );
 }
