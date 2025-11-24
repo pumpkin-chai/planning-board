@@ -76,10 +76,12 @@ export function EditProfileDialog({
 
   return (
     <div>
-      <h2 className="text-2xl mb-4">{pageData.username}</h2>
-      <h1>
-        {pageData.firstName} {pageData.lastName}
-      </h1>
+      <h2 className="mb-8">
+        <span className="text-4xl font-bold block">
+          {pageData.firstName} {pageData.lastName}
+        </span>
+        <span className="text-2xl">{pageData.username}</span>
+      </h2>
 
       <Dialog>
         <form>
