@@ -57,7 +57,7 @@ export function EventProposalDialog({ group }: { group: number }) {
         });
       } else {
         toast.success("Event proposed", {
-          description: `"${proposal.title}" proposed for ${proposal.startsAt.toLocaleString()}`,
+          description: `"${proposal.title}" proposed for ${proposal.startsAt.toLocaleString()}.`,
         });
         router.refresh();
       }
