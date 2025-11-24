@@ -1,3 +1,5 @@
+"use client";
+
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -37,9 +39,9 @@ export function NavBar({ className }: { className?: string }) {
             </Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
-        <NavigationMenuItem>
-          <AuthButton />
-        </NavigationMenuItem>
+        {/* <NavigationMenuItem> */}
+        {/*   <AuthButton /> */}
+        {/* </NavigationMenuItem> */}
       </NavigationMenuList>
     </NavigationMenu>
   );
