@@ -14,7 +14,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { createClient } from "@/lib/supabase/client";
-import { useRouter } from "next/navigation";
 import { ChangeEvent, useState } from "react";
 
 export function EditProfileDialogue({
@@ -28,7 +27,6 @@ export function EditProfileDialogue({
     firstname : string;
     lastname : string;
 }){
-    const router = useRouter();
     const supabase = createClient();
 
     const [firstName, setFirstName] = useState<string>(firstname);
@@ -92,7 +90,7 @@ export function EditProfileDialogue({
                     <DialogHeader>
                         <DialogTitle>Edit profile</DialogTitle>
                             <DialogDescription>
-                            Make changes to your profile here. Click save when you're
+                            Make changes to your profile here. Click save when you&apos;re
                             done.
                             </DialogDescription>
                         </DialogHeader>
