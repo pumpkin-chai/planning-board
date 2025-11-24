@@ -1,6 +1,7 @@
 import { ThemeSwitcher } from "@/components/theme-switcher";
-import { NavBar, NavBarMobile } from "@/components/nav-bar";
+import { NavBar } from "@/components/nav-bar";
 import { Toaster } from "sonner";
+import { NavBarMobile } from "@/components/nav-bar-mobile";
 
 export default function ProtectedLayout({
   children,
