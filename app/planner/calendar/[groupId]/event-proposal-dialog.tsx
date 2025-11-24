@@ -134,7 +134,10 @@ export function EventProposalDialog({ group }: { group: number }) {
                 }
                 required
               />
-              <Label htmlFor="desc">Description</Label>
+              <Label htmlFor="desc">
+                Description{" "}
+                <span className="text-xs text-muted-foreground">*Optional</span>
+              </Label>
               <Input
                 id="description"
                 type="text"
@@ -156,7 +159,10 @@ export function EventProposalDialog({ group }: { group: number }) {
                 }
                 required
               />
-              <Label htmlFor="date">End Date</Label>
+              <Label htmlFor="date">
+                End Date{" "}
+                <span className="text-xs text-muted-foreground">*Optional</span>
+              </Label>
               <Input
                 id="date"
                 type="datetime-local"
