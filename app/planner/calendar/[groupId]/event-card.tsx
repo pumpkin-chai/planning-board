@@ -21,13 +21,6 @@ import { createClient } from "@/lib/supabase/client";
 import { useState } from "react";
 
 export function EventCard({ event }: { event: Event }) {
-  let statusStyle: string = "";
-  if (event.status === "proposed") {
-    statusStyle = "text-muted-foreground";
-  } else if (event.status === "canceled") {
-    statusStyle = "text-red-600";
-  }
-
   const supabase = createClient();
   const [loading, setLoading] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
