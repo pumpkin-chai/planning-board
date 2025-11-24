@@ -6,7 +6,7 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
-import { AuthButton } from "@/components/auth-button";
+// import { AuthButton } from "@/components/auth-button";
 import { Mail, House, Calendar, CircleUser } from "lucide-react";
 import Link from "next/link";
 
