@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { UserGroupResult } from "@/lib/types";
 import { GroupItem } from "./group-item";
+import { GroupsEmpty } from "./groups-empty";
 
 export async function GroupList() {
   const supabase = await createClient();
@@ -14,8 +15,12 @@ export async function GroupList() {
     return <div>Error loading group list</div>;
   }
 
+  if (data.length === 0) {
+    return <GroupsEmpty />;
+  }
+
   return (
-    <ul>
+    <ul className="overflow-y-auto h-full">
       {data.map((group) => (
         <li key={group.id} className="mb-2 sm:mb-4 last:mb-0">
           <GroupItem group={group} />

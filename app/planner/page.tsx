@@ -1,21 +1,19 @@
 import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
-import { Calendar1, CalendarIcon } from "lucide-react";
+import { Calendar1 } from "lucide-react";
 
-import Link from "next/link";
-
+import { Event, UserEventsResult, UserGroupResult } from "@/lib/types";
+import { EventList } from "@/components/event-list";
+import { GroupList } from "@/components/group-list";
+import { Suspense } from "react";
 import {
   Empty,
-  EmptyContent,
   EmptyDescription,
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
-import { GroupManagementButtons } from "@/components/group-management-buttons";
-import { Event, UserEventsResult, UserGroupResult } from "@/lib/types";
-import { EventList } from "@/components/event-list";
 
 export default async function Home() {
   const supabase = await createClient();
@@ -35,8 +33,6 @@ export default async function Home() {
     .eq("status", "planned")
     .overrideTypes<UserEventsResult[]>();
 
-  console.log(eventData);
-
   const events: Event[] = eventData
     ? eventData.map((event) => ({
         ...event,
@@ -48,12 +44,6 @@ export default async function Home() {
         },
       }))
     : [];
-
-  const { data: calendarData } = await supabase
-    .from("user_groups")
-    .select("id:group_id, name:group_name, memberCount:member_count, role")
-    .overrideTypes<UserGroupResult[]>();
-  const calendars = calendarData ?? [];
 
   return (
     <div className="px-8 py-3 w-full">
@@ -83,53 +73,9 @@ export default async function Home() {
       <section className="mb-32">
         <h2 className="text-2xl mb-4">Your Calendars</h2>
         <div className="p-4 bg-muted h-96">
-          {calendars.length === 0 ? (
-            <Empty className="size-full">
-              <EmptyHeader>
-                <EmptyMedia variant="icon">
-                  <CalendarIcon />
-                </EmptyMedia>
-                <EmptyTitle>No calendars yet!</EmptyTitle>
-                <EmptyDescription>
-                  You currently have no calendars. Get started by creating one
-                  below.
-                </EmptyDescription>
-              </EmptyHeader>
-              <EmptyContent>
-                <GroupManagementButtons />
-              </EmptyContent>
-            </Empty>
-          ) : (
-            <CalendarList calendars={calendars} />
-          )}
+          <GroupList />
         </div>
       </section>
     </div>
-  );
-}
-
-function CalendarList({ calendars }: { calendars: UserGroupResult[] }) {
-  return (
-    <ul className="overflow-y-auto h-full">
-      {calendars.map((calendar) => (
-        <li key={calendar.id} className="mb-4 last:mb-0">
-          <CalendarItem calendar={calendar} />
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-function CalendarItem({ calendar }: { calendar: UserGroupResult }) {
-  return (
-    <Link href={`/planner/calendar/${calendar.id}`}>
-      <div className="p-6 bg-card hover:bg-accent hover:text-accent-foreground transition-colors rounded-lg flex justify-between items-center">
-        <span>{calendar.name}</span>
-        <span className="text-muted-foreground text-sm">
-          {calendar.memberCount}{" "}
-          {calendar.memberCount === 1 ? "Member" : "Members"}
-        </span>
-      </div>
-    </Link>
   );
 }
