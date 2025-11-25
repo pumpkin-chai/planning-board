@@ -18,9 +18,9 @@ import { UserRoundSearch } from "lucide-react";
 import { ChangeEvent, useState } from "react";
 
 export function JoinGroupDialog({
-  joinGroupAction,
+  joinGroup,
 }: {
-  joinGroupAction: (id: number) => void;
+  joinGroup: (id: number) => void;
 }) {
   const [groupID, setGroupID] = useState<string>("0");
 
@@ -32,7 +32,7 @@ export function JoinGroupDialog({
     if (!groupID || !Number.isInteger(Number(groupID))) {
       return;
     }
-    joinGroupAction(Number(groupID));
+    joinGroup(Number(groupID));
   };
 
   return (

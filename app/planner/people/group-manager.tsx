@@ -88,7 +88,7 @@ export function GroupManager() {
     <div>
       <div className="mb-6 flex items-stretch gap-4">
         <NewGroupDialog onCreate={handleNewGroup} />
-        <JoinGroupDialog joinGroupAction={handleJoinGroup} />
+        <JoinGroupDialog joinGroup={handleJoinGroup} />
       </div>
       {loading ? (
         <div>Loading...</div>
