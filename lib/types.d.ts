@@ -30,7 +30,7 @@ export type UserEventsResult = {
   startsAt: string;
   endsAt?: string | null;
   status: string;
-  creator: { username: string };
+  creator: { id?: string; username: string };
   isAttending: boolean;
   attendeeCount: number;
 };
