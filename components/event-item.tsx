@@ -21,6 +21,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { NativeSelect, NativeSelectOption } from "./ui/native-select";
 
 export function EventItem({ event }: { event: Event }) {
   const supabase = createClient();
@@ -95,6 +96,29 @@ export function EventItem({ event }: { event: Event }) {
     }
   };
 
+  const handleStatusChange = (status: string) => {
+    const setStatus = async () => {
+      const { error } = await supabase
+        .from("Events")
+        .update({ status: status })
+        .eq("id", event.id);
+
+      if (error) {
+        toast.error("Status change failed", {
+          description: `Failed to set event "${event.title}" status as ${status}. Please try again later.`,
+        });
+      } else {
+        setOpen(false);
+        toast.success("Status changed", {
+          description: `Successfully set event "${event.title}" status to ${status}.`,
+        });
+        router.refresh();
+      }
+    };
+
+    setStatus();
+  };
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -120,17 +144,28 @@ export function EventItem({ event }: { event: Event }) {
       <DialogContent>
         <DialogHeader>
           <DialogTitle className="font-bold">{event.title}</DialogTitle>
-          <DialogDescription className="sr-only">
-            Event information
+          <DialogDescription>
+            Created by {event.creator.username}
           </DialogDescription>
         </DialogHeader>
 
         <div>
-          <p>Created by {event.creator.username}</p>
           <p>Status: {event.status[0].toUpperCase() + event.status.slice(1)}</p>
           <p>Starts: {event.startsAt.toLocaleString()}</p>
           {event.endsAt && <p>Ends: {event.endsAt.toLocaleString()}</p>}
           <p>{event.attendeeCount} attending</p>
+        </div>
+
+        <div>
+          <NativeSelect
+            aria-label="Change event status"
+            defaultValue={event.status}
+            onChange={(e) => handleStatusChange(e.target.value)}
+          >
+            <NativeSelectOption value="proposed">Proposed</NativeSelectOption>
+            <NativeSelectOption value="planned">Planned</NativeSelectOption>
+            <NativeSelectOption value="canceled">Canceled</NativeSelectOption>
+          </NativeSelect>
         </div>
 
         <DialogFooter>

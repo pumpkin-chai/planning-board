@@ -4,11 +4,12 @@ export type Event = {
   desc: string;
   startsAt: Date;
   endsAt: Date | null;
-  status: string;
+  status: EventStatus;
   creator: { username: string; currentUser: boolean };
   isAttending: boolean;
   attendeeCount: number;
 };
+export type EventStatus = "proposed" | "planned" | "canceled";
 
 export type Group = {
   id: number;
