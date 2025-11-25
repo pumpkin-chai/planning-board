@@ -7,18 +7,6 @@ import { Button } from "@/components/ui/button";
 import { EventList } from "./event-list";
 import { Event } from "@/lib/types";
 
-export type UserEventsResult = {
-  id: number;
-  title: string;
-  desc: string;
-  startsAt: string;
-  endsAt?: string | null;
-  status: string;
-  creator: { username: string };
-  isAttending: boolean;
-  attendeeCount: number;
-};
-
 export function EventCalendar({
   groupId,
   events,

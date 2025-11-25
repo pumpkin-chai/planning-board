@@ -21,5 +21,16 @@ export type UserGroupResult = {
   memberCount: number;
   role: Role;
 };
-
 export type Role = "admin" | "member";
+
+export type UserEventsResult = {
+  id: number;
+  title: string;
+  desc: string;
+  startsAt: string;
+  endsAt?: string | null;
+  status: string;
+  creator: { username: string };
+  isAttending: boolean;
+  attendeeCount: number;
+};
