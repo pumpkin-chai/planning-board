@@ -4,7 +4,7 @@ import { JoinGroupDialog } from "@/components/join-group-dialog";
 import { NewGroupDialog } from "@/components/new-group-dialog";
 import { useRouter } from "next/navigation";
 
-export function NoCalendarsButtons() {
+export function GroupManagementButtons() {
   const router = useRouter();
 
   const refetch = () => router.refresh();

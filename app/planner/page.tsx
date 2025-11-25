@@ -13,7 +13,7 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
-import { NoCalendarsButtons } from "./no-calendars-buttons";
+import { GroupManagementButtons } from "./no-calendars-buttons";
 
 type Calendar = { id: number; name: string; memberCount: number };
 
@@ -115,7 +115,7 @@ export default async function Home() {
                 </EmptyDescription>
               </EmptyHeader>
               <EmptyContent>
-                <NoCalendarsButtons />
+                <GroupManagementButtons />
               </EmptyContent>
             </Empty>
           ) : (
