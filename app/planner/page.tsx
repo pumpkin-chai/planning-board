@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { Calendar1 } from "lucide-react";
 
-import { Event, UserEventsResult } from "@/lib/types";
+import { Event, UserEventsResult, UserGroupResult } from "@/lib/types";
 import { EventList } from "@/components/event-list";
 import { GroupList } from "@/components/group-list";
 import { Suspense } from "react";
@@ -33,12 +33,27 @@ export default async function Home() {
         <h2 className="text-2xl mb-4">Your Calendars</h2>
         <div className="p-4 bg-muted h-96">
           <Suspense fallback={<div>Loading...</div>}>
-            <GroupList />
+            <GroupsPreview />
           </Suspense>
         </div>
       </section>
     </div>
   );
+}
+
+async function GroupsPreview() {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("user_groups")
+    .select("id:group_id, name:group_name, memberCount:member_count, role")
+    .order("role")
+    .overrideTypes<UserGroupResult[]>();
+  if (error || !data) {
+    return <div>Error loading group list</div>;
+  }
+
+  return <GroupList groups={data} />;
 }
 
 async function UpcomingEvents() {
