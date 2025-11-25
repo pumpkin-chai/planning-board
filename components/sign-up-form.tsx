@@ -40,6 +40,34 @@ export function SignUpForm({
       return;
     }
 
+    if (username.length < 4) {
+      setError("Username must be at least 4 characters");
+      setIsLoading(false);
+      return;
+    }
+
+    if (username.length > 32) {
+      setError("Username must be at most 32 characters");
+      setIsLoading(false);
+      return;
+    }
+
+    if (!/^[a-zA-Z].*$/.test(username)) {
+      setError(
+        "Username must start with a letter",
+      );
+      setIsLoading(false);
+      return;
+    }
+
+    if (!/^[a-zA-Z0-9_.]+$/.test(username)) {
+      setError(
+        "Username can only contain letters, numbers, and the characters _ and .",
+      );
+      setIsLoading(false);
+      return;
+    }
+
     try {
       const { error } = await supabase.auth.signUp({
         email,
