@@ -25,16 +25,10 @@ export default async function Account() {
   }
 
   return (
-    <div className="px-8 py-3 w-full">
-      <h1 className="self-start text-5xl font-bold mb-8">Profile</h1>
-
-      <section>
-        <EditProfileDialog
-          username={profile.username}
-          firstName={profile.firstName}
-          lastName={profile.lastName}
-        />
-      </section>
-    </div>
+    <EditProfileDialog
+      username={profile.username}
+      firstName={profile.firstName}
+      lastName={profile.lastName}
+    />
   );
 }

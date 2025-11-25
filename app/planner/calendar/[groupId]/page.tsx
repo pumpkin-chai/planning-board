@@ -1,9 +1,10 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import { EventCalendar, Event, EventResult } from "./event-calendar";
+import { EventCalendar } from "@/components/event-calendar";
+import { EventList } from "@/components/event-list";
+import { Event, UserEventsResult } from "@/lib/types";
 import { InviteMemberDialog } from "./invite-member-dialog";
 import { MembersDialog } from "./members-dialog";
-import { EventList } from "./event-list";
 
 export default async function CalendarPage({
   params,
@@ -48,7 +49,7 @@ export default async function CalendarPage({
       "id, title, startsAt:starts_at, endsAt:ends_at, status, creator:profiles!events_created_by_fkey(username), description, isAttending:is_attending, attendeeCount:attendee_count",
     )
     .eq("group_id", groupId)
-    .overrideTypes<EventResult[]>();
+    .overrideTypes<UserEventsResult[]>();
 
   const events: Event[] = eventData
     ? eventData.map((event) => ({
@@ -63,7 +64,7 @@ export default async function CalendarPage({
     : [];
 
   return (
-    <div className="px-4 sm:px-8 py-3 w-full">
+    <>
       <h1 className="self-start text-5xl font-bold mb-2">{groupInfo.name}</h1>
 
       <MembersDialog
@@ -107,6 +108,6 @@ export default async function CalendarPage({
           />
         </div>
       </section>
-    </div>
+    </>
   );
 }

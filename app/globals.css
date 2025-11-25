@@ -14,9 +14,9 @@
     --primary-foreground: 0 0% 98%;
     --secondary: 0 0% 96.1%;
     --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 85.1%;
+    --muted: 0 0% 84.1%;
     --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
+    --accent: 0, 0%, 89%;
     --accent-foreground: 0 0% 9%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
@@ -43,7 +43,7 @@
     --secondary-foreground: 0 0% 98%;
     --muted: 0 0% 14.9%;
     --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
+    --accent: 0 0% 19.9%;
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
@@ -75,8 +75,16 @@
   }
 
   /* Reusable “no-brackets” utilities that map to Tailwind spacing tokens */
-  .cell-size-11 { --cell-size: theme(spacing.11); }
-  .cell-size-10 { --cell-size: theme(spacing.10); }
-  .cell-size-9  { --cell-size: theme(spacing.9);  }
-  .cell-size-8  { --cell-size: theme(spacing.8);  }
+  .cell-size-11 {
+    --cell-size: theme(spacing.11);
+  }
+  .cell-size-10 {
+    --cell-size: theme(spacing.10);
+  }
+  .cell-size-9 {
+    --cell-size: theme(spacing.9);
+  }
+  .cell-size-8 {
+    --cell-size: theme(spacing.8);
+  }
 }

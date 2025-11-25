@@ -1,27 +1,27 @@
-import { createClient } from "@/lib/supabase/server";
 import { GroupManagementButtons } from "@/components/group-management-buttons";
-import { UserGroupResult } from "@/lib/types";
-import { GroupItem } from "@/components/group-item";
 import { Suspense } from "react";
+import { GroupList, GroupListSkeleton } from "@/components/group-list";
+import { createClient } from "@/lib/supabase/server";
+import { UserGroupResult } from "@/lib/types";
 
-export default function People() {
+export default async function People() {
   return (
-    <div className="px-4 sm:px-8 py-3 w-full">
+    <>
       <h1 className="self-start text-5xl font-bold mb-8">People</h1>
       <section>
         <h2 className="text-2xl mb-4">Your Groups</h2>
         <GroupManagementButtons className="mb-8" />
-        <div className="bg-muted p-3 sm:p-4">
-          <Suspense fallback={<div>Loading...</div>}>
-            <GroupList />
+        <div className="bg-muted p-3 sm:p-4 min-h-96">
+          <Suspense fallback={<GroupListSkeleton />}>
+            <AllGroups />
           </Suspense>
         </div>
       </section>
-    </div>
+    </>
   );
 }
 
-async function GroupList() {
+async function AllGroups() {
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -33,13 +33,5 @@ async function GroupList() {
     return <div>Error loading group list</div>;
   }
 
-  return (
-    <ul>
-      {data.map((group) => (
-        <li key={group.id} className="mb-2 sm:mb-4 last:mb-0">
-          <GroupItem group={group} />
-        </li>
-      ))}
-    </ul>
-  );
+  return <GroupList groups={data} />;
 }
