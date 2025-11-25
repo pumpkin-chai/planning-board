@@ -5,7 +5,7 @@ import { Calendar1 } from "lucide-react";
 
 import { Event, UserEventsResult, UserGroupResult } from "@/lib/types";
 import { EventList, EventListSkeleton } from "@/components/event-list";
-import { GroupList } from "@/components/group-list";
+import { GroupList, GroupListSkeleton } from "@/components/group-list";
 import { Suspense } from "react";
 import {
   Empty,
@@ -32,7 +32,7 @@ export default async function Home() {
       <section className="mb-32">
         <h2 className="text-2xl mb-4">Your Calendars</h2>
         <div className="p-4 bg-muted h-96">
-          <Suspense fallback={<div>Loading...</div>}>
+          <Suspense fallback={<GroupListSkeleton />}>
             <GroupsPreview />
           </Suspense>
         </div>

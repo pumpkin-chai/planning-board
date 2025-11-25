@@ -98,7 +98,7 @@ export function EventItem({ event }: { event: Event }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Item className="bg-card hover:bg-accent">
+        <Item className="bg-card shadow-sm hover:bg-accent">
           <ItemContent>
             <ItemTitle>{event.title}</ItemTitle>
             <ItemDescription>

@@ -18,13 +18,13 @@ export function EventListSkeleton() {
   return (
     <ul className="overflow-y-auto h-full">
       <li className="mb-2 sm:mb-3">
-        <Skeleton className="bg-card h-20 sm:h-24" />
+        <Skeleton className="h-20 sm:h-24" />
       </li>
       <li className="mb-2 sm:mb-3">
-        <Skeleton className="bg-card h-20 sm:h-24" />
+        <Skeleton className="h-20 sm:h-24" />
       </li>
       <li className="mb-0">
-        <Skeleton className="bg-card h-20 sm:h-24" />
+        <Skeleton className="h-20 sm:h-24" />
       </li>
     </ul>
   );
