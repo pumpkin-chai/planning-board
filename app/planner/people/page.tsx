@@ -66,7 +66,7 @@ function GroupList({ groups }: { groups: GroupResult[] }) {
 
 function GroupItem({ group }: { group: GroupResult }) {
   return (
-    <Item asChild className="bg-card sm:p-6">
+    <Item asChild className="bg-card hover:bg-accent sm:p-6">
       <Link href={`/planner/calendar/${group.id}`}>
         <ItemContent>
           <ItemTitle className="items-baseline">
