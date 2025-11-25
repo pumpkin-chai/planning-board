@@ -2,21 +2,8 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { GroupManagementButtons } from "@/components/group-management-buttons";
 import { toast } from "sonner";
-import {
-  Item,
-  ItemContent,
-  ItemDescription,
-  ItemTitle,
-} from "@/components/ui/item";
-import Link from "next/link";
-
-type GroupResult = {
-  id: number;
-  name: string;
-  memberCount: number;
-  role: Role;
-};
-type Role = "admin" | "member";
+import { UserGroupResult } from "@/lib/types";
+import { GroupItem } from "@/components/group-item";
 
 export default async function People() {
   const supabase = await createClient();
@@ -52,7 +39,7 @@ export default async function People() {
   );
 }
 
-function GroupList({ groups }: { groups: GroupResult[] }) {
+function GroupList({ groups }: { groups: UserGroupResult[] }) {
   return (
     <ul>
       {groups.map((group) => (
@@ -61,22 +48,5 @@ function GroupList({ groups }: { groups: GroupResult[] }) {
         </li>
       ))}
     </ul>
-  );
-}
-
-function GroupItem({ group }: { group: GroupResult }) {
-  return (
-    <Item asChild className="bg-card hover:bg-accent sm:p-6">
-      <Link href={`/planner/calendar/${group.id}`}>
-        <ItemContent>
-          <ItemTitle className="items-baseline">
-            <span className="sm:text-2xl font-bold">{group.name}</span>
-          </ItemTitle>
-          <ItemDescription>
-            {group.memberCount} {group.memberCount === 1 ? "Member" : "Members"}
-          </ItemDescription>
-        </ItemContent>
-      </Link>
-    </Item>
   );
 }
