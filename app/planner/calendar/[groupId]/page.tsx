@@ -80,7 +80,7 @@ export default async function CalendarPage({
 
       <section className="mb-32">
         <h2 className="text-2xl mb-4">Calendar</h2>
-        <div className="sm:p-8 sm:bg-secondary">
+        <div className="sm:p-8 sm:bg-muted">
           <EventCalendar groupId={Number(groupId)} events={events} />
         </div>
       </section>
