@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { Calendar1 } from "lucide-react";
 
-import { Event, UserEventsResult, UserGroupResult } from "@/lib/types";
+import { Event, UserEventsResult } from "@/lib/types";
 import { EventList } from "@/components/event-list";
 import { GroupList } from "@/components/group-list";
 import { Suspense } from "react";
@@ -73,7 +73,9 @@ export default async function Home() {
       <section className="mb-32">
         <h2 className="text-2xl mb-4">Your Calendars</h2>
         <div className="p-4 bg-muted h-96">
-          <GroupList />
+          <Suspense fallback={<div>Loading...</div>}>
+            <GroupList />
+          </Suspense>
         </div>
       </section>
     </div>
