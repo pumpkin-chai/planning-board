@@ -4,15 +4,15 @@ import { Suspense } from "react";
 
 export default async function Notifications() {
   return (
-    <>
+    <section>
       <h1 className="self-start text-5xl font-bold mb-8">Notifications</h1>
 
-      <section className="bg-secondary min-h-96">
+      <div className="bg-muted p-3 sm:p-4">
         <Suspense fallback={<div>Loading...</div>}>
           <UserInvites />
         </Suspense>
-      </section>
-    </>
+      </div>
+    </section>
   );
 }
 
