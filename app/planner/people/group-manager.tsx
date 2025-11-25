@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import { NewGroupDialog } from "@/components/new-group-dialog";
-import { JoinGroupDialog } from "./join-group-dialog";
+import { JoinGroupDialog } from "@/components/join-group-dialog";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { Group } from "@/lib/types";
