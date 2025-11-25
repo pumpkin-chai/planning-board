@@ -130,6 +130,7 @@ export function EventItem({ event }: { event: Event }) {
           <p>Status: {event.status[0].toUpperCase() + event.status.slice(1)}</p>
           <p>Starts: {event.startsAt.toLocaleString()}</p>
           {event.endsAt && <p>Ends: {event.endsAt.toLocaleString()}</p>}
+          <p>{event.attendeeCount} attending</p>
         </div>
 
         <DialogFooter>

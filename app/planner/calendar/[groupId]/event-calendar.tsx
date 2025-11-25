@@ -15,6 +15,7 @@ export type EventResult = {
   status: string;
   creator: { username: string };
   isAttending: boolean;
+  attendeeCount: number;
 };
 
 export type Event = {
@@ -26,6 +27,7 @@ export type Event = {
   status: string;
   creator: { username: string; currentUser: boolean };
   isAttending: boolean;
+  attendeeCount: number;
 };
 
 export function EventCalendar({
