@@ -7,14 +7,20 @@ import { NewGroupDialog } from "@/components/new-group-dialog";
 import { JoinGroupDialog } from "./join-group-dialog";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
+import { Group } from "@/lib/types";
 
 type Role = "admin" | "member";
 
-type Group = { id: number; name: string; memberCount: number; role: Role };
+type GroupResult = {
+  id: number;
+  name: string;
+  memberCount: number;
+  role: Role;
+};
 
 export function GroupManager() {
   const [loading, setLoading] = useState<boolean>(false);
-  const [groups, setGroups] = useState<Group[]>([]);
+  const [groups, setGroups] = useState<GroupResult[]>([]);
 
   useEffect(() => {
     setLoading(true);
@@ -28,7 +34,7 @@ export function GroupManager() {
             "id:group_id, name:group_name, memberCount:member_count, role",
           )
           .order("role")
-          .overrideTypes<Group[]>();
+          .overrideTypes<GroupResult[]>();
         if (data === null) {
           setGroups([]);
           return;
@@ -44,22 +50,6 @@ export function GroupManager() {
     fetchGroups();
   }, []);
 
-  const handleNewGroup = async (name: string) => {
-    try {
-      const supabase = createClient();
-      const { data } = await supabase
-        .from("Groups")
-        .insert({ name })
-        .select()
-        .single();
-      if (data) {
-        setGroups((prevGroups) => [...prevGroups, { ...data, memberCount: 1 }]);
-      }
-    } catch (error) {
-      console.error("Error creating group:", error);
-    }
-  };
-
   const handleJoinGroup = async (id: number) => {
     try {
       const supabase = createClient();
@@ -68,7 +58,7 @@ export function GroupManager() {
         .insert({ group_id: id })
         .select("Groups:group_id ( id, name )")
         .single()
-        .overrideTypes<{ Groups: Group }>();
+        .overrideTypes<{ Groups: GroupResult }>();
       if (data?.Groups) {
         setGroups((prevGroups) => [...prevGroups, data.Groups]);
       }
@@ -87,10 +77,17 @@ export function GroupManager() {
     }
   };
 
+  const handleNewGroup = (group: Group) => {
+    setGroups((prevGroups) => [
+      ...prevGroups,
+      { ...group, memberCount: 1, role: "admin" },
+    ]);
+  };
+
   return (
     <div>
       <div className="mb-6 flex items-stretch gap-4">
-        <NewGroupDialog newGroupAction={handleNewGroup} />
+        <NewGroupDialog onCreate={handleNewGroup} />
         <JoinGroupDialog joinGroupAction={handleJoinGroup} />
       </div>
       {loading ? (
@@ -106,7 +103,7 @@ function GroupList({
   groups,
   onLeaveGroup,
 }: {
-  groups: Group[];
+  groups: GroupResult[];
   onLeaveGroup: (id: number) => void;
 }) {
   return (
@@ -124,7 +121,7 @@ function GroupCard({
   group,
   onLeaveGroup,
 }: {
-  group: Group;
+  group: GroupResult;
   onLeaveGroup: (id: number) => void;
 }) {
   const router = useRouter();

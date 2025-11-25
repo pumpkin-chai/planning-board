@@ -13,15 +13,41 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { createClient } from "@/lib/supabase/client";
+import { Group } from "@/lib/types";
 
 import { Plus } from "lucide-react";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useState, useTransition } from "react";
+import { toast } from "sonner";
 
 export function NewGroupDialog({
-  newGroupAction,
+  onCreateAction,
 }: {
-  newGroupAction: (name: string) => void;
+  onCreateAction?: (group: Group) => void;
 }) {
+  const supabase = createClient();
+  const [isPending, startTransition] = useTransition();
+
+  const handleNewGroup = (name: string) => {
+    startTransition(async () => {
+      const { data, error } = await supabase
+        .from("Groups")
+        .insert({ name })
+        .select("id, name")
+        .single();
+      if (!data || error) {
+        toast.error("Group creation failed", {
+          description: `Failed to create group "${name}". Please try again later.`,
+        });
+      } else {
+        toast.success("Group created", {
+          description: `Successfully created group "${data.name}"`,
+        });
+        onCreateAction?.(data);
+      }
+    });
+  };
+
   const [groupName, setGroupName] = useState<string>("New Group");
 
   const handleGroupNameChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -58,7 +84,11 @@ export function NewGroupDialog({
               <Button variant="outline">Cancel</Button>
             </DialogClose>
             <DialogClose asChild>
-              <Button type="submit" onClick={() => newGroupAction(groupName)}>
+              <Button
+                type="submit"
+                disabled={isPending}
+                onClick={() => handleNewGroup(groupName)}
+              >
                 Create Group
               </Button>
             </DialogClose>
