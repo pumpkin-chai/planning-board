@@ -14,6 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { createClient } from "@/lib/supabase/client";
+import { Group } from "@/lib/types";
 
 import { UserRoundSearch } from "lucide-react";
 import { ChangeEvent, useState, useTransition } from "react";
@@ -22,7 +23,7 @@ import { toast } from "sonner";
 export function JoinGroupDialog({
   onJoinGroup,
 }: {
-  onJoinGroup?: (groupId: number) => void;
+  onJoinGroup?: (group: Group) => void;
 }) {
   const supabase = createClient();
 
@@ -45,9 +46,9 @@ export function JoinGroupDialog({
       const { data, error } = await supabase
         .from("Memberships")
         .insert({ group_id: Number(groupId) })
-        .select("group:Groups(name)")
+        .select("group:Groups(id, name)")
         .single()
-        .overrideTypes<{ group: { name: string } }>();
+        .overrideTypes<{ group: { id: number; name: string } }>();
 
       if (!data || error) {
         toast.error("Failed to join group", {
@@ -57,7 +58,7 @@ export function JoinGroupDialog({
         toast.success("Group joined", {
           description: `Successfully joined group ${data.group.name}`,
         });
-        onJoinGroup?.(Number(groupId));
+        onJoinGroup?.(data.group);
         setOpen(false);
       }
     });
