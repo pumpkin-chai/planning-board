@@ -20,7 +20,7 @@ import { ChangeEvent, useState } from "react";
 export function JoinGroupDialog({
   joinGroup,
 }: {
-  joinGroup: (id: number) => void;
+  joinGroup: (groupId: number) => void;
 }) {
   const [groupID, setGroupID] = useState<string>("0");
 
