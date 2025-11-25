@@ -1,7 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { GroupManagementButtons } from "@/components/group-management-buttons";
-import { toast } from "sonner";
 import { UserGroupResult } from "@/lib/types";
 import { GroupItem } from "@/components/group-item";
 
@@ -21,8 +20,7 @@ export default async function People() {
     .select("id:group_id, name:group_name, memberCount:member_count, role")
     .order("role");
   if (error || !data) {
-    toast.error("Unable to load group list");
-    return <div>Error</div>;
+    return <div>Error loading group list</div>;
   }
 
   return (
