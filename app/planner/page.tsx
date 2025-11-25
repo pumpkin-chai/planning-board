@@ -1,9 +1,8 @@
 import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
-import { CalendarIcon, Calendar1 } from "lucide-react";
+import { Calendar1, CalendarIcon } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 import {
@@ -14,6 +13,7 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
+import { GroupManagementButtons } from "@/components/group-management-buttons";
 
 type Calendar = { id: number; name: string; memberCount: number };
 
@@ -115,10 +115,7 @@ export default async function Home() {
                 </EmptyDescription>
               </EmptyHeader>
               <EmptyContent>
-                <div className="flex gap-2">
-                  <Button>Create calendar</Button>
-                  <Button variant="outline">Join group calendar</Button>
-                </div>
+                <GroupManagementButtons />
               </EmptyContent>
             </Empty>
           ) : (
