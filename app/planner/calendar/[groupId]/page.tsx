@@ -64,7 +64,7 @@ export default async function CalendarPage({
     : [];
 
   return (
-    <div className="px-4 sm:px-8 py-3 w-full">
+    <>
       <h1 className="self-start text-5xl font-bold mb-2">{groupInfo.name}</h1>
 
       <MembersDialog
@@ -108,6 +108,6 @@ export default async function CalendarPage({
           />
         </div>
       </section>
-    </div>
+    </>
   );
 }

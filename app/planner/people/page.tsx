@@ -6,7 +6,7 @@ import { UserGroupResult } from "@/lib/types";
 
 export default async function People() {
   return (
-    <div className="px-4 sm:px-8 py-3 w-full">
+    <>
       <h1 className="self-start text-5xl font-bold mb-8">People</h1>
       <section>
         <h2 className="text-2xl mb-4">Your Groups</h2>
@@ -17,7 +17,7 @@ export default async function People() {
           </Suspense>
         </div>
       </section>
-    </div>
+    </>
   );
 }
 

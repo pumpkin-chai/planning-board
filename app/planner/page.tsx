@@ -17,7 +17,7 @@ import {
 
 export default async function Home() {
   return (
-    <div className="px-8 py-3 w-full">
+    <>
       <h1 className="self-start text-5xl font-bold mb-8">Dashboard</h1>
 
       <section className="mb-32">
@@ -37,7 +37,7 @@ export default async function Home() {
           </Suspense>
         </div>
       </section>
-    </div>
+    </>
   );
 }
 
