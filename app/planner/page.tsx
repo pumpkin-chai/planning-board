@@ -16,6 +16,32 @@ import {
 } from "@/components/ui/empty";
 
 export default async function Home() {
+  return (
+    <div className="px-8 py-3 w-full">
+      <h1 className="self-start text-5xl font-bold mb-8">Dashboard</h1>
+
+      <section className="mb-32">
+        <h2 className="text-2xl mb-4">Upcoming Events</h2>
+        <div className="p-4 bg-muted h-96">
+          <Suspense fallback={<div>Loading...</div>}>
+            <UpcomingEvents />
+          </Suspense>
+        </div>
+      </section>
+
+      <section className="mb-32">
+        <h2 className="text-2xl mb-4">Your Calendars</h2>
+        <div className="p-4 bg-muted h-96">
+          <Suspense fallback={<div>Loading...</div>}>
+            <GroupList />
+          </Suspense>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+async function UpcomingEvents() {
   const supabase = await createClient();
 
   const { data: userData, error } = await supabase.auth.getUser();
@@ -45,39 +71,19 @@ export default async function Home() {
       }))
     : [];
 
-  return (
-    <div className="px-8 py-3 w-full">
-      <h1 className="self-start text-5xl font-bold mb-8">Dashboard</h1>
-
-      <section className="mb-32">
-        <h2 className="text-2xl mb-4">Upcoming Events</h2>
-        <div className="p-4 bg-muted h-96">
-          {events.length === 0 ? (
-            <Empty className="size-full">
-              <EmptyHeader>
-                <EmptyMedia variant="icon">
-                  <Calendar1 />
-                </EmptyMedia>
-                <EmptyTitle>No upcoming events</EmptyTitle>
-                <EmptyDescription>
-                  You have no upcoming events scheduled.
-                </EmptyDescription>
-              </EmptyHeader>
-            </Empty>
-          ) : (
-            <EventList events={events} />
-          )}
-        </div>
-      </section>
-
-      <section className="mb-32">
-        <h2 className="text-2xl mb-4">Your Calendars</h2>
-        <div className="p-4 bg-muted h-96">
-          <Suspense fallback={<div>Loading...</div>}>
-            <GroupList />
-          </Suspense>
-        </div>
-      </section>
-    </div>
+  return events.length === 0 ? (
+    <Empty className="size-full">
+      <EmptyHeader>
+        <EmptyMedia variant="icon">
+          <Calendar1 />
+        </EmptyMedia>
+        <EmptyTitle>No upcoming events</EmptyTitle>
+        <EmptyDescription>
+          You have no upcoming events scheduled.
+        </EmptyDescription>
+      </EmptyHeader>
+    </Empty>
+  ) : (
+    <EventList events={events} />
   );
 }
