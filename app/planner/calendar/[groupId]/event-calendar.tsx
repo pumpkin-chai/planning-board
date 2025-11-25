@@ -61,7 +61,7 @@ export function EventCalendar({
         mode="single"
         selected={date}
         onSelect={setDate}
-        className="rounded-md border shadow-sm w-full max-w-[600px] m-auto"
+        className="rounded-md border shadow-lg w-full max-w-[600px] m-auto"
         captionLayout="dropdown"
       />
       <div className="flex-1 flex flex-col min-w-[300px] gap-4 mt-8">
