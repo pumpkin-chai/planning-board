@@ -13,30 +13,58 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { createClient } from "@/lib/supabase/client";
 
 import { UserRoundSearch } from "lucide-react";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useState, useTransition } from "react";
+import { toast } from "sonner";
 
 export function JoinGroupDialog({
   onJoinGroup,
 }: {
   onJoinGroup?: (groupId: number) => void;
 }) {
-  const [groupID, setGroupID] = useState<string>("0");
+  const supabase = createClient();
 
+  const [pending, startTransition] = useTransition();
+
+  const [open, setOpen] = useState<boolean>(false);
+
+  const [groupId, setGroupID] = useState<string>("0");
   const handleGroupIDChange = (event: ChangeEvent<HTMLInputElement>) => {
     setGroupID(event.target.value);
   };
 
   const handleJoinGroup = () => {
-    if (!groupID || !Number.isInteger(Number(groupID))) {
+    if (!groupId || !Number.isInteger(Number(groupId))) {
       return;
     }
-    onJoinGroup?.(Number(groupID));
+
+    startTransition(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+      const { data, error } = await supabase
+        .from("Memberships")
+        .insert({ group_id: Number(groupId) })
+        .select("group:Groups(name)")
+        .single()
+        .overrideTypes<{ group: { name: string } }>();
+
+      if (!data || error) {
+        toast.error("Failed to join group", {
+          description: `Failed to join group with ID ${groupId}. Please try again later.`,
+        });
+      } else {
+        toast.success("Group joined", {
+          description: `Successfully joined group ${data.group.name}`,
+        });
+        onJoinGroup?.(Number(groupId));
+        setOpen(false);
+      }
+    });
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <form>
         <DialogTrigger asChild>
           <Button variant="outline">
@@ -59,7 +87,7 @@ export function JoinGroupDialog({
                 type="number"
                 name="id"
                 onChange={handleGroupIDChange}
-                value={groupID}
+                value={groupId}
               />
             </div>
           </div>
@@ -67,11 +95,9 @@ export function JoinGroupDialog({
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>
             </DialogClose>
-            <DialogClose asChild>
-              <Button type="submit" onClick={handleJoinGroup}>
-                Join Group
-              </Button>
-            </DialogClose>
+            <Button type="submit" disabled={pending} onClick={handleJoinGroup}>
+              Join Group
+            </Button>
           </DialogFooter>
         </DialogContent>
       </form>
