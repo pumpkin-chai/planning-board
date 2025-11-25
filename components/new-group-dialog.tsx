@@ -27,6 +27,7 @@ export function NewGroupDialog({
 }) {
   const supabase = createClient();
   const [isPending, startTransition] = useTransition();
+  const [open, setOpen] = useState<boolean>(false);
 
   const handleNewGroup = (name: string) => {
     startTransition(async () => {
@@ -44,6 +45,7 @@ export function NewGroupDialog({
           description: `Successfully created group "${data.name}"`,
         });
         onCreate?.(data);
+        setOpen(false);
       }
     });
   };
@@ -55,7 +57,7 @@ export function NewGroupDialog({
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <form>
         <DialogTrigger asChild>
           <Button variant="default">
@@ -83,15 +85,13 @@ export function NewGroupDialog({
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>
             </DialogClose>
-            <DialogClose asChild>
-              <Button
-                type="submit"
-                disabled={isPending}
-                onClick={() => handleNewGroup(groupName)}
-              >
-                Create Group
-              </Button>
-            </DialogClose>
+            <Button
+              type="submit"
+              disabled={isPending}
+              onClick={() => handleNewGroup(groupName)}
+            >
+              Create Group
+            </Button>
           </DialogFooter>
         </DialogContent>
       </form>
