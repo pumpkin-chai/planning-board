@@ -1,6 +1,6 @@
 import { GroupManagementButtons } from "@/components/group-management-buttons";
 import { Suspense } from "react";
-import { GroupList } from "@/components/group-list";
+import { GroupList, GroupListSkeleton } from "@/components/group-list";
 import { createClient } from "@/lib/supabase/server";
 import { UserGroupResult } from "@/lib/types";
 
@@ -12,7 +12,7 @@ export default async function People() {
         <h2 className="text-2xl mb-4">Your Groups</h2>
         <GroupManagementButtons className="mb-8" />
         <div className="bg-muted p-3 sm:p-4">
-          <Suspense fallback={<div>Loading...</div>}>
+          <Suspense fallback={<GroupListSkeleton />}>
             <AllGroups />
           </Suspense>
         </div>
