@@ -1,18 +1,19 @@
 import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
-import { Calendar1 } from "lucide-react";
+import { Calendar1, CalendarIcon } from "lucide-react";
 
 import Link from "next/link";
 
 import {
   Empty,
+  EmptyContent,
   EmptyDescription,
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
-import { NoCalendarsPrompt } from "./no-calendars-prompt";
+import { NoCalendarsButtons } from "./no-calendars-buttons";
 
 type Calendar = { id: number; name: string; memberCount: number };
 
@@ -102,7 +103,21 @@ export default async function Home() {
         <h2 className="text-2xl mb-4">Your Calendars</h2>
         <div className="p-4 bg-secondary h-96">
           {calendars.length === 0 ? (
-            <NoCalendarsPrompt />
+            <Empty className="size-full">
+              <EmptyHeader>
+                <EmptyMedia variant="icon">
+                  <CalendarIcon />
+                </EmptyMedia>
+                <EmptyTitle>No calendars yet!</EmptyTitle>
+                <EmptyDescription>
+                  You currently have no calendars. Get started by creating one
+                  below.
+                </EmptyDescription>
+              </EmptyHeader>
+              <EmptyContent>
+                <NoCalendarsButtons />
+              </EmptyContent>
+            </Empty>
           ) : (
             <CalendarList calendars={calendars} />
           )}
