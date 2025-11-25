@@ -14,6 +14,7 @@ export type EventResult = {
   endsAt?: string | null;
   status: string;
   creator: { username: string };
+  isAttending: boolean;
 };
 
 export type Event = {
@@ -24,6 +25,7 @@ export type Event = {
   endsAt: Date | null;
   status: string;
   creator: { username: string; currentUser: boolean };
+  isAttending: boolean;
 };
 
 export function EventCalendar({

@@ -45,9 +45,9 @@ export default async function CalendarPage({
   }
 
   const { data: eventData } = await supabase
-    .from("Events")
+    .from("user_events")
     .select(
-      "id, title, startsAt:starts_at, endsAt:ends_at, status, creator:profiles!events_created_by_fkey(username), description",
+      "id, title, startsAt:starts_at, endsAt:ends_at, status, creator:profiles!events_created_by_fkey(username), description, isAttending:is_attending",
     )
     .eq("group_id", groupId)
     .overrideTypes<EventResult[]>();
