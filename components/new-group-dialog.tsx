@@ -26,19 +26,25 @@ export function NewGroupDialog({
   onCreate?: (group: Group) => void;
 }) {
   const supabase = createClient();
-  const [isPending, startTransition] = useTransition();
-  const [open, setOpen] = useState<boolean>(false);
 
-  const handleNewGroup = (name: string) => {
+  const [open, setOpen] = useState<boolean>(false);
+  const [isPending, startTransition] = useTransition();
+
+  const [groupName, setGroupName] = useState<string>("New Group");
+  const handleGroupNameChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setGroupName(event.target.value);
+  };
+
+  const handleNewGroup = () => {
     startTransition(async () => {
       const { data, error } = await supabase
         .from("Groups")
-        .insert({ name })
+        .insert({ name: groupName })
         .select("id, name")
         .single();
       if (!data || error) {
         toast.error("Group creation failed", {
-          description: `Failed to create group "${name}". Please try again later.`,
+          description: `Failed to create group "${groupName}". Please try again later.`,
         });
       } else {
         toast.success("Group created", {
@@ -48,12 +54,6 @@ export function NewGroupDialog({
         setOpen(false);
       }
     });
-  };
-
-  const [groupName, setGroupName] = useState<string>("New Group");
-
-  const handleGroupNameChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setGroupName(event.target.value);
   };
 
   return (
@@ -85,11 +85,7 @@ export function NewGroupDialog({
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>
             </DialogClose>
-            <Button
-              type="submit"
-              disabled={isPending}
-              onClick={() => handleNewGroup(groupName)}
-            >
+            <Button type="submit" disabled={isPending} onClick={handleNewGroup}>
               Create Group
             </Button>
           </DialogFooter>
