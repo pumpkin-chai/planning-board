@@ -80,7 +80,7 @@ export default async function Home() {
 
       <section className="mb-32">
         <h2 className="text-2xl mb-4">Upcoming Events</h2>
-        <div className="p-4 bg-secondary h-96">
+        <div className="p-4 bg-muted h-96">
           {events.length === 0 ? (
             <Empty className="size-full">
               <EmptyHeader>
@@ -101,7 +101,7 @@ export default async function Home() {
 
       <section className="mb-32">
         <h2 className="text-2xl mb-4">Your Calendars</h2>
-        <div className="p-4 bg-secondary h-96">
+        <div className="p-4 bg-muted h-96">
           {calendars.length === 0 ? (
             <Empty className="size-full">
               <EmptyHeader>
