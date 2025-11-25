@@ -1,13 +1,31 @@
-import { InviteList } from "./invite-list";
+import { createClient } from "@/lib/supabase/server";
+import { InviteList, InviteListSkeleton } from "@/components/invite-list";
+import { Suspense } from "react";
 
 export default async function Notifications() {
   return (
-    <div className="px-8 py-3 w-full">
+    <section>
       <h1 className="self-start text-5xl font-bold mb-8">Notifications</h1>
 
-      <section className="p-4 bg-secondary min-h-96">
-        <InviteList />
-      </section>
-    </div>
+      <div className="bg-muted p-3 sm:p-4 min-h-96">
+        <Suspense fallback={<InviteListSkeleton />}>
+          <UserInvites />
+        </Suspense>
+      </div>
+    </section>
   );
+}
+
+async function UserInvites() {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("user_invitations")
+    .select("inviter, group:group_name, status, groupId:group_id");
+
+  if (error || !data) {
+    return <div>Error</div>;
+  }
+
+  return <InviteList invites={data} />;
 }

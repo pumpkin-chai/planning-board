@@ -1,9 +1,10 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import { EventCalendar, Event, EventResult } from "./event-calendar";
+import { EventCalendar } from "@/components/event-calendar";
+import { EventList } from "@/components/event-list";
+import { Event, UserEventsResult } from "@/lib/types";
 import { InviteMemberDialog } from "./invite-member-dialog";
 import { MembersDialog } from "./members-dialog";
-import { EventList } from "./event-list";
 
 export default async function CalendarPage({
   params,
@@ -48,7 +49,7 @@ export default async function CalendarPage({
       "id, title, startsAt:starts_at, endsAt:ends_at, status, creator:profiles!events_created_by_fkey(username), description, isAttending:is_attending, attendeeCount:attendee_count",
     )
     .eq("group_id", groupId)
-    .overrideTypes<EventResult[]>();
+    .overrideTypes<UserEventsResult[]>();
 
   const events: Event[] = eventData
     ? eventData.map((event) => ({
@@ -63,7 +64,7 @@ export default async function CalendarPage({
     : [];
 
   return (
-    <div className="px-4 sm:px-8 py-3 w-full">
+    <>
       <h1 className="self-start text-5xl font-bold mb-2">{groupInfo.name}</h1>
 
       <MembersDialog
@@ -80,33 +81,33 @@ export default async function CalendarPage({
 
       <section className="mb-32">
         <h2 className="text-2xl mb-4">Calendar</h2>
-        <div className="sm:p-8 sm:bg-secondary">
+        <div className="sm:p-8 sm:bg-muted">
           <EventCalendar groupId={Number(groupId)} events={events} />
         </div>
       </section>
 
       <section className="mb-16">
         <h2 className="text-2xl mb-4">Planned Events</h2>
-        <div className="p-3 sm:p-6 bg-secondary mb-16">
+        <div className="p-3 sm:p-6 bg-muted mb-16">
           <EventList
             events={events.filter((event) => event.status === "planned")}
           />
         </div>
 
         <h2 className="text-2xl mb-4">Proposed Events</h2>
-        <div className="p-3 sm:p-6 bg-secondary mb-16">
+        <div className="p-3 sm:p-6 bg-muted mb-16">
           <EventList
             events={events.filter((event) => event.status === "proposed")}
           />
         </div>
 
         <h2 className="text-2xl mb-4">Canceled Events</h2>
-        <div className="p-3 sm:p-6 bg-secondary">
+        <div className="p-3 sm:p-6 bg-muted">
           <EventList
             events={events.filter((event) => event.status === "canceled")}
           />
         </div>
       </section>
-    </div>
+    </>
   );
 }

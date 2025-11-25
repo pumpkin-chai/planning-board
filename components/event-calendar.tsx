@@ -5,30 +5,7 @@ import { useState } from "react";
 import { EventProposalDialog } from "./event-proposal-dialog";
 import { Button } from "@/components/ui/button";
 import { EventList } from "./event-list";
-
-export type EventResult = {
-  id: number;
-  title: string;
-  desc: string;
-  startsAt: string;
-  endsAt?: string | null;
-  status: string;
-  creator: { username: string };
-  isAttending: boolean;
-  attendeeCount: number;
-};
-
-export type Event = {
-  id: number;
-  title: string;
-  desc: string;
-  startsAt: Date;
-  endsAt: Date | null;
-  status: string;
-  creator: { username: string; currentUser: boolean };
-  isAttending: boolean;
-  attendeeCount: number;
-};
+import { Event } from "@/lib/types";
 
 export function EventCalendar({
   groupId,
@@ -61,7 +38,7 @@ export function EventCalendar({
         mode="single"
         selected={date}
         onSelect={setDate}
-        className="rounded-md border shadow-sm w-full max-w-[600px] m-auto"
+        className="rounded-md border shadow-lg w-full max-w-[600px] m-auto"
         captionLayout="dropdown"
       />
       <div className="flex-1 flex flex-col min-w-[300px] gap-4 mt-8">
