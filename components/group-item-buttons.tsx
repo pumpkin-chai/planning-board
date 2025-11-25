@@ -28,11 +28,11 @@ export function LeaveGroupButton({
 
       if (error) {
         toast.error("Error leaving group", {
-          description: `Failed to leave group "${group.name}`,
+          description: `Failed to leave group "${group.name}"`,
         });
       } else {
         toast.success("Left group", {
-          description: `Successfully left group "${group.name}`,
+          description: `Successfully left group "${group.name}"`,
         });
         if (refresh) router.refresh();
       }
