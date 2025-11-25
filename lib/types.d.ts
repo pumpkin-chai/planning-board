@@ -34,3 +34,11 @@ export type UserEventsResult = {
   isAttending: boolean;
   attendeeCount: number;
 };
+
+export type Invite = {
+  inviter: string;
+  group: string;
+  status: InviteStatus;
+  groupId: number;
+};
+export type InviteStatus = "pending" | "accepted" | "declined";
