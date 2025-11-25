@@ -1,11 +1,13 @@
 import {
   Item,
+  ItemActions,
   ItemContent,
   ItemDescription,
   ItemTitle,
 } from "@/components/ui/item";
 import { UserGroupResult } from "@/lib/types";
 import Link from "next/link";
+import { LeaveGroupButton } from "./group-item-buttons";
 
 export function GroupItem({ group }: { group: UserGroupResult }) {
   return (
@@ -19,6 +21,11 @@ export function GroupItem({ group }: { group: UserGroupResult }) {
             {group.memberCount} {group.memberCount === 1 ? "Member" : "Members"}
           </ItemDescription>
         </ItemContent>
+        <ItemActions>
+          {group.role === "member" && (
+            <LeaveGroupButton group={group} refresh />
+          )}
+        </ItemActions>
       </Link>
     </Item>
   );
