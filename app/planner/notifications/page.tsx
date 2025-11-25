@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import { InviteList } from "@/components/invite-list";
+import { InviteList, InviteListSkeleton } from "@/components/invite-list";
 import { Suspense } from "react";
 
 export default async function Notifications() {
@@ -8,7 +8,7 @@ export default async function Notifications() {
       <h1 className="self-start text-5xl font-bold mb-8">Notifications</h1>
 
       <div className="bg-muted p-3 sm:p-4">
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<InviteListSkeleton />}>
           <UserInvites />
         </Suspense>
       </div>
