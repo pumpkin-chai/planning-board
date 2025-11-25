@@ -20,7 +20,7 @@ import { ChangeEvent, useState } from "react";
 export function JoinGroupDialog({
   onJoinGroup,
 }: {
-  onJoinGroup: (groupId: number) => void;
+  onJoinGroup?: (groupId: number) => void;
 }) {
   const [groupID, setGroupID] = useState<string>("0");
 
@@ -32,7 +32,7 @@ export function JoinGroupDialog({
     if (!groupID || !Number.isInteger(Number(groupID))) {
       return;
     }
-    onJoinGroup(Number(groupID));
+    onJoinGroup?.(Number(groupID));
   };
 
   return (
