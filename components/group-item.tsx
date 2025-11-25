@@ -11,7 +11,7 @@ import { LeaveGroupButton } from "./group-item-buttons";
 
 export function GroupItem({ group }: { group: UserGroupResult }) {
   return (
-    <Item asChild className="bg-card hover:bg-accent sm:p-6">
+    <Item asChild className="bg-card hover:border-card-foreground sm:p-6">
       <Link href={`/planner/calendar/${group.id}`}>
         <ItemContent>
           <ItemTitle className="items-baseline">
