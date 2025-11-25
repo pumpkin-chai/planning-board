@@ -7,9 +7,11 @@ import { createClient } from "@/lib/supabase/client";
 import { useTransition } from "react";
 import { toast } from "sonner";
 import { Invite, InviteStatus } from "@/lib/types";
+import { useRouter } from "next/navigation";
 
 export function InviteItem({ invite }: { invite: Invite }) {
   const supabase = createClient();
+  const router = useRouter();
 
   const [pending, startTransition] = useTransition();
 
@@ -30,6 +32,7 @@ export function InviteItem({ invite }: { invite: Invite }) {
         toast.success(`Invite ${newStatus}`, {
           description: `Successfully ${newStatus} invitation to group "${invite.group}."`,
         });
+        router.refresh();
       }
     });
   };
