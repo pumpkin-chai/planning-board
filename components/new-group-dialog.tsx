@@ -21,9 +21,9 @@ import { ChangeEvent, useState, useTransition } from "react";
 import { toast } from "sonner";
 
 export function NewGroupDialog({
-  onCreateAction,
+  onCreate,
 }: {
-  onCreateAction?: (group: Group) => void;
+  onCreate?: (group: Group) => void;
 }) {
   const supabase = createClient();
   const [isPending, startTransition] = useTransition();
@@ -43,7 +43,7 @@ export function NewGroupDialog({
         toast.success("Group created", {
           description: `Successfully created group "${data.name}"`,
         });
-        onCreateAction?.(data);
+        onCreate?.(data);
       }
     });
   };

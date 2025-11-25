@@ -29,7 +29,7 @@ export function NoCalendarsPrompt() {
       </EmptyHeader>
       <EmptyContent>
         <div className="flex gap-2">
-          <NewGroupDialog onCreateAction={() => router.refresh()} />
+          <NewGroupDialog onCreate={() => router.refresh()} />
           <Button variant="outline">Join group calendar</Button>
         </div>
       </EmptyContent>
