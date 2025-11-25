@@ -13,7 +13,7 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
-import { GroupManagementButtons } from "./no-calendars-buttons";
+import { GroupManagementButtons } from "@/components/group-management-buttons";
 
 type Calendar = { id: number; name: string; memberCount: number };
 
