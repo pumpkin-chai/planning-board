@@ -3,7 +3,7 @@ import { EventItem } from "./event-item";
 
 export function EventList({ events }: { events: Event[] }) {
   return (
-    <ul className="overflow-y-auto">
+    <ul className="overflow-y-auto h-full">
       {events.map((event) => (
         <li key={event.id} className="mb-2 sm:mb-3 last:mb-0">
           <EventItem event={event} />
