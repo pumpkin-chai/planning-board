@@ -21,22 +21,18 @@ export function LeaveGroupButton({
 
   const leaveGroup = () => {
     startTransition(async () => {
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from("Memberships")
         .delete()
-        .eq("group_id", group.id)
-        .select("group:Groups(name)")
-        .single()
-        .overrideTypes<{ group: { name: string } }>();
+        .eq("group_id", group.id);
 
-      if (!data || error) {
+      if (error) {
         toast.error("Error leaving group", {
           description: `Failed to leave group "${group.name}`,
         });
       } else {
-        console.log(data);
         toast.success("Left group", {
-          description: `Successfully left group "${data.group.name}`,
+          description: `Successfully left group "${group.name}`,
         });
         if (refresh) router.refresh();
       }
