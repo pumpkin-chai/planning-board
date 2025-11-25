@@ -2,6 +2,13 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { GroupManagementButtons } from "@/components/group-management-buttons";
 import { toast } from "sonner";
+import {
+  Item,
+  ItemContent,
+  ItemDescription,
+  ItemTitle,
+} from "@/components/ui/item";
+import Link from "next/link";
 
 type GroupResult = {
   id: number;
@@ -32,12 +39,14 @@ export default async function People() {
   }
 
   return (
-    <div className="px-8 py-3 w-full">
+    <div className="px-4 sm:px-8 py-3 w-full">
       <h1 className="self-start text-5xl font-bold mb-8">People</h1>
       <section>
         <h2 className="text-2xl mb-4">Your Groups</h2>
         <GroupManagementButtons className="mb-8" />
-        <GroupList groups={data} />
+        <div className="bg-secondary p-3 sm:p-4">
+          <GroupList groups={data} />
+        </div>
       </section>
     </div>
   );
@@ -47,26 +56,27 @@ function GroupList({ groups }: { groups: GroupResult[] }) {
   return (
     <ul>
       {groups.map((group) => (
-        <li key={group.id} className="mb-4 last:mb-0">
-          <GroupCard group={group} />
+        <li key={group.id} className="mb-2 sm:mb-4 last:mb-0">
+          <GroupItem group={group} />
         </li>
       ))}
     </ul>
   );
 }
 
-function GroupCard({ group }: { group: GroupResult }) {
+function GroupItem({ group }: { group: GroupResult }) {
   return (
-    <div className="border border-border p-6 rounded-lg cursor-pointer flex items-center justify-between gap-4 shadow-sm hover:shadow-md transition-shadow">
-      <div>
-        <h3 className="text-xl font-semibold">{group.name}</h3>
-        <span className="text-sm text-muted-foreground">
-          {group.memberCount} {group.memberCount === 1 ? "Member" : "Members"}
-        </span>
-      </div>
-      <div className="flex items-center">
-        <div className="flex items-center gap-4"></div>
-      </div>
-    </div>
+    <Item asChild className="bg-card">
+      <Link href={`/planner/calendar/${group.id}`}>
+        <ItemContent>
+          <ItemTitle className="items-baseline">
+            <span className="sm:text-2xl font-bold">{group.name}</span>
+          </ItemTitle>
+          <ItemDescription>
+            {group.memberCount} {group.memberCount === 1 ? "Member" : "Members"}
+          </ItemDescription>
+        </ItemContent>
+      </Link>
+    </Item>
   );
 }
