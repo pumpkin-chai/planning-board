@@ -22,12 +22,13 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { NativeSelect, NativeSelectOption } from "./ui/native-select";
+import { Label } from "./ui/label";
 
 export function EventItem({ event }: { event: Event }) {
   const supabase = createClient();
   const router = useRouter();
 
-  const [isPending, startTransition] = useTransition();
+  const [pending, startTransition] = useTransition();
   const [open, setOpen] = useState<boolean>(false);
 
   const handleDelete = () => {
@@ -97,7 +98,7 @@ export function EventItem({ event }: { event: Event }) {
   };
 
   const handleStatusChange = (status: string) => {
-    const setStatus = async () => {
+    startTransition(async () => {
       const { error } = await supabase
         .from("Events")
         .update({ status: status })
@@ -114,9 +115,7 @@ export function EventItem({ event }: { event: Event }) {
         });
         router.refresh();
       }
-    };
-
-    setStatus();
+    });
   };
 
   return (
@@ -149,23 +148,30 @@ export function EventItem({ event }: { event: Event }) {
           </DialogDescription>
         </DialogHeader>
 
-        <div>
+        {event.creator.currentUser ? (
+          <div>
+            <Label htmlFor="status">Status</Label>
+            <NativeSelect
+              id="status"
+              name="status"
+              aria-label="Change event status"
+              disabled={pending}
+              defaultValue={event.status}
+              onChange={(e) => handleStatusChange(e.target.value)}
+            >
+              <NativeSelectOption value="proposed">Proposed</NativeSelectOption>
+              <NativeSelectOption value="planned">Planned</NativeSelectOption>
+              <NativeSelectOption value="canceled">Canceled</NativeSelectOption>
+            </NativeSelect>
+          </div>
+        ) : (
           <p>Status: {event.status[0].toUpperCase() + event.status.slice(1)}</p>
+        )}
+
+        <div>
           <p>Starts: {event.startsAt.toLocaleString()}</p>
           {event.endsAt && <p>Ends: {event.endsAt.toLocaleString()}</p>}
           <p>{event.attendeeCount} attending</p>
-        </div>
-
-        <div>
-          <NativeSelect
-            aria-label="Change event status"
-            defaultValue={event.status}
-            onChange={(e) => handleStatusChange(e.target.value)}
-          >
-            <NativeSelectOption value="proposed">Proposed</NativeSelectOption>
-            <NativeSelectOption value="planned">Planned</NativeSelectOption>
-            <NativeSelectOption value="canceled">Canceled</NativeSelectOption>
-          </NativeSelect>
         </div>
 
         <DialogFooter>
@@ -173,12 +179,12 @@ export function EventItem({ event }: { event: Event }) {
             <Button
               variant="destructive"
               onClick={handleDelete}
-              disabled={isPending}
+              disabled={pending}
             >
               Delete Event
             </Button>
           ) : (
-            <Button disabled={isPending} onClick={handleAttending}>
+            <Button disabled={pending} onClick={handleAttending}>
               Mark as {event.isAttending ? "not attending" : "attending"}
             </Button>
           )}
