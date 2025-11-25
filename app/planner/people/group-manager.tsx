@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
-import { NewGroupDialog } from "./new-group-dialog";
+import { NewGroupDialog } from "@/components/new-group-dialog";
 import { JoinGroupDialog } from "./join-group-dialog";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
