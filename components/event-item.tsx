@@ -1,6 +1,6 @@
 "use client";
 
-import { Event } from "./event-calendar";
+import { Event } from "@/lib/types";
 import {
   Item,
   ItemContent,

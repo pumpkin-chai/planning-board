@@ -1,9 +1,9 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import { EventCalendar, Event, EventResult } from "./event-calendar";
+import { EventCalendar, EventResult } from "@/components/event-calendar";
+import { EventList } from "@/components/event-list";
 import { InviteMemberDialog } from "./invite-member-dialog";
 import { MembersDialog } from "./members-dialog";
-import { EventList } from "./event-list";
 
 export default async function CalendarPage({
   params,

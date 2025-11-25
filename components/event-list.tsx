@@ -1,4 +1,4 @@
-import { Event } from "./event-calendar";
+import { Event } from "@/lib/types";
 import { EventItem } from "./event-item";
 
 export function EventList({ events }: { events: Event[] }) {
