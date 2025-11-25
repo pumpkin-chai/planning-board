@@ -50,6 +50,29 @@ export function EventItem({ event }: { event: Event }) {
     });
   };
 
+  const handleAttending = () => {
+    startTransition(async () => {
+      const { data, error } = await supabase
+        .from("attendees")
+        .insert({
+          event_id: event.id,
+        })
+        .select()
+        .single();
+
+      if (!data || error) {
+        toast.error("RSVP failed", {
+          description: `Failed to mark event "${event.title}" as attending. Please try again later.`,
+        });
+      } else {
+        toast.success("You are attending!", {
+          description: `Successfully marked "${event.title}" as attending.`,
+        });
+        router.refresh();
+      }
+    });
+  };
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -97,7 +120,9 @@ export function EventItem({ event }: { event: Event }) {
               Delete Event
             </Button>
           ) : (
-            <Button disabled={isPending}>Mark as going</Button>
+            <Button disabled={isPending} onClick={handleAttending}>
+              Mark as attending
+            </Button>
           )}
         </DialogFooter>
       </DialogContent>
