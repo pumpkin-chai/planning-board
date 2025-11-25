@@ -1,6 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import { GroupManager } from "./group-manager";
 import { GroupManagementButtons } from "@/components/group-management-buttons";
 import { toast } from "sonner";
 
