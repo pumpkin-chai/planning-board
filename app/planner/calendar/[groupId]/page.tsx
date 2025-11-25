@@ -87,21 +87,21 @@ export default async function CalendarPage({
 
       <section className="mb-16">
         <h2 className="text-2xl mb-4">Planned Events</h2>
-        <div className="p-3 sm:p-6 bg-secondary mb-16">
+        <div className="p-3 sm:p-6 bg-muted mb-16">
           <EventList
             events={events.filter((event) => event.status === "planned")}
           />
         </div>
 
         <h2 className="text-2xl mb-4">Proposed Events</h2>
-        <div className="p-3 sm:p-6 bg-secondary mb-16">
+        <div className="p-3 sm:p-6 bg-muted mb-16">
           <EventList
             events={events.filter((event) => event.status === "proposed")}
           />
         </div>
 
         <h2 className="text-2xl mb-4">Canceled Events</h2>
-        <div className="p-3 sm:p-6 bg-secondary">
+        <div className="p-3 sm:p-6 bg-muted">
           <EventList
             events={events.filter((event) => event.status === "canceled")}
           />
