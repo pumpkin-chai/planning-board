@@ -37,7 +37,7 @@ export default async function People() {
       <h1 className="self-start text-5xl font-bold mb-8">People</h1>
       <section>
         <h2 className="text-2xl mb-4">Your Groups</h2>
-        <GroupManagementButtons />
+        <GroupManagementButtons className="mb-8" />
         <GroupList groups={data} />
       </section>
     </div>
