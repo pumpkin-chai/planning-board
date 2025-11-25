@@ -51,26 +51,48 @@ export function EventItem({ event }: { event: Event }) {
   };
 
   const handleAttending = () => {
-    startTransition(async () => {
-      const { data, error } = await supabase
-        .from("attendees")
-        .insert({
-          event_id: event.id,
-        })
-        .select()
-        .single();
+    if (event.isAttending) {
+      startTransition(async () => {
+        const { data, error } = await supabase
+          .from("attendees")
+          .delete()
+          .eq("event_id", event.id)
+          .select()
+          .single();
 
-      if (!data || error) {
-        toast.error("RSVP failed", {
-          description: `Failed to mark event "${event.title}" as attending. Please try again later.`,
-        });
-      } else {
-        toast.success("You are attending!", {
-          description: `Successfully marked "${event.title}" as attending.`,
-        });
-        router.refresh();
-      }
-    });
+        if (!data || error) {
+          toast.error("Failed to retract RSVP", {
+            description: `Failed to mark event "${event.title}" as not attending. Please try again later.`,
+          });
+        } else {
+          toast.success("No longer attending", {
+            description: `Successfully marked "${event.title}" as not attending.`,
+          });
+          router.refresh();
+        }
+      });
+    } else {
+      startTransition(async () => {
+        const { data, error } = await supabase
+          .from("attendees")
+          .insert({
+            event_id: event.id,
+          })
+          .select()
+          .single();
+
+        if (!data || error) {
+          toast.error("RSVP failed", {
+            description: `Failed to mark event "${event.title}" as attending. Please try again later.`,
+          });
+        } else {
+          toast.success("You are attending!", {
+            description: `Successfully marked "${event.title}" as attending.`,
+          });
+          router.refresh();
+        }
+      });
+    }
   };
 
   return (
@@ -121,7 +143,7 @@ export function EventItem({ event }: { event: Event }) {
             </Button>
           ) : (
             <Button disabled={isPending} onClick={handleAttending}>
-              Mark as attending
+              Mark as {event.isAttending ? "not attending" : "attending"}
             </Button>
           )}
         </DialogFooter>
