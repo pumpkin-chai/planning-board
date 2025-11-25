@@ -14,10 +14,8 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { GroupManagementButtons } from "@/components/group-management-buttons";
-import { Event, UserEventsResult } from "@/lib/types";
+import { Event, UserEventsResult, UserGroupResult } from "@/lib/types";
 import { EventList } from "@/components/event-list";
-
-type Calendar = { id: number; name: string; memberCount: number };
 
 export default async function Home() {
   const supabase = await createClient();
@@ -53,8 +51,8 @@ export default async function Home() {
 
   const { data: calendarData } = await supabase
     .from("user_groups")
-    .select("id:group_id, name:group_name, memberCount:member_count")
-    .overrideTypes<Calendar[]>();
+    .select("id:group_id, name:group_name, memberCount:member_count, role")
+    .overrideTypes<UserGroupResult[]>();
   const calendars = calendarData ?? [];
 
   return (
@@ -110,7 +108,7 @@ export default async function Home() {
   );
 }
 
-function CalendarList({ calendars }: { calendars: Calendar[] }) {
+function CalendarList({ calendars }: { calendars: UserGroupResult[] }) {
   return (
     <ul className="overflow-y-auto h-full">
       {calendars.map((calendar) => (
@@ -122,7 +120,7 @@ function CalendarList({ calendars }: { calendars: Calendar[] }) {
   );
 }
 
-function CalendarItem({ calendar }: { calendar: Calendar }) {
+function CalendarItem({ calendar }: { calendar: UserGroupResult }) {
   return (
     <Link href={`/planner/calendar/${calendar.id}`}>
       <div className="p-6 bg-card hover:bg-accent hover:text-accent-foreground transition-colors rounded-lg flex justify-between items-center">
