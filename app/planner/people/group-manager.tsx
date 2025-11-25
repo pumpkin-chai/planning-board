@@ -50,23 +50,6 @@ export function GroupManager() {
     fetchGroups();
   }, []);
 
-  const handleJoinGroup = async (id: number) => {
-    try {
-      const supabase = createClient();
-      const { data } = await supabase
-        .from("Memberships")
-        .insert({ group_id: id })
-        .select("Groups:group_id ( id, name )")
-        .single()
-        .overrideTypes<{ Groups: GroupResult }>();
-      if (data?.Groups) {
-        setGroups((prevGroups) => [...prevGroups, data.Groups]);
-      }
-    } catch (error) {
-      console.error("Error joining group:", error);
-    }
-  };
-
   const handleLeaveGroup = async (id: number) => {
     try {
       const supabase = createClient();
@@ -84,11 +67,18 @@ export function GroupManager() {
     ]);
   };
 
+  const handleJoinGroup = (group: Group) => {
+    setGroups((prevGroups) => [
+      ...prevGroups,
+      { ...group, memberCount: 1, role: "member" },
+    ]);
+  };
+
   return (
     <div>
       <div className="mb-6 flex items-stretch gap-4">
         <NewGroupDialog onCreate={handleNewGroup} />
-        <JoinGroupDialog joinGroup={handleJoinGroup} />
+        <JoinGroupDialog onJoinGroup={handleJoinGroup} />
       </div>
       {loading ? (
         <div>Loading...</div>
