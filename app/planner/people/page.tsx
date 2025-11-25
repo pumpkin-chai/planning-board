@@ -11,7 +11,7 @@ export default async function People() {
       <section>
         <h2 className="text-2xl mb-4">Your Groups</h2>
         <GroupManagementButtons className="mb-8" />
-        <div className="bg-muted p-3 sm:p-4">
+        <div className="bg-muted p-3 sm:p-4 min-h-96">
           <Suspense fallback={<GroupListSkeleton />}>
             <AllGroups />
           </Suspense>

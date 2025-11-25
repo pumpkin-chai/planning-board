@@ -7,7 +7,7 @@ export default async function Notifications() {
     <section>
       <h1 className="self-start text-5xl font-bold mb-8">Notifications</h1>
 
-      <div className="bg-muted p-3 sm:p-4">
+      <div className="bg-muted p-3 sm:p-4 min-h-96">
         <Suspense fallback={<InviteListSkeleton />}>
           <UserInvites />
         </Suspense>
