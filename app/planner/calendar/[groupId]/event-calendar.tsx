@@ -5,6 +5,7 @@ import { useState } from "react";
 import { EventProposalDialog } from "./event-proposal-dialog";
 import { Button } from "@/components/ui/button";
 import { EventList } from "./event-list";
+import { Event } from "@/lib/types";
 
 export type EventResult = {
   id: number;
@@ -14,18 +15,6 @@ export type EventResult = {
   endsAt?: string | null;
   status: string;
   creator: { username: string };
-  isAttending: boolean;
-  attendeeCount: number;
-};
-
-export type Event = {
-  id: number;
-  title: string;
-  desc: string;
-  startsAt: Date;
-  endsAt: Date | null;
-  status: string;
-  creator: { username: string; currentUser: boolean };
   isAttending: boolean;
   attendeeCount: number;
 };
