@@ -25,10 +25,9 @@ export default async function CalendarPage({
     .from("group_info_view")
     .select("name, memberCount:member_count")
     .eq("id", groupId)
-    .single()
+    .maybeSingle()
     .overrideTypes<{ name: string; memberCount: number }>();
-  if (groupInfoError) {
-    console.error(groupInfoError.message);
+  if (groupInfoError || !groupInfo) {
     redirect("/planner/people");
   }
 
@@ -37,10 +36,9 @@ export default async function CalendarPage({
     .select("user:profiles(username), role")
     .eq("user_id", user.id)
     .eq("group_id", groupId)
-    .single()
+    .maybeSingle()
     .overrideTypes<{ user: { username: string }; role: string }>();
-  if (membershipInfoError) {
-    console.error(membershipInfoError.message);
+  if (membershipInfoError || !membershipData) {
     redirect("/planner/people");
   }
 

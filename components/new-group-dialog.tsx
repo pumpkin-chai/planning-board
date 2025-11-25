@@ -13,23 +13,51 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { createClient } from "@/lib/supabase/client";
+import { Group } from "@/lib/types";
 
 import { Plus } from "lucide-react";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useState, useTransition } from "react";
+import { toast } from "sonner";
 
 export function NewGroupDialog({
-  newGroupAction,
+  onCreate,
 }: {
-  newGroupAction: (name: string) => void;
+  onCreate?: (group: Group) => void;
 }) {
-  const [groupName, setGroupName] = useState<string>("New Group");
+  const supabase = createClient();
 
+  const [open, setOpen] = useState<boolean>(false);
+  const [isPending, startTransition] = useTransition();
+
+  const [groupName, setGroupName] = useState<string>("New Group");
   const handleGroupNameChange = (event: ChangeEvent<HTMLInputElement>) => {
     setGroupName(event.target.value);
   };
 
+  const handleNewGroup = () => {
+    startTransition(async () => {
+      const { data, error } = await supabase
+        .from("Groups")
+        .insert({ name: groupName })
+        .select("id, name")
+        .single();
+      if (!data || error) {
+        toast.error("Group creation failed", {
+          description: `Failed to create group "${groupName}". Please try again later.`,
+        });
+      } else {
+        toast.success("Group created", {
+          description: `Successfully created group "${data.name}"`,
+        });
+        onCreate?.(data);
+        setOpen(false);
+      }
+    });
+  };
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <form>
         <DialogTrigger asChild>
           <Button variant="default">
@@ -57,11 +85,9 @@ export function NewGroupDialog({
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>
             </DialogClose>
-            <DialogClose asChild>
-              <Button type="submit" onClick={() => newGroupAction(groupName)}>
-                Create Group
-              </Button>
-            </DialogClose>
+            <Button type="submit" disabled={isPending} onClick={handleNewGroup}>
+              Create Group
+            </Button>
           </DialogFooter>
         </DialogContent>
       </form>
