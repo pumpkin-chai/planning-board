@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { EventList } from "./event-list";
 import { Event } from "@/lib/types";
 
-export type EventResult = {
+export type UserEventsResult = {
   id: number;
   title: string;
   desc: string;
