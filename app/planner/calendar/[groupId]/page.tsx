@@ -4,7 +4,7 @@ import { EventCalendar } from "@/components/event-calendar";
 import { EventList } from "@/components/event-list";
 import { Event, EventStatus, UserEventsResult } from "@/lib/types";
 import { InviteMemberDialog } from "./invite-member-dialog";
-import { MembersDialog } from "./members-dialog";
+import { MembersDialog } from "@/components/members-dialog";
 
 export default async function CalendarPage({
   params,
