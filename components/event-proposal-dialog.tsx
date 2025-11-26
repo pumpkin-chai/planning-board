@@ -33,7 +33,7 @@ export function EventProposalDialog({ group }: { group: number }) {
   const [pending, startTransition] = useTransition();
 
   const [open, setOpen] = useState<boolean>(false);
-  const [failed, setFailed] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   const [title, setTitle] = useState<string>("");
   const [desc, setDesc] = useState<string>("");
@@ -67,7 +67,7 @@ export function EventProposalDialog({ group }: { group: number }) {
         router.refresh();
       }
 
-      setFailed(false);
+      setError(null);
     });
   };
 
@@ -85,23 +85,31 @@ export function EventProposalDialog({ group }: { group: number }) {
     }
 
     if (!title || !startDateRef.current.value) {
-      setFailed(true);
+      setError("Please fill in all required fields.");
+      return;
+    }
+
+    const start = new Date(startDateRef.current.value);
+    const end = endDateRef.current.value
+      ? new Date(endDateRef.current.value)
+      : null;
+
+    if (end && start >= end) {
+      setError("End date must be after start date.");
       return;
     }
 
     handlePropose({
       title: title,
       description: desc,
-      startsAt: new Date(startDateRef.current.value),
-      endsAt: endDateRef.current.value
-        ? new Date(endDateRef.current.value)
-        : null,
+      startsAt: start,
+      endsAt: end,
     });
   };
 
   const handleOpenChange = (open: boolean) => {
     if (open === false) {
-      setFailed(false);
+      setError(null);
     }
     setOpen(open);
   };
@@ -142,7 +150,7 @@ export function EventProposalDialog({ group }: { group: number }) {
                 value={title}
                 onChange={handleEventNameChange}
                 className={
-                  failed ? "border-red-500 focus-visible:ring-red-300" : ""
+                  error ? "border-red-500 focus-visible:ring-red-300" : ""
                 }
                 required
               />
@@ -167,7 +175,7 @@ export function EventProposalDialog({ group }: { group: number }) {
                   type="datetime-local"
                   name="start-date"
                   className={
-                    failed ? "border-red-500 focus-visible:ring-red-300" : ""
+                    error ? "border-red-500 focus-visible:ring-red-300" : ""
                   }
                   ref={startDateRef}
                   required
@@ -202,11 +210,7 @@ export function EventProposalDialog({ group }: { group: number }) {
                 </Button>
               </div>
             </div>
-            {failed && (
-              <p className="text-sm text-red-500">
-                Please fill in all required fields.
-              </p>
-            )}
+            {error && <p className="text-sm text-red-500">{error}</p>}
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => handleOpenChange(false)}>
