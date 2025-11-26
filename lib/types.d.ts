@@ -1,7 +1,7 @@
 export type Event = {
   id: number;
   title: string;
-  desc: string;
+  description: string;
   startsAt: Date;
   endsAt: Date | null;
   status: EventStatus;
