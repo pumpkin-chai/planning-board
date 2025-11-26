@@ -14,7 +14,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useState, useTransition } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 
@@ -29,7 +29,8 @@ export function EventProposalDialog({ group }: { group: number }) {
   const router = useRouter();
   const supabase = createClient();
 
-  const [loading, setLoading] = useState<boolean>(false);
+  const [pending, startTransition] = useTransition();
+
   const [open, setOpen] = useState<boolean>(false);
   const [failed, setFailed] = useState<boolean>(false);
 
@@ -39,9 +40,7 @@ export function EventProposalDialog({ group }: { group: number }) {
   const [desc, setDesc] = useState<string>("");
 
   const handlePropose = (proposal: EventProposal) => {
-    setLoading(true);
-
-    const propose = async () => {
+    startTransition(async () => {
       const { error } = await supabase.from("Events").insert({
         group_id: group,
         title: proposal.title,
@@ -61,11 +60,7 @@ export function EventProposalDialog({ group }: { group: number }) {
         });
         router.refresh();
       }
-
-      setLoading(false);
-    };
-
-    propose();
+    });
   };
 
   const handleEventNameChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -145,11 +140,11 @@ export function EventProposalDialog({ group }: { group: number }) {
                 value={desc}
                 onChange={handleEventDescChange}
               />
-              <Label htmlFor="date">Start Date</Label>
+              <Label htmlFor="start-date">Start Date</Label>
               <Input
-                id="date"
+                id="start-date"
                 type="datetime-local"
-                name="date"
+                name="start-date"
                 value={startDate}
                 onChange={handleEventStartChange}
                 className={
@@ -159,14 +154,14 @@ export function EventProposalDialog({ group }: { group: number }) {
                 }
                 required
               />
-              <Label htmlFor="date">
+              <Label htmlFor="end-date">
                 End Date{" "}
                 <span className="text-xs text-muted-foreground">*Optional</span>
               </Label>
               <Input
-                id="date"
+                id="end-date"
                 type="datetime-local"
-                name="date"
+                name="end-date"
                 value={endDate}
                 defaultValue={undefined}
                 onChange={handleEventEndChange}
@@ -182,7 +177,7 @@ export function EventProposalDialog({ group }: { group: number }) {
             <Button variant="outline" onClick={() => handleOpenChange(false)}>
               Cancel
             </Button>
-            <Button type="submit" onClick={handleSubmit} disabled={loading}>
+            <Button type="submit" onClick={handleSubmit} disabled={pending}>
               Create Proposal
             </Button>
           </DialogFooter>
