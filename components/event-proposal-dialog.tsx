@@ -60,6 +60,10 @@ export function EventProposalDialog({ group }: { group: number }) {
         toast.success("Event proposed", {
           description: `"${proposal.title}" proposed for ${proposal.startsAt.toLocaleString()}.`,
         });
+        setTitle("");
+        setDesc("");
+        startDateRef.current!.value = "";
+        endDateRef.current!.value = "";
         router.refresh();
       }
 
