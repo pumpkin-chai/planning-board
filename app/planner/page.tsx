@@ -3,7 +3,12 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { Calendar1 } from "lucide-react";
 
-import { Event, UserEventsResult, UserGroupResult } from "@/lib/types";
+import {
+  Event,
+  EventStatus,
+  UserEventsResult,
+  UserGroupResult,
+} from "@/lib/types";
 import { EventList, EventListSkeleton } from "@/components/event-list";
 import { GroupList, GroupListSkeleton } from "@/components/group-list";
 import { Suspense } from "react";
@@ -77,6 +82,7 @@ async function UpcomingEvents() {
   const events: Event[] = eventData
     ? eventData.map((event) => ({
         ...event,
+        status: event.status as EventStatus,
         startsAt: new Date(event.startsAt),
         endsAt: event.endsAt ? new Date(event.endsAt) : null,
         creator: {

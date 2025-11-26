@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { EventCalendar } from "@/components/event-calendar";
 import { EventList } from "@/components/event-list";
-import { Event, UserEventsResult } from "@/lib/types";
+import { Event, EventStatus, UserEventsResult } from "@/lib/types";
 import { InviteMemberDialog } from "./invite-member-dialog";
 import { MembersDialog } from "./members-dialog";
 
@@ -54,6 +54,7 @@ export default async function CalendarPage({
   const events: Event[] = eventData
     ? eventData.map((event) => ({
         ...event,
+        status: event.status as EventStatus,
         startsAt: new Date(event.startsAt),
         endsAt: event.endsAt ? new Date(event.endsAt) : null,
         creator: {
