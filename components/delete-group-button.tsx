@@ -13,7 +13,6 @@ import {
   AlertDialogTrigger,
 } from "./ui/alert-dialog";
 import { Button } from "./ui/button";
-import { useTransition } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
@@ -21,10 +20,8 @@ export function DeleteGroupButton({ groupId }: { groupId: string }) {
   const router = useRouter();
   const supabase = createClient();
 
-  const [pending, startTransition] = useTransition();
-
   const handleDelete = () => {
-    startTransition(async () => {
+    const deleteGroup = async () => {
       const { error, count } = await supabase
         .from("Groups")
         .delete({ count: "exact" })
@@ -40,7 +37,8 @@ export function DeleteGroupButton({ groupId }: { groupId: string }) {
           description: "Successfully deleted group.",
         });
       }
-    });
+    };
+    deleteGroup();
   };
 
   return (
@@ -58,9 +56,7 @@ export function DeleteGroupButton({ groupId }: { groupId: string }) {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction disabled={pending} onClick={handleDelete}>
-            Delete
-          </AlertDialogAction>
+          <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
