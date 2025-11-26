@@ -23,7 +23,6 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { NativeSelect, NativeSelectOption } from "./ui/native-select";
 import { Label } from "./ui/label";
-import { ScrollArea } from "./ui/scroll-area";
 
 export function EventItem({ event }: { event: Event }) {
   const supabase = createClient();
@@ -122,9 +121,9 @@ export function EventItem({ event }: { event: Event }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Item className="bg-card shadow-sm hover:bg-accent">
+        <Item className="bg-card shadow-xs hover:bg-accent">
           <ItemContent>
-            <ItemTitle>{event.title}</ItemTitle>
+            <ItemTitle className="text-lg">{event.title}</ItemTitle>
             <ItemDescription>
               {event.startsAt.toLocaleString()}
               {event.endsAt &&
@@ -141,69 +140,61 @@ export function EventItem({ event }: { event: Event }) {
           </ItemContent>
         </Item>
       </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle className="font-bold">{event.title}</DialogTitle>
-          <DialogDescription>
+      <DialogContent className="gap-0">
+        <DialogHeader className="mb-4 gap-0">
+          <DialogTitle className="font-bold text-lg">{event.title}</DialogTitle>
+          <DialogDescription className="text-sm font-light">
             Created by {event.creator.username}
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex flex-col gap-2">
-          {event.creator.currentUser ? (
-            <div>
-              <Label htmlFor="status">Status</Label>
-              <NativeSelect
-                id="status"
-                name="status"
-                aria-label="Change event status"
-                disabled={pending}
-                defaultValue={event.status}
-                onChange={(e) => handleStatusChange(e.target.value)}
-              >
-                <NativeSelectOption value="proposed">
-                  Proposed
-                </NativeSelectOption>
-                <NativeSelectOption value="planned">Planned</NativeSelectOption>
-                <NativeSelectOption value="canceled">
-                  Canceled
-                </NativeSelectOption>
-              </NativeSelect>
-            </div>
-          ) : (
-            <div>
-              <span className="text-sm font-medium block">Status</span>
-              <span>
-                {event.status[0].toUpperCase() + event.status.slice(1)}
-              </span>
-            </div>
-          )}
-
-          <div>
-            <span className="text-sm font-medium block">Start Time</span>
-            <span>{event.startsAt.toLocaleString()}</span>
+        {event.creator.currentUser ? (
+          <div className="mb-4">
+            <Label htmlFor="status" className="mb-4">
+              Status
+            </Label>
+            <NativeSelect
+              id="status"
+              name="status"
+              aria-label="Change event status"
+              disabled={pending}
+              defaultValue={event.status}
+              onChange={(e) => handleStatusChange(e.target.value)}
+            >
+              <NativeSelectOption value="proposed">Proposed</NativeSelectOption>
+              <NativeSelectOption value="planned">Planned</NativeSelectOption>
+              <NativeSelectOption value="canceled">Canceled</NativeSelectOption>
+            </NativeSelect>
           </div>
+        ) : (
+          <>
+            <span className="text-sm font-medium block">Status</span>
+            <span className="mb-3">
+              {event.status[0].toUpperCase() + event.status.slice(1)}
+            </span>
+          </>
+        )}
 
-          {event.endsAt && (
-            <div>
-              <span className="text-sm font-medium block">End Time</span>
-              <span>{event.startsAt.toLocaleString()}</span>
+        <span className="text-sm font-medium block">Start Time</span>
+        <span className="mb-3">{event.startsAt.toLocaleString()}</span>
+
+        {event.endsAt && (
+          <>
+            <span className="text-sm font-medium block">End Time</span>
+            <span className="mb-3">{event.startsAt.toLocaleString()}</span>
+          </>
+        )}
+
+        {event.description && (
+          <>
+            <span className="text-sm font-medium block">Description</span>
+            <div className="wrap-break-word overflow-y-auto max-h-24 border px-1 sm:px-2 rounded-md mb-3">
+              {event.description}
             </div>
-          )}
+          </>
+        )}
 
-          {event.description && (
-            <div>
-              <span className="text-sm font-medium block mb-1">
-                Description
-              </span>
-              <ScrollArea className="h-20">
-                {event.description}
-              </ScrollArea>
-            </div>
-          )}
-
-          <div>{event.attendeeCount} attending</div>
-        </div>
+        <div className="mb-8 sm:mb-4">{event.attendeeCount} attending</div>
 
         <DialogFooter>
           {event.creator.currentUser ? (

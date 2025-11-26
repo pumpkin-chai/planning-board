@@ -39,7 +39,7 @@ export function InviteItem({ invite }: { invite: Invite }) {
 
   return (
     <div
-      className={`p-6 ${invite.status === "pending" ? "bg-card" : "bg-transparent border"} rounded flex justify-between items-center shadow`}
+      className={`p-6 ${invite.status === "pending" ? "bg-card" : "bg-transparent border"} rounded flex justify-between items-center shadow-sm`}
     >
       <div
         className={

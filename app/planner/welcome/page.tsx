@@ -17,7 +17,7 @@ import {
 export default function Welcome() {
   return (
     <div className="w-screen h-screen flex flex-col items-center justify-center">
-      <div className="w-[80%] h-[90%] flex flex-col items-center justify-center py-12 bg-gradient-to-br from-gray-500 via-white to-gray-500 rounded-2xl">
+      <div className="w-[80%] h-[90%] flex flex-col items-center justify-center py-12 bg-linear-to-br from-gray-500 via-white to-gray-500 rounded-2xl">
         <h1 className="text-center text-4xl font-bold">
           Make hangouts happen with one simple planner!
         </h1>

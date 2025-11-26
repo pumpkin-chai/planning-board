@@ -32,7 +32,7 @@ export default async function Info() {
         <AuthButton />
       </NavigationMenu>
       <main>
-        <section className="flex flex-col justify-center items-center p-12 h-screen bg-gradient-to-br from-secondary via-card to-secondary">
+        <section className="flex flex-col justify-center items-center p-12 h-screen bg-linear-to-br from-secondary via-card to-secondary">
           <h1 className="text-center text-5xl sm:text-6xl font-bold mb-4 sm:mb-8">
             Make hangouts happen
           </h1>
