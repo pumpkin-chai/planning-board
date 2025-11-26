@@ -15,8 +15,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { createClient } from "@/lib/supabase/client";
 import { Group } from "@/lib/types";
-
-import { Plus } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox"
+import { Check, Plus } from "lucide-react";
 import { ChangeEvent, useState, useTransition } from "react";
 import { toast } from "sonner";
 
@@ -35,11 +35,16 @@ export function NewGroupDialog({
     setGroupName(event.target.value);
   };
 
+  const [isPrivate, togglePrivate] = useState<boolean>(false);
+  const handleCheckbox = () => {
+    togglePrivate(!isPrivate);
+  }
+
   const handleNewGroup = () => {
     startTransition(async () => {
       const { data, error } = await supabase
         .from("Groups")
-        .insert({ name: groupName })
+        .insert({ name: groupName, is_private: isPrivate})
         .select("id, name")
         .single();
       if (!data || error) {
@@ -79,6 +84,10 @@ export function NewGroupDialog({
                 onChange={handleGroupNameChange}
                 value={groupName}
               />
+            </div>
+            <div className="flex items-center gap-3">
+              <Checkbox id="isPrivate" onClick={handleCheckbox}/>
+              <Label htmlFor="isPrivate">Mark group as private</Label>
             </div>
           </div>
           <DialogFooter>
