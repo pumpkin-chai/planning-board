@@ -50,12 +50,15 @@ export default async function Home() {
 
 async function GroupsPreview() {
   const supabase = await createClient();
+  const limit = 10;
 
-  const { data, error } = await supabase
+  const { count, data, error } = await supabase
     .from("user_groups")
-    .select("id:group_id, name:group_name, memberCount:member_count, role")
+    .select("id:group_id, name:group_name, memberCount:member_count, role", {
+      count: "exact",
+    })
     .order("role")
-    .limit(10)
+    .limit(limit)
     .overrideTypes<UserGroupResult[]>();
   if (error || !data) {
     return <div>Error loading group list</div>;
@@ -63,9 +66,11 @@ async function GroupsPreview() {
 
   return (
     <GroupList groups={data}>
-      <Button variant="ghost" className="block text-center" asChild>
-        <Link href="/planner/people">View all</Link>
-      </Button>
+      {(!count || count > limit) && (
+        <Button variant="ghost" className="block text-center" asChild>
+          <Link href="/planner/people">View all</Link>
+        </Button>
+      )}
     </GroupList>
   );
 }
