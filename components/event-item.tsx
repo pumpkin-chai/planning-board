@@ -148,30 +148,49 @@ export function EventItem({ event }: { event: Event }) {
           </DialogDescription>
         </DialogHeader>
 
-        {event.creator.currentUser ? (
-          <div>
-            <Label htmlFor="status">Status</Label>
-            <NativeSelect
-              id="status"
-              name="status"
-              aria-label="Change event status"
-              disabled={pending}
-              defaultValue={event.status}
-              onChange={(e) => handleStatusChange(e.target.value)}
-            >
-              <NativeSelectOption value="proposed">Proposed</NativeSelectOption>
-              <NativeSelectOption value="planned">Planned</NativeSelectOption>
-              <NativeSelectOption value="canceled">Canceled</NativeSelectOption>
-            </NativeSelect>
-          </div>
-        ) : (
-          <p>Status: {event.status[0].toUpperCase() + event.status.slice(1)}</p>
-        )}
+        <div className="flex flex-col gap-2">
+          {event.creator.currentUser ? (
+            <div>
+              <Label htmlFor="status">Status</Label>
+              <NativeSelect
+                id="status"
+                name="status"
+                aria-label="Change event status"
+                disabled={pending}
+                defaultValue={event.status}
+                onChange={(e) => handleStatusChange(e.target.value)}
+              >
+                <NativeSelectOption value="proposed">
+                  Proposed
+                </NativeSelectOption>
+                <NativeSelectOption value="planned">Planned</NativeSelectOption>
+                <NativeSelectOption value="canceled">
+                  Canceled
+                </NativeSelectOption>
+              </NativeSelect>
+            </div>
+          ) : (
+            <div>
+              <span className="text-sm font-medium block">Status</span>
+              <span>
+                {event.status[0].toUpperCase() + event.status.slice(1)}
+              </span>
+            </div>
+          )}
 
-        <div>
-          <p>Starts: {event.startsAt.toLocaleString()}</p>
-          {event.endsAt && <p>Ends: {event.endsAt.toLocaleString()}</p>}
-          <p>{event.attendeeCount} attending</p>
+          <div>
+            <span className="text-sm font-medium block">Start Time</span>
+            <span>{event.startsAt.toLocaleString()}</span>
+          </div>
+
+          {event.endsAt && (
+            <div>
+              <span className="text-sm font-medium block">End Time</span>
+              <span>{event.startsAt.toLocaleString()}</span>
+            </div>
+          )}
+
+          <div>{event.attendeeCount} attending</div>
         </div>
 
         <DialogFooter>
