@@ -123,7 +123,7 @@ export function EventItem({ event }: { event: Event }) {
       <DialogTrigger asChild>
         <Item className="bg-card shadow-xs hover:bg-accent">
           <ItemContent>
-            <ItemTitle>{event.title}</ItemTitle>
+            <ItemTitle className="text-lg">{event.title}</ItemTitle>
             <ItemDescription>
               {event.startsAt.toLocaleString()}
               {event.endsAt &&
