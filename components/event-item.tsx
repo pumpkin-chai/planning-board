@@ -32,6 +32,15 @@ const timeOptions: Intl.DateTimeFormatOptions = {
   timeStyle: "short",
 };
 
+function dateLaterThan(a: Date, b: Date) {
+  return (
+    a.getFullYear() > b.getFullYear() ||
+    (a.getFullYear() === b.getFullYear() &&
+      (a.getMonth() > b.getMonth() ||
+        (a.getMonth() === b.getMonth() && a.getDate() > b.getDate())))
+  );
+}
+
 export function EventItem({ event }: { event: Event }) {
   const supabase = createClient();
   const router = useRouter();
@@ -136,11 +145,11 @@ export function EventItem({ event }: { event: Event }) {
               {event.startsAt.toLocaleString(undefined, datetimeOptions)}
               {event.endsAt &&
                 " to " +
-                  (event.endsAt > event.startsAt
-                    ? event.endsAt.toLocaleTimeString(undefined, timeOptions)
-                    : event.endsAt.toLocaleString(
+                  (dateLaterThan(event.endsAt, event.startsAt)
+                    ? event.endsAt.toLocaleString(undefined, datetimeOptions)
+                    : event.endsAt.toLocaleTimeString(
                         undefined,
-                        datetimeOptions,
+                        timeOptions,
                       ))}{" "}
             </ItemDescription>
             <ItemFooter>
@@ -195,7 +204,7 @@ export function EventItem({ event }: { event: Event }) {
           <>
             <span className="text-sm font-medium block">End Time</span>
             <span className="mb-3">
-              {event.startsAt.toLocaleString(undefined, datetimeOptions)}
+              {event.endsAt.toLocaleString(undefined, datetimeOptions)}
             </span>
           </>
         )}
