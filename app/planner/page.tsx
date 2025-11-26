@@ -77,6 +77,7 @@ async function GroupsPreview() {
 
 async function UpcomingEvents() {
   const supabase = await createClient();
+  const limit = 10;
 
   const { data: userData, error } = await supabase.auth.getUser();
   if (error || !userData) {
@@ -91,6 +92,7 @@ async function UpcomingEvents() {
     )
     .gt("starts_at", currentTimestamp)
     .eq("status", "planned")
+    .limit(limit)
     .overrideTypes<UserEventsResult[]>();
 
   const events: Event[] = eventData
