@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
 import { Calendar1 } from "lucide-react";
+import Link from "next/link";
 
 import {
   Event,
@@ -19,6 +20,7 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
+import { Button } from "@/components/ui/button";
 
 export default async function Home() {
   return (
@@ -35,7 +37,7 @@ export default async function Home() {
       </section>
 
       <section className="mb-32">
-        <h2 className="text-2xl mb-4">Your Calendars</h2>
+        <h2 className="text-2xl mb-4">Your Groups</h2>
         <div className="p-4 bg-muted h-96">
           <Suspense fallback={<GroupListSkeleton />}>
             <GroupsPreview />
@@ -48,21 +50,34 @@ export default async function Home() {
 
 async function GroupsPreview() {
   const supabase = await createClient();
+  const limit = 10;
 
-  const { data, error } = await supabase
+  const { count, data, error } = await supabase
     .from("user_groups")
-    .select("id:group_id, name:group_name, memberCount:member_count, role")
+    .select("id:group_id, name:group_name, memberCount:member_count, role", {
+      count: "exact",
+    })
     .order("role")
+    .limit(limit)
     .overrideTypes<UserGroupResult[]>();
   if (error || !data) {
     return <div>Error loading group list</div>;
   }
 
-  return <GroupList groups={data} />;
+  return (
+    <GroupList groups={data}>
+      {(!count || count > limit) && (
+        <Button variant="ghost" className="block text-center" asChild>
+          <Link href="/planner/people">View all</Link>
+        </Button>
+      )}
+    </GroupList>
+  );
 }
 
 async function UpcomingEvents() {
   const supabase = await createClient();
+  const limit = 10;
 
   const { data: userData, error } = await supabase.auth.getUser();
   if (error || !userData) {
@@ -77,6 +92,7 @@ async function UpcomingEvents() {
     )
     .gt("starts_at", currentTimestamp)
     .eq("status", "planned")
+    .limit(limit)
     .overrideTypes<UserEventsResult[]>();
 
   const events: Event[] = eventData
