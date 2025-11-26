@@ -14,7 +14,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { ChangeEvent, useState, useTransition } from "react";
+import { ChangeEvent, useRef, useState, useTransition } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { X } from "lucide-react";
@@ -36,9 +36,10 @@ export function EventProposalDialog({ group }: { group: number }) {
   const [failed, setFailed] = useState<boolean>(false);
 
   const [title, setTitle] = useState<string>("");
-  const [startDate, setStartDate] = useState<string>("");
-  const [endDate, setEndDate] = useState<string>("");
   const [desc, setDesc] = useState<string>("");
+
+  const startDateRef = useRef<HTMLInputElement | null>(null);
+  const endDateRef = useRef<HTMLInputElement | null>(null);
 
   const handlePropose = (proposal: EventProposal) => {
     startTransition(async () => {
@@ -61,6 +62,8 @@ export function EventProposalDialog({ group }: { group: number }) {
         });
         router.refresh();
       }
+
+      setFailed(false);
     });
   };
 
@@ -68,28 +71,27 @@ export function EventProposalDialog({ group }: { group: number }) {
     setTitle(event.target.value);
   };
 
-  const handleEventStartChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setStartDate(event.target.value);
-  };
-
-  const handleEventEndChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setEndDate(event.target.value);
-  };
-
   const handleEventDescChange = (event: ChangeEvent<HTMLInputElement>) => {
     setDesc(event.target.value);
   };
 
   const handleSubmit = () => {
-    if (!title || !startDate) {
+    if (!endDateRef.current || !startDateRef.current) {
+      return;
+    }
+
+    if (!title || !startDateRef.current.value) {
       setFailed(true);
       return;
     }
+
     handlePropose({
       title: title,
       description: desc,
-      startsAt: new Date(startDate),
-      endsAt: endDate ? new Date(endDate) : null,
+      startsAt: new Date(startDateRef.current.value),
+      endsAt: endDateRef.current.value
+        ? new Date(endDateRef.current.value)
+        : null,
     });
   };
 
@@ -98,6 +100,18 @@ export function EventProposalDialog({ group }: { group: number }) {
       setFailed(false);
     }
     setOpen(open);
+  };
+
+  const handleClearStartDate = () => {
+    if (startDateRef.current) {
+      startDateRef.current.value = "";
+    }
+  };
+
+  const handleClearEndDate = () => {
+    if (endDateRef.current) {
+      endDateRef.current.value = "";
+    }
   };
 
   return (
@@ -124,9 +138,7 @@ export function EventProposalDialog({ group }: { group: number }) {
                 value={title}
                 onChange={handleEventNameChange}
                 className={
-                  failed && !title
-                    ? "border-red-500 focus-visible:ring-red-300"
-                    : ""
+                  failed ? "border-red-500 focus-visible:ring-red-300" : ""
                 }
                 required
               />
@@ -149,19 +161,16 @@ export function EventProposalDialog({ group }: { group: number }) {
                   id="start-date"
                   type="datetime-local"
                   name="start-date"
-                  value={startDate}
-                  onChange={handleEventStartChange}
                   className={
-                    failed && !startDate
-                      ? "border-red-500 focus-visible:ring-red-300"
-                      : ""
+                    failed ? "border-red-500 focus-visible:ring-red-300" : ""
                   }
+                  ref={startDateRef}
                   required
                 />
                 <Button
                   variant="ghost"
                   className="px-2 py-1"
-                  onClick={() => setStartDate("")}
+                  onClick={handleClearStartDate}
                 >
                   <X />
                 </Button>
@@ -176,20 +185,19 @@ export function EventProposalDialog({ group }: { group: number }) {
                   id="end-date"
                   type="datetime-local"
                   name="end-date"
-                  value={endDate}
-                  onChange={handleEventEndChange}
                   className="grow"
+                  ref={endDateRef}
                 />
                 <Button
                   variant="ghost"
                   className="px-2 py-1"
-                  onClick={() => setEndDate("")}
+                  onClick={() => handleClearEndDate()}
                 >
                   <X />
                 </Button>
               </div>
             </div>
-            {failed && (!title || !startDate) && (
+            {failed && (
               <p className="text-sm text-red-500">
                 Please fill in all required fields.
               </p>
