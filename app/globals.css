@@ -1,6 +1,89 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@plugin 'tailwindcss-animate';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  --color-chart-1: hsl(var(--chart-1));
+  --color-chart-2: hsl(var(--chart-2));
+  --color-chart-3: hsl(var(--chart-3));
+  --color-chart-4: hsl(var(--chart-4));
+  --color-chart-5: hsl(var(--chart-5));
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
+
+@utility calendar-cell {
+  /* Set the size via a custom property */
+  width: var(--cell-size);
+  height: var(--cell-size);
+}
+
+@utility cell-size-11 {
+  /* Reusable “no-brackets” utilities that map to Tailwind spacing tokens */
+  --cell-size: --spacing(11);
+}
+
+@utility cell-size-10 {
+  --cell-size: --spacing(10);
+}
+
+@utility cell-size-9 {
+  --cell-size: --spacing(9);
+}
+
+@utility cell-size-8 {
+  --cell-size: --spacing(8);
+}
 
 @layer base {
   :root {
@@ -64,27 +147,5 @@
   }
   body {
     @apply bg-background text-foreground;
-  }
-}
-
-@layer utilities {
-  /* Set the size via a custom property */
-  .calendar-cell {
-    width: var(--cell-size);
-    height: var(--cell-size);
-  }
-
-  /* Reusable “no-brackets” utilities that map to Tailwind spacing tokens */
-  .cell-size-11 {
-    --cell-size: theme(spacing.11);
-  }
-  .cell-size-10 {
-    --cell-size: theme(spacing.10);
-  }
-  .cell-size-9 {
-    --cell-size: theme(spacing.9);
-  }
-  .cell-size-8 {
-    --cell-size: theme(spacing.8);
   }
 }
