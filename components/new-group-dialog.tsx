@@ -16,7 +16,7 @@ import { Label } from "@/components/ui/label";
 import { createClient } from "@/lib/supabase/client";
 import { Group } from "@/lib/types";
 import { Checkbox } from "@/components/ui/checkbox"
-import { Check, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { ChangeEvent, useState, useTransition } from "react";
 import { toast } from "sonner";
 
