@@ -37,7 +37,7 @@ export default async function Home() {
       </section>
 
       <section className="mb-32">
-        <h2 className="text-2xl mb-4">Your Calendars</h2>
+        <h2 className="text-2xl mb-4">Your Groups</h2>
         <div className="p-4 bg-muted h-96">
           <Suspense fallback={<GroupListSkeleton />}>
             <GroupsPreview />
