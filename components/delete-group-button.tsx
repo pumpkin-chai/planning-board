@@ -25,12 +25,12 @@ export function DeleteGroupButton({ groupId }: { groupId: string }) {
 
   const handleDelete = () => {
     startTransition(async () => {
-      const { error } = await supabase
+      const { error, count } = await supabase
         .from("Groups")
-        .delete()
+        .delete({ count: "exact" })
         .eq("id", groupId);
 
-      if (error) {
+      if (error || count === 0) {
         toast.error("Group deletion failed", {
           description: "Failed to delete group. Please try again later.",
         });
