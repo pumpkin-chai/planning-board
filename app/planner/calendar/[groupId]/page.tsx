@@ -5,6 +5,7 @@ import { EventList } from "@/components/event-list";
 import { Event, EventStatus, UserEventsResult } from "@/lib/types";
 import { InviteMemberDialog } from "./invite-member-dialog";
 import { MembersDialog } from "@/components/members-dialog";
+import { DeleteGroupButton } from "@/components/delete-group-button";
 
 export default async function CalendarPage({
   params,
@@ -110,6 +111,24 @@ export default async function CalendarPage({
           />
         </div>
       </section>
+
+      {membershipData.role === "admin" && (
+        <section>
+          <h2 className="text-2xl mb-1 sm:mb-2 text-red-500 font-bold">
+            Danger Zone
+          </h2>
+          <div className="p-3 sm:p-6 border-2 border-red-500 flex flex-col sm:flex-row sm:items-center gap-4 rounded-lg">
+            <div className="grow">
+              <h3 className="text-lg font-semibold">Delete Group</h3>
+              <p>
+                Deleting this group will remove all events and membership data
+                associated with it. This action cannot be undone.
+              </p>
+            </div>
+            <DeleteGroupButton groupId={groupId} />
+          </div>
+        </section>
+      )}
     </>
   );
 }
