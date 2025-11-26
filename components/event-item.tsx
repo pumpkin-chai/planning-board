@@ -193,12 +193,16 @@ export function EventItem({ event }: { event: Event }) {
 
           <div>{event.attendeeCount} attending</div>
 
-          <div>
-            <span className="text-sm font-medium block mb-1">Description</span>
-            <ScrollArea className="h-20 border border-border rounded-sm p-1">
-              {event.description}
-            </ScrollArea>
-          </div>
+          {event.description && (
+            <div>
+              <span className="text-sm font-medium block mb-1">
+                Description
+              </span>
+              <ScrollArea className="h-20 border border-border rounded-sm p-1">
+                {event.description}
+              </ScrollArea>
+            </div>
+          )}
         </div>
 
         <DialogFooter>
