@@ -112,21 +112,23 @@ export default async function CalendarPage({
         </div>
       </section>
 
-      <section>
-        <h2 className="text-2xl mb-1 sm:mb-2 text-red-500 font-bold">
-          Danger Zone
-        </h2>
-        <div className="p-3 sm:p-6 border-2 border-red-500 flex flex-col sm:flex-row sm:items-center gap-4 rounded-lg">
-          <div className="grow">
-            <h3 className="text-lg font-semibold">Delete Group</h3>
-            <p>
-              Deleting this group will remove all events and membership data
-              associated with it. This action cannot be undone.
-            </p>
+      {membershipData.role === "admin" && (
+        <section>
+          <h2 className="text-2xl mb-1 sm:mb-2 text-red-500 font-bold">
+            Danger Zone
+          </h2>
+          <div className="p-3 sm:p-6 border-2 border-red-500 flex flex-col sm:flex-row sm:items-center gap-4 rounded-lg">
+            <div className="grow">
+              <h3 className="text-lg font-semibold">Delete Group</h3>
+              <p>
+                Deleting this group will remove all events and membership data
+                associated with it. This action cannot be undone.
+              </p>
+            </div>
+            <DeleteGroupButton groupId={groupId} />
           </div>
-          <DeleteGroupButton groupId={groupId} />
-        </div>
-      </section>
+        </section>
+      )}
     </>
   );
 }
