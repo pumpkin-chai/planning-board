@@ -42,36 +42,35 @@ export function JoinGroupDialog({
     }
 
     startTransition(async () => {
-      const{data :groupData, error: groupError} = await supabase
+      const { data: groupData, error: groupError } = await supabase
         .from("Groups")
-        .select('id, name, is_private')
-        .eq('id', groupId)
-        .single();  
-
-      console.log(groupData);
+        .select("id, name, is_private")
+        .eq("id", groupId)
+        .single();
 
       if (!groupData || groupError) {
         toast.error("Failed to join group", {
           description: `Failed to join group with ID ${groupId}. Please try again later.`,
         });
-      } else if(groupData?.is_private){
+      } else if (groupData?.is_private) {
         toast.error("Failed to join group", {
           description: `Group is private! Ask the owner for an invite.`,
         });
-      } else{
-      
+      } else {
         const { data, error } = await supabase
           .from("Memberships")
           .insert({ group_id: Number(groupId) })
           .select("group:Groups(id, name, is_private)")
           .single()
-          .overrideTypes<{ group: { id: number; name: string; is_private: boolean} }>();
+          .overrideTypes<{
+            group: { id: number; name: string; is_private: boolean };
+          }>();
 
         if (!data || error) {
           toast.error("Failed to join group", {
             description: `Failed to join group with ID ${groupId}. Please try again later.`,
           });
-        }  else {
+        } else {
           toast.success("Group joined", {
             description: `Successfully joined group ${data.group.name}`,
           });
