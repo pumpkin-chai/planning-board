@@ -5,7 +5,6 @@ import { EventList } from "@/components/event-list";
 import { Event, EventStatus, UserEventsResult } from "@/lib/types";
 import { InviteMemberDialog } from "./invite-member-dialog";
 import { MembersDialog } from "@/components/members-dialog";
-import { Button } from "@/components/ui/button";
 import { DeleteGroupButton } from "@/components/delete-group-button";
 
 export default async function CalendarPage({
@@ -125,7 +124,7 @@ export default async function CalendarPage({
               associated with it. This action cannot be undone.
             </p>
           </div>
-          <DeleteGroupButton />
+          <DeleteGroupButton groupId={groupId} />
         </div>
       </section>
     </>

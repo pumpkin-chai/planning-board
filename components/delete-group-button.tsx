@@ -1,5 +1,6 @@
 "use client";
 
+import { createClient } from "@/lib/supabase/client";
 import {
   AlertDialogContent,
   AlertDialog,
@@ -12,8 +13,36 @@ import {
   AlertDialogTrigger,
 } from "./ui/alert-dialog";
 import { Button } from "./ui/button";
+import { useTransition } from "react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
-export function DeleteGroupButton() {
+export function DeleteGroupButton({ groupId }: { groupId: string }) {
+  const router = useRouter();
+  const supabase = createClient();
+
+  const [pending, startTransition] = useTransition();
+
+  const handleDelete = () => {
+    startTransition(async () => {
+      const { error } = await supabase
+        .from("Groups")
+        .delete()
+        .eq("id", groupId);
+
+      if (error) {
+        toast.error("Group deletion failed", {
+          description: "Failed to delete group. Please try again later.",
+        });
+      } else {
+        router.push("/planner/people");
+        toast.success("Group deleted", {
+          description: "Successfully deleted group.",
+        });
+      }
+    });
+  };
+
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -29,7 +58,9 @@ export function DeleteGroupButton() {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction>Delete</AlertDialogAction>
+          <AlertDialogAction disabled={pending} onClick={handleDelete}>
+            Delete
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
