@@ -23,7 +23,6 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { NativeSelect, NativeSelectOption } from "./ui/native-select";
 import { Label } from "./ui/label";
-import { ScrollArea } from "./ui/scroll-area";
 
 export function EventItem({ event }: { event: Event }) {
   const supabase = createClient();
@@ -196,9 +195,9 @@ export function EventItem({ event }: { event: Event }) {
               <span className="text-sm font-medium block mb-1">
                 Description
               </span>
-              <ScrollArea className="h-20">
+              <div className="wrap-break-word overflow-y-auto max-h-24 border p-1 sm:p-2 rounded-md">
                 {event.description}
-              </ScrollArea>
+              </div>
             </div>
           )}
 
