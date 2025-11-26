@@ -11,7 +11,7 @@ import { MembersDialog } from "./members-dialog";
 
 export function GroupItem({ group }: { group: UserGroupResult }) {
   return (
-    <Item className="bg-card shadow sm:shadow-lg sm:p-6">
+    <Item className="bg-card shadow-sm sm:shadow-lg sm:p-6">
       <ItemContent>
         <ItemTitle className="items-baseline">
           <Link href={`/planner/calendar/${group.id}`}>
