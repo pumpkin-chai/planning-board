@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
 import { Calendar1 } from "lucide-react";
+import Link from "next/link";
 
 import {
   Event,
@@ -53,12 +54,22 @@ async function GroupsPreview() {
     .from("user_groups")
     .select("id:group_id, name:group_name, memberCount:member_count, role")
     .order("role")
+    .limit(10)
     .overrideTypes<UserGroupResult[]>();
   if (error || !data) {
     return <div>Error loading group list</div>;
   }
 
-  return <GroupList groups={data} />;
+  return (
+    <GroupList groups={data}>
+      <Link
+        href="/planner/people"
+        className="text-accent-foreground hover:underline"
+      >
+        View all
+      </Link>
+    </GroupList>
+  );
 }
 
 async function UpcomingEvents() {
