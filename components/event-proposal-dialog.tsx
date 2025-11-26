@@ -26,6 +26,11 @@ export type EventProposal = {
   endsAt: Date | null;
 };
 
+const enum EventProposalError {
+  MissingFields = "Please fill in all required fields.",
+  InvalidDateRange = "End date must be after start date.",
+}
+
 export function EventProposalDialog({ group }: { group: number }) {
   const router = useRouter();
   const supabase = createClient();
@@ -33,7 +38,7 @@ export function EventProposalDialog({ group }: { group: number }) {
   const [pending, startTransition] = useTransition();
 
   const [open, setOpen] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<EventProposalError | null>(null);
 
   const [title, setTitle] = useState<string>("");
   const [desc, setDesc] = useState<string>("");
@@ -85,7 +90,7 @@ export function EventProposalDialog({ group }: { group: number }) {
     }
 
     if (!title || !startDateRef.current.value) {
-      setError("Please fill in all required fields.");
+      setError(EventProposalError.MissingFields);
       return;
     }
 
@@ -95,7 +100,7 @@ export function EventProposalDialog({ group }: { group: number }) {
       : null;
 
     if (end && start >= end) {
-      setError("End date must be after start date.");
+      setError(EventProposalError.InvalidDateRange);
       return;
     }
 
@@ -150,7 +155,9 @@ export function EventProposalDialog({ group }: { group: number }) {
                 value={title}
                 onChange={handleEventNameChange}
                 className={
-                  error ? "border-red-500 focus-visible:ring-red-300" : ""
+                  error === EventProposalError.MissingFields
+                    ? "border-red-500 focus-visible:ring-red-300"
+                    : ""
                 }
                 required
               />
@@ -175,7 +182,9 @@ export function EventProposalDialog({ group }: { group: number }) {
                   type="datetime-local"
                   name="start-date"
                   className={
-                    error ? "border-red-500 focus-visible:ring-red-300" : ""
+                    error === EventProposalError.MissingFields
+                      ? "border-red-500 focus-visible:ring-red-300"
+                      : ""
                   }
                   ref={startDateRef}
                   required
@@ -198,7 +207,11 @@ export function EventProposalDialog({ group }: { group: number }) {
                   id="end-date"
                   type="datetime-local"
                   name="end-date"
-                  className="grow"
+                  className={
+                    error === EventProposalError.InvalidDateRange
+                      ? "border-red-500 focus-visible:ring-red-300"
+                      : ""
+                  }
                   ref={endDateRef}
                 />
                 <Button
