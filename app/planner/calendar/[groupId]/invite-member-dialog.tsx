@@ -81,10 +81,11 @@ export function InviteMemberDialog({
           </DialogHeader>
           <div className="grid gap-4">
             <div className="grid gap-3">
-              <Label htmlFor="name-1">Username</Label>
+              <Label htmlFor="invitee">Invitee</Label>
               <Input
-                id="name-1"
-                name="name"
+                id="invitee"
+                name="invitee"
+                placeholder="Username"
                 onChange={(e) => setUsername(e.target.value)}
                 value={username}
               />
