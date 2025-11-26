@@ -128,6 +128,9 @@ export function EventProposalDialog({ group }: { group: number }) {
   const handleClearEndDate = () => {
     if (endDateRef.current) {
       endDateRef.current.value = "";
+      if (error === EventProposalError.InvalidDateRange) {
+        setError(null);
+      }
     }
   };
 
