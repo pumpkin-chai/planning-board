@@ -138,7 +138,7 @@ export function EventProposalDialog({ group }: { group: number }) {
                 id="name"
                 type="text"
                 name="name"
-                placeholder="Event Name"
+                placeholder="Event name"
                 value={title}
                 onChange={handleEventNameChange}
                 className={
@@ -155,6 +155,7 @@ export function EventProposalDialog({ group }: { group: number }) {
                 id="description"
                 type="text"
                 name="description"
+                placeholder="Event description"
                 value={desc}
                 onChange={handleEventDescChange}
               />
