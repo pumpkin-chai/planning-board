@@ -17,6 +17,7 @@ import {
 import { ChangeEvent, useState, useTransition } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
+import { X } from "lucide-react";
 
 export type EventProposal = {
   title: string;
@@ -129,6 +130,7 @@ export function EventProposalDialog({ group }: { group: number }) {
                 }
                 required
               />
+
               <Label htmlFor="desc">
                 Description{" "}
                 <span className="text-xs text-muted-foreground">*Optional</span>
@@ -140,32 +142,52 @@ export function EventProposalDialog({ group }: { group: number }) {
                 value={desc}
                 onChange={handleEventDescChange}
               />
+
               <Label htmlFor="start-date">Start Date</Label>
-              <Input
-                id="start-date"
-                type="datetime-local"
-                name="start-date"
-                value={startDate}
-                onChange={handleEventStartChange}
-                className={
-                  failed && !startDate
-                    ? "border-red-500 focus-visible:ring-red-300"
-                    : ""
-                }
-                required
-              />
+              <div className="flex items-center gap-1 sm:gap-2">
+                <Input
+                  id="start-date"
+                  type="datetime-local"
+                  name="start-date"
+                  value={startDate}
+                  onChange={handleEventStartChange}
+                  className={
+                    failed && !startDate
+                      ? "border-red-500 focus-visible:ring-red-300"
+                      : ""
+                  }
+                  required
+                />
+                <Button
+                  variant="ghost"
+                  className="px-2 py-1"
+                  onClick={() => setStartDate("")}
+                >
+                  <X />
+                </Button>
+              </div>
+
               <Label htmlFor="end-date">
                 End Date{" "}
                 <span className="text-xs text-muted-foreground">*Optional</span>
               </Label>
-              <Input
-                id="end-date"
-                type="datetime-local"
-                name="end-date"
-                value={endDate}
-                defaultValue={undefined}
-                onChange={handleEventEndChange}
-              />
+              <div className="flex items-center gap-1 sm:gap-2">
+                <Input
+                  id="end-date"
+                  type="datetime-local"
+                  name="end-date"
+                  value={endDate}
+                  onChange={handleEventEndChange}
+                  className="grow"
+                />
+                <Button
+                  variant="ghost"
+                  className="px-2 py-1"
+                  onClick={() => setEndDate("")}
+                >
+                  <X />
+                </Button>
+              </div>
             </div>
             {failed && (!title || !startDate) && (
               <p className="text-sm text-red-500">
