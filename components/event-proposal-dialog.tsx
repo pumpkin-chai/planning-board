@@ -14,9 +14,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useRef, useState, useTransition } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
+import { X } from "lucide-react";
 
 export type EventProposal = {
   title: string;
@@ -29,19 +30,19 @@ export function EventProposalDialog({ group }: { group: number }) {
   const router = useRouter();
   const supabase = createClient();
 
-  const [loading, setLoading] = useState<boolean>(false);
+  const [pending, startTransition] = useTransition();
+
   const [open, setOpen] = useState<boolean>(false);
   const [failed, setFailed] = useState<boolean>(false);
 
   const [title, setTitle] = useState<string>("");
-  const [startDate, setStartDate] = useState<string>("");
-  const [endDate, setEndDate] = useState<string>("");
   const [desc, setDesc] = useState<string>("");
 
-  const handlePropose = (proposal: EventProposal) => {
-    setLoading(true);
+  const startDateRef = useRef<HTMLInputElement | null>(null);
+  const endDateRef = useRef<HTMLInputElement | null>(null);
 
-    const propose = async () => {
+  const handlePropose = (proposal: EventProposal) => {
+    startTransition(async () => {
       const { error } = await supabase.from("Events").insert({
         group_id: group,
         title: proposal.title,
@@ -59,25 +60,19 @@ export function EventProposalDialog({ group }: { group: number }) {
         toast.success("Event proposed", {
           description: `"${proposal.title}" proposed for ${proposal.startsAt.toLocaleString()}.`,
         });
+        setTitle("");
+        setDesc("");
+        startDateRef.current!.value = "";
+        endDateRef.current!.value = "";
         router.refresh();
       }
 
-      setLoading(false);
-    };
-
-    propose();
+      setFailed(false);
+    });
   };
 
   const handleEventNameChange = (event: ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
-  };
-
-  const handleEventStartChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setStartDate(event.target.value);
-  };
-
-  const handleEventEndChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setEndDate(event.target.value);
   };
 
   const handleEventDescChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -85,15 +80,22 @@ export function EventProposalDialog({ group }: { group: number }) {
   };
 
   const handleSubmit = () => {
-    if (!title || !startDate) {
+    if (!endDateRef.current || !startDateRef.current) {
+      return;
+    }
+
+    if (!title || !startDateRef.current.value) {
       setFailed(true);
       return;
     }
+
     handlePropose({
       title: title,
       description: desc,
-      startsAt: new Date(startDate),
-      endsAt: endDate ? new Date(endDate) : null,
+      startsAt: new Date(startDateRef.current.value),
+      endsAt: endDateRef.current.value
+        ? new Date(endDateRef.current.value)
+        : null,
     });
   };
 
@@ -102,6 +104,18 @@ export function EventProposalDialog({ group }: { group: number }) {
       setFailed(false);
     }
     setOpen(open);
+  };
+
+  const handleClearStartDate = () => {
+    if (startDateRef.current) {
+      startDateRef.current.value = "";
+    }
+  };
+
+  const handleClearEndDate = () => {
+    if (endDateRef.current) {
+      endDateRef.current.value = "";
+    }
   };
 
   return (
@@ -124,16 +138,15 @@ export function EventProposalDialog({ group }: { group: number }) {
                 id="name"
                 type="text"
                 name="name"
-                placeholder="Event Name"
+                placeholder="Event name"
                 value={title}
                 onChange={handleEventNameChange}
                 className={
-                  failed && !title
-                    ? "border-red-500 focus-visible:ring-red-300"
-                    : ""
+                  failed ? "border-red-500 focus-visible:ring-red-300" : ""
                 }
                 required
               />
+
               <Label htmlFor="desc">
                 Description{" "}
                 <span className="text-xs text-muted-foreground">*Optional</span>
@@ -142,37 +155,54 @@ export function EventProposalDialog({ group }: { group: number }) {
                 id="description"
                 type="text"
                 name="description"
+                placeholder="Event description"
                 value={desc}
                 onChange={handleEventDescChange}
               />
-              <Label htmlFor="date">Start Date</Label>
-              <Input
-                id="date"
-                type="datetime-local"
-                name="date"
-                value={startDate}
-                onChange={handleEventStartChange}
-                className={
-                  failed && !startDate
-                    ? "border-red-500 focus-visible:ring-red-300"
-                    : ""
-                }
-                required
-              />
-              <Label htmlFor="date">
+
+              <Label htmlFor="start-date">Start Date</Label>
+              <div className="flex items-center gap-1 sm:gap-2">
+                <Input
+                  id="start-date"
+                  type="datetime-local"
+                  name="start-date"
+                  className={
+                    failed ? "border-red-500 focus-visible:ring-red-300" : ""
+                  }
+                  ref={startDateRef}
+                  required
+                />
+                <Button
+                  variant="ghost"
+                  className="px-2 py-1"
+                  onClick={handleClearStartDate}
+                >
+                  <X />
+                </Button>
+              </div>
+
+              <Label htmlFor="end-date">
                 End Date{" "}
                 <span className="text-xs text-muted-foreground">*Optional</span>
               </Label>
-              <Input
-                id="date"
-                type="datetime-local"
-                name="date"
-                value={endDate}
-                defaultValue={undefined}
-                onChange={handleEventEndChange}
-              />
+              <div className="flex items-center gap-1 sm:gap-2">
+                <Input
+                  id="end-date"
+                  type="datetime-local"
+                  name="end-date"
+                  className="grow"
+                  ref={endDateRef}
+                />
+                <Button
+                  variant="ghost"
+                  className="px-2 py-1"
+                  onClick={() => handleClearEndDate()}
+                >
+                  <X />
+                </Button>
+              </div>
             </div>
-            {failed && (!title || !startDate) && (
+            {failed && (
               <p className="text-sm text-red-500">
                 Please fill in all required fields.
               </p>
@@ -182,7 +212,7 @@ export function EventProposalDialog({ group }: { group: number }) {
             <Button variant="outline" onClick={() => handleOpenChange(false)}>
               Cancel
             </Button>
-            <Button type="submit" onClick={handleSubmit} disabled={loading}>
+            <Button type="submit" onClick={handleSubmit} disabled={pending}>
               Create Proposal
             </Button>
           </DialogFooter>
