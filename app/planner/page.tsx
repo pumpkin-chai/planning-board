@@ -20,6 +20,7 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
+import { Button } from "@/components/ui/button";
 
 export default async function Home() {
   return (
@@ -62,12 +63,9 @@ async function GroupsPreview() {
 
   return (
     <GroupList groups={data}>
-      <Link
-        href="/planner/people"
-        className="text-accent-foreground hover:underline"
-      >
-        View all
-      </Link>
+      <Button variant="ghost" className="block text-center" asChild>
+        <Link href="/planner/people">View all</Link>
+      </Button>
     </GroupList>
   );
 }
