@@ -191,8 +191,6 @@ export function EventItem({ event }: { event: Event }) {
             </div>
           )}
 
-          <div>{event.attendeeCount} attending</div>
-
           {event.description && (
             <div>
               <span className="text-sm font-medium block mb-1">
@@ -203,6 +201,8 @@ export function EventItem({ event }: { event: Event }) {
               </ScrollArea>
             </div>
           )}
+
+          <div>{event.attendeeCount} attending</div>
         </div>
 
         <DialogFooter>
