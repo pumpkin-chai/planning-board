@@ -17,6 +17,7 @@ import { createClient } from "@/lib/supabase/client";
 
 import { UserRoundPlus } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export function InviteMemberDialog({
   groupId,
@@ -37,22 +38,28 @@ export function InviteMemberDialog({
       .single();
 
     if (!inviteeData) {
-      console.log(`User ${username} not found`);
+      toast.error("Invite failed", {
+        description: `User ${username} not found`,
+      });
       return;
     }
 
-    const { data } = await supabase
-      .from("invitations")
-      .insert({
-        inviter_id: inviterId,
-        invitee_id: inviteeData.id,
-        group_id: groupId,
-      })
-      .select()
-      .single();
+    const { error } = await supabase.from("invitations").insert({
+      inviter_id: inviterId,
+      invitee_id: inviteeData.id,
+      group_id: groupId,
+    });
 
-    if (data) {
-      console.log(`Invite sent to ${username}!`);
+    if (error) {
+      if (error.code === "23505") {
+        toast.error("Invite failed", {
+          description: `User ${username} has already been invited`,
+        });
+      } else {
+        toast.error("Failed to send invite. Please try again later.");
+      }
+    } else {
+      toast.success(`Invite sent to ${username}!`);
     }
   };
 
