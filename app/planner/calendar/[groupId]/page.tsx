@@ -66,19 +66,20 @@ export default async function CalendarPage({
 
   return (
     <>
-      <h1 className="self-start text-5xl font-bold mb-2">{groupInfo.name}</h1>
+      <h1 className="text-5xl font-bold">{groupInfo.name}</h1>
+      <h2 className="mb-6">Group ID #{groupId}</h2>
 
-      <MembersDialog
-        className="mb-8 hover:underline"
-        groupId={Number(groupId)}
-        label={`${groupInfo.memberCount} ${groupInfo.memberCount === 1 ? "Member" : "Members"}`}
-      />
+      <div className="mb-4">
+        <MembersDialog
+          className="mb-1 hover:underline"
+          groupId={Number(groupId)}
+          label={`${groupInfo.memberCount} ${groupInfo.memberCount === 1 ? "Member" : "Members"}`}
+        />
 
-      {membershipData?.role === "admin" && (
-        <section className="mb-4">
+        {membershipData?.role === "admin" && (
           <InviteMemberDialog groupId={Number(groupId)} inviterId={user.id} />
-        </section>
-      )}
+        )}
+      </div>
 
       <section className="mb-32">
         <h2 className="text-2xl mb-4">Calendar</h2>
