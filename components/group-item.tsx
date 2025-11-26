@@ -8,6 +8,7 @@ import {
 import { UserGroupResult } from "@/lib/types";
 import Link from "next/link";
 import { LeaveGroupButton } from "./group-item-buttons";
+import { MembersDialog } from "./members-dialog";
 
 export function GroupItem({ group }: { group: UserGroupResult }) {
   return (
@@ -20,9 +21,11 @@ export function GroupItem({ group }: { group: UserGroupResult }) {
             </span>
           </Link>
         </ItemTitle>
-        <ItemDescription>
-          {group.memberCount} {group.memberCount === 1 ? "Member" : "Members"}
-        </ItemDescription>
+        <MembersDialog
+          className="hover:underline"
+          groupId={group.id}
+          label={`${group.memberCount} ${group.memberCount === 1 ? "Member" : "Members"}`}
+        />
       </ItemContent>
       <ItemActions>
         {group.role === "member" && <LeaveGroupButton group={group} refresh />}
