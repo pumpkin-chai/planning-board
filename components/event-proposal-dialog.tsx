@@ -28,7 +28,8 @@ export type EventProposal = {
 
 const enum EventProposalError {
   MissingFields = "Please fill in all required fields.",
-  InvalidDateRange = "End date must be after start date.",
+  StartDateInPast = "Start date must be in the future.",
+  EndBeforeStart = "End date must be after start date.",
 }
 
 export function EventProposalDialog({ group }: { group: number }) {
@@ -100,7 +101,12 @@ export function EventProposalDialog({ group }: { group: number }) {
       : null;
 
     if (end && start >= end) {
-      setError(EventProposalError.InvalidDateRange);
+      setError(EventProposalError.EndBeforeStart);
+      return;
+    }
+
+    if (start < new Date()) {
+      setError(EventProposalError.StartDateInPast);
       return;
     }
 
@@ -128,7 +134,7 @@ export function EventProposalDialog({ group }: { group: number }) {
   const handleClearEndDate = () => {
     if (endDateRef.current) {
       endDateRef.current.value = "";
-      if (error === EventProposalError.InvalidDateRange) {
+      if (error === EventProposalError.EndBeforeStart) {
         setError(null);
       }
     }
@@ -185,7 +191,8 @@ export function EventProposalDialog({ group }: { group: number }) {
                   type="datetime-local"
                   name="start-date"
                   className={
-                    error === EventProposalError.MissingFields
+                    error === EventProposalError.MissingFields ||
+                    error === EventProposalError.StartDateInPast
                       ? "border-red-500 focus-visible:ring-red-300"
                       : ""
                   }
@@ -211,7 +218,7 @@ export function EventProposalDialog({ group }: { group: number }) {
                   type="datetime-local"
                   name="end-date"
                   className={
-                    error === EventProposalError.InvalidDateRange
+                    error === EventProposalError.EndBeforeStart
                       ? "border-red-500 focus-visible:ring-red-300"
                       : ""
                   }
