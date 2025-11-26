@@ -21,12 +21,15 @@ import { createClient } from "@/lib/supabase/client";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { NativeSelect, NativeSelectOption } from "./ui/native-select";
+import { Label } from "./ui/label";
+import { ScrollArea } from "./ui/scroll-area";
 
 export function EventItem({ event }: { event: Event }) {
   const supabase = createClient();
   const router = useRouter();
 
-  const [isPending, startTransition] = useTransition();
+  const [pending, startTransition] = useTransition();
   const [open, setOpen] = useState<boolean>(false);
 
   const handleDelete = () => {
@@ -95,6 +98,27 @@ export function EventItem({ event }: { event: Event }) {
     }
   };
 
+  const handleStatusChange = (status: string) => {
+    startTransition(async () => {
+      const { error } = await supabase
+        .from("Events")
+        .update({ status: status })
+        .eq("id", event.id);
+
+      if (error) {
+        toast.error("Status change failed", {
+          description: `Failed to set event "${event.title}" status as ${status}. Please try again later.`,
+        });
+      } else {
+        setOpen(false);
+        toast.success("Status changed", {
+          description: `Successfully set event "${event.title}" status to ${status}.`,
+        });
+        router.refresh();
+      }
+    });
+  };
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -120,17 +144,65 @@ export function EventItem({ event }: { event: Event }) {
       <DialogContent>
         <DialogHeader>
           <DialogTitle className="font-bold">{event.title}</DialogTitle>
-          <DialogDescription className="sr-only">
-            Event information
+          <DialogDescription>
+            Created by {event.creator.username}
           </DialogDescription>
         </DialogHeader>
 
-        <div>
-          <p>Created by {event.creator.username}</p>
-          <p>Status: {event.status[0].toUpperCase() + event.status.slice(1)}</p>
-          <p>Starts: {event.startsAt.toLocaleString()}</p>
-          {event.endsAt && <p>Ends: {event.endsAt.toLocaleString()}</p>}
-          <p>{event.attendeeCount} attending</p>
+        <div className="flex flex-col gap-2">
+          {event.creator.currentUser ? (
+            <div>
+              <Label htmlFor="status">Status</Label>
+              <NativeSelect
+                id="status"
+                name="status"
+                aria-label="Change event status"
+                disabled={pending}
+                defaultValue={event.status}
+                onChange={(e) => handleStatusChange(e.target.value)}
+              >
+                <NativeSelectOption value="proposed">
+                  Proposed
+                </NativeSelectOption>
+                <NativeSelectOption value="planned">Planned</NativeSelectOption>
+                <NativeSelectOption value="canceled">
+                  Canceled
+                </NativeSelectOption>
+              </NativeSelect>
+            </div>
+          ) : (
+            <div>
+              <span className="text-sm font-medium block">Status</span>
+              <span>
+                {event.status[0].toUpperCase() + event.status.slice(1)}
+              </span>
+            </div>
+          )}
+
+          <div>
+            <span className="text-sm font-medium block">Start Time</span>
+            <span>{event.startsAt.toLocaleString()}</span>
+          </div>
+
+          {event.endsAt && (
+            <div>
+              <span className="text-sm font-medium block">End Time</span>
+              <span>{event.startsAt.toLocaleString()}</span>
+            </div>
+          )}
+
+          {event.description && (
+            <div>
+              <span className="text-sm font-medium block mb-1">
+                Description
+              </span>
+              <ScrollArea className="h-20">
+                {event.description}
+              </ScrollArea>
+            </div>
+          )}
+
+          <div>{event.attendeeCount} attending</div>
         </div>
 
         <DialogFooter>
@@ -138,12 +210,12 @@ export function EventItem({ event }: { event: Event }) {
             <Button
               variant="destructive"
               onClick={handleDelete}
-              disabled={isPending}
+              disabled={pending}
             >
               Delete Event
             </Button>
           ) : (
-            <Button disabled={isPending} onClick={handleAttending}>
+            <Button disabled={pending} onClick={handleAttending}>
               Mark as {event.isAttending ? "not attending" : "attending"}
             </Button>
           )}
