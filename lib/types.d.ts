@@ -1,5 +1,6 @@
 export type Event = {
   id: number;
+  groupId: number;
   title: string;
   description: string;
   startsAt: Date;
