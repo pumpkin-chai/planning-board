@@ -6,6 +6,7 @@ import { Event, EventStatus, UserEventsResult } from "@/lib/types";
 import { InviteMemberDialog } from "./invite-member-dialog";
 import { MembersDialog } from "@/components/members-dialog";
 import { DeleteGroupButton } from "@/components/delete-group-button";
+import { SetGroupVisibilityButton } from "@/components/set-group-visibility-button";
 
 export default async function CalendarPage({
   params,
@@ -25,7 +26,7 @@ export default async function CalendarPage({
 
   const { data: groupInfo, error: groupInfoError } = await supabase
     .from("group_info_view")
-    .select("name, memberCount:member_count")
+    .select("name, memberCount:member_count, isPrivate:is_private")
     .eq("id", groupId)
     .maybeSingle()
     .overrideTypes<{ name: string; memberCount: number }>();
@@ -117,15 +118,36 @@ export default async function CalendarPage({
           <h2 className="text-2xl mb-1 sm:mb-2 text-red-500 font-bold">
             Danger Zone
           </h2>
-          <div className="p-3 sm:p-6 border-2 border-red-500 flex flex-col sm:flex-row sm:items-center gap-4 rounded-lg">
-            <div className="grow">
-              <h3 className="text-lg font-semibold">Delete Group</h3>
-              <p>
-                Deleting this group will remove all events and membership data
-                associated with it. This action cannot be undone.
-              </p>
+          <div className="p-3 sm:p-6 border-2 border-red-500 rounded-lg">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+              <div className="grow">
+                <h3 className="text-lg font-semibold">Delete Group</h3>
+                <p>
+                  Deleting this group will remove all events and membership data
+                  associated with it. This action cannot be undone.
+                </p>
+              </div>
+              <DeleteGroupButton groupId={groupId} />
             </div>
-            <DeleteGroupButton groupId={groupId} />
+
+            <hr className="my-4" />
+
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+              <div className="grow">
+                <h3 className="text-lg font-semibold">
+                  Change Group Visibility
+                </h3>
+                <p>
+                  Changing the group visibility will affect who can find and
+                  join this group. Make sure to review the settings before
+                  proceeding.
+                </p>
+              </div>
+              <SetGroupVisibilityButton
+                groupId={groupId}
+                isPrivate={groupInfo.isPrivate}
+              />
+            </div>
           </div>
         </section>
       )}
