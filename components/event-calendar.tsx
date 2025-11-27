@@ -1,7 +1,7 @@
 "use client";
 
 import { Calendar } from "@/components/ui/calendar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { EventProposalDialog } from "./event-proposal-dialog";
 import { Button } from "@/components/ui/button";
 import { EventList } from "./event-list";
@@ -25,11 +25,14 @@ export function EventCalendar({
   events: Event[];
 }) {
   const searchParams = useSearchParams();
-  const dateParam = searchParams.get("date");
 
-  const [date, setDate] = useState<Date | undefined>(
-    initialDateFromParams(dateParam),
-  );
+  const [date, setDate] = useState<Date | undefined>();
+
+  useEffect(() => {
+    const dateParam = searchParams.get("date");
+    setDate(initialDateFromParams(dateParam));
+  }, [searchParams]);
+
   const selectedEvents = events.filter(
     (event) => event.startsAt.toDateString() === date?.toDateString(),
   );
