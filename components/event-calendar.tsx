@@ -52,6 +52,7 @@ export function EventCalendar({
       <Calendar
         mode="single"
         selected={date}
+        defaultMonth={date}
         onSelect={setDate}
         className="rounded-md border shadow-lg w-full max-w-[600px] m-auto"
         captionLayout="dropdown"
