@@ -6,6 +6,16 @@ import { EventProposalDialog } from "./event-proposal-dialog";
 import { Button } from "@/components/ui/button";
 import { EventList } from "./event-list";
 import { Event } from "@/lib/types";
+import { useSearchParams } from "next/navigation";
+
+function isValidDate(d: Date) {
+  return d instanceof Date && !isNaN(d.getTime());
+}
+
+function initialDateFromParams(param: string | null) {
+  const date = param ? new Date(param) : null;
+  return date && isValidDate(date) ? date : new Date();
+}
 
 export function EventCalendar({
   groupId,
@@ -14,7 +24,12 @@ export function EventCalendar({
   groupId: number;
   events: Event[];
 }) {
-  const [date, setDate] = useState<Date | undefined>(new Date());
+  const searchParams = useSearchParams();
+  const dateParam = searchParams.get("date");
+
+  const [date, setDate] = useState<Date | undefined>(
+    initialDateFromParams(dateParam),
+  );
   const selectedEvents = events.filter(
     (event) => event.startsAt.toDateString() === date?.toDateString(),
   );
