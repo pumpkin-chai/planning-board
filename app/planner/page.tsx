@@ -88,7 +88,7 @@ async function UpcomingEvents() {
   const { data: eventData } = await supabase
     .from("user_events")
     .select(
-      "id, title, startsAt:starts_at, endsAt:ends_at, status, creator:profiles!events_created_by_fkey(username), description, isAttending:is_attending, attendeeCount:attendee_count",
+      "id, groupId:group_id, title, startsAt:starts_at, endsAt:ends_at, status, creator:profiles!events_created_by_fkey(username), description, isAttending:is_attending, attendeeCount:attendee_count",
     )
     .gt("starts_at", currentTimestamp)
     .eq("status", "planned")

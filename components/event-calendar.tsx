@@ -1,11 +1,21 @@
 "use client";
 
 import { Calendar } from "@/components/ui/calendar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { EventProposalDialog } from "./event-proposal-dialog";
 import { Button } from "@/components/ui/button";
 import { EventList } from "./event-list";
 import { Event } from "@/lib/types";
+import { useSearchParams } from "next/navigation";
+
+function isValidDate(d: Date) {
+  return d instanceof Date && !isNaN(d.getTime());
+}
+
+function initialDateFromParams(param: string | null) {
+  const date = param ? new Date(param) : null;
+  return date && isValidDate(date) ? date : new Date();
+}
 
 export function EventCalendar({
   groupId,
@@ -14,7 +24,15 @@ export function EventCalendar({
   groupId: number;
   events: Event[];
 }) {
-  const [date, setDate] = useState<Date | undefined>(new Date());
+  const searchParams = useSearchParams();
+
+  const [date, setDate] = useState<Date | undefined>();
+
+  useEffect(() => {
+    const dateParam = searchParams.get("date");
+    setDate(initialDateFromParams(dateParam));
+  }, [searchParams]);
+
   const selectedEvents = events.filter(
     (event) => event.startsAt.toDateString() === date?.toDateString(),
   );
@@ -37,6 +55,7 @@ export function EventCalendar({
       <Calendar
         mode="single"
         selected={date}
+        defaultMonth={date}
         onSelect={setDate}
         className="rounded-md border shadow-lg w-full max-w-[600px] m-auto"
         captionLayout="dropdown"
