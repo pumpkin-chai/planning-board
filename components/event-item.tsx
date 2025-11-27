@@ -23,6 +23,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { NativeSelect, NativeSelectOption } from "./ui/native-select";
 import { Label } from "./ui/label";
+import Link from "next/link";
 
 const datetimeOptions: Intl.DateTimeFormatOptions = {
   timeStyle: "short",
@@ -221,6 +222,16 @@ export function EventItem({ event }: { event: Event }) {
         <div className="mb-8 sm:mb-4">{event.attendeeCount} attending</div>
 
         <DialogFooter>
+          <Button variant="secondary" asChild>
+            <Link
+              href={{
+                pathname: `/planner/calendar/${event.groupId}`,
+                query: { date: event.startsAt.toLocaleDateString() },
+              }}
+            >
+              View in calendar
+            </Link>
+          </Button>
           {event.creator.currentUser ? (
             <Button
               variant="destructive"
