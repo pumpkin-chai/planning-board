@@ -24,6 +24,23 @@ import { toast } from "sonner";
 import { NativeSelect, NativeSelectOption } from "./ui/native-select";
 import { Label } from "./ui/label";
 
+const datetimeOptions: Intl.DateTimeFormatOptions = {
+  timeStyle: "short",
+  dateStyle: "short",
+};
+const timeOptions: Intl.DateTimeFormatOptions = {
+  timeStyle: "short",
+};
+
+function dateLaterThan(a: Date, b: Date) {
+  return (
+    a.getFullYear() > b.getFullYear() ||
+    (a.getFullYear() === b.getFullYear() &&
+      (a.getMonth() > b.getMonth() ||
+        (a.getMonth() === b.getMonth() && a.getDate() > b.getDate())))
+  );
+}
+
 export function EventItem({ event }: { event: Event }) {
   const supabase = createClient();
   const router = useRouter();
@@ -125,12 +142,15 @@ export function EventItem({ event }: { event: Event }) {
           <ItemContent>
             <ItemTitle className="text-lg">{event.title}</ItemTitle>
             <ItemDescription>
-              {event.startsAt.toLocaleString()}
+              {event.startsAt.toLocaleString(undefined, datetimeOptions)}
               {event.endsAt &&
                 " to " +
-                  (event.endsAt > event.startsAt
-                    ? event.endsAt.toLocaleTimeString()
-                    : event.endsAt.toLocaleString())}{" "}
+                  (dateLaterThan(event.endsAt, event.startsAt)
+                    ? event.endsAt.toLocaleString(undefined, datetimeOptions)
+                    : event.endsAt.toLocaleTimeString(
+                        undefined,
+                        timeOptions,
+                      ))}{" "}
             </ItemDescription>
             <ItemFooter>
               <p>
@@ -176,12 +196,16 @@ export function EventItem({ event }: { event: Event }) {
         )}
 
         <span className="text-sm font-medium block">Start Time</span>
-        <span className="mb-3">{event.startsAt.toLocaleString()}</span>
+        <span className="mb-3">
+          {event.startsAt.toLocaleString(undefined, datetimeOptions)}
+        </span>
 
         {event.endsAt && (
           <>
             <span className="text-sm font-medium block">End Time</span>
-            <span className="mb-3">{event.startsAt.toLocaleString()}</span>
+            <span className="mb-3">
+              {event.endsAt.toLocaleString(undefined, datetimeOptions)}
+            </span>
           </>
         )}
 
