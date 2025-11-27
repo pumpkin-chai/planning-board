@@ -63,7 +63,7 @@ export function SetGroupVisibilityButton({
         <AlertDialogHeader>
           <AlertDialogTitle>Are you sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This will change the group's visibility to{" "}
+            This will change the group&apos;s visibility to{" "}
             <strong>{isPrivate ? "public" : "private"}</strong>.{" "}
             {isPrivate
               ? "Anyone with the group ID will be able to find and join this group."
