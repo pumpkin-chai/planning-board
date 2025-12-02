@@ -79,7 +79,7 @@ export default async function CalendarPage({
         />
 
         {membershipData?.role === "admin" && (
-          <InviteMemberDialog groupId={Number(groupId)} inviterId={user.id} />
+          <InviteMemberDialog groupId={Number(groupId)} />
         )}
       </div>
 

@@ -13,53 +13,30 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { createClient } from "@/lib/supabase/client";
+import { inviteUser } from "@/lib/actions/user-actions";
+import { PostgrestError } from "@supabase/supabase-js";
 
 import { UserRoundPlus } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
-export function InviteMemberDialog({
-  groupId,
-  inviterId,
-}: {
-  groupId: number;
-  inviterId: string;
-}) {
-  const supabase = createClient();
-
+export function InviteMemberDialog({ groupId }: { groupId: number }) {
   const [username, setUsername] = useState<string>("");
 
   const handleInvite = async () => {
-    const { data: inviteeData } = await supabase
-      .from("profiles")
-      .select("id")
-      .eq("username", username)
-      .single();
-
-    if (!inviteeData) {
-      toast.error("Invite failed", {
-        description: `User ${username} not found`,
-      });
-      return;
-    }
-
-    const { error } = await supabase.from("invitations").insert({
-      inviter_id: inviterId,
-      invitee_id: inviteeData.id,
-      group_id: groupId,
-    });
-
-    if (error) {
-      if (error.code === "23505") {
+    try {
+      await inviteUser(username, groupId);
+      toast.success(`Invite sent to ${username}!`);
+    } catch (e) {
+      if (e instanceof PostgrestError && e.code === "23505") {
         toast.error("Invite failed", {
           description: `User ${username} has already been invited`,
         });
       } else {
-        toast.error("Failed to send invite. Please try again later.");
+        toast.error("Invite failed", {
+          description: `Failed to send invite. Please try again later.`,
+        });
       }
-    } else {
-      toast.success(`Invite sent to ${username}!`);
     }
   };
 
