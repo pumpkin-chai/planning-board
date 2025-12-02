@@ -14,7 +14,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { inviteUser } from "@/lib/actions/user-actions";
-import { PostgrestError } from "@supabase/supabase-js";
 
 import { UserRoundPlus } from "lucide-react";
 import { useState } from "react";
@@ -28,13 +27,9 @@ export function InviteMemberDialog({ groupId }: { groupId: number }) {
       await inviteUser(username, groupId);
       toast.success(`Invite sent to ${username}!`);
     } catch (e) {
-      if (e instanceof PostgrestError && e.code === "23505") {
+      if (e instanceof Error) {
         toast.error("Invite failed", {
-          description: `User ${username} has already been invited`,
-        });
-      } else {
-        toast.error("Invite failed", {
-          description: `Failed to send invite. Please try again later.`,
+          description: e.message,
         });
       }
     }
