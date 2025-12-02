@@ -1,20 +1,9 @@
 "use server";
 
-import { createClient } from "../supabase/server";
+import { requireUser } from "@/lib/supabase/server";
 
 export async function inviteUser(username: string, groupId: number) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser();
-
-  if (userError) {
-    throw userError;
-  }
-  if (!user) {
-    throw new Error("Could not retrieve current user");
-  }
+  const { supabase, user } = await requireUser();
 
   const { data: userSearchData, error: userSearchError } = await supabase
     .from("profiles")
