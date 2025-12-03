@@ -7,10 +7,10 @@ export async function inviteUser(username: string, groupId: number) {
 
   const { data: currentMemberData, error: currentMemberError } = await supabase
     .from("Memberships")
-    .select()
-    .eq("profiles.username", username)
-    .eq("group_id", groupId);
-  if (currentMemberError || currentMemberData) {
+    .select("profiles(username)")
+    .eq("group_id", groupId)
+    .eq("profiles.username", username);
+  if (currentMemberError || currentMemberData.some((m) => m.profiles)) {
     throw new Error(`User ${username} is already a member.`);
   }
 
