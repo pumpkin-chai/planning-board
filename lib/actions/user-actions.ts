@@ -12,7 +12,7 @@ export async function createInvite(username: string, groupId: number) {
     .eq("group_id", groupId)
     .eq("profiles.username", username);
   if (currentMemberError || currentMemberData.some((m) => m.profiles)) {
-    throw new Error(`User ${username} is already a member.`);
+    return { error: `User ${username} is already a member.`, data: null };
   }
 
   const { data: userSearchData, error: userSearchError } = await supabase
@@ -21,7 +21,7 @@ export async function createInvite(username: string, groupId: number) {
     .eq("username", username)
     .maybeSingle();
   if (userSearchError || !userSearchData) {
-    throw new Error(`User ${username} not found.`);
+    return { error: `User ${username} not found.`, data: null };
   }
 
   const { data, error: newInviteError } = await supabase
@@ -35,10 +35,10 @@ export async function createInvite(username: string, groupId: number) {
     .single()
     .overrideTypes<{ id: number }>();
   if (newInviteError) {
-    throw newInviteError;
+    return { error: newInviteError.message, data: null };
   }
 
-  return { data };
+  return { data, error: null };
 }
 
 export async function createNotification(notification: Notification) {

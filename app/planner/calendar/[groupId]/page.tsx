@@ -7,10 +7,7 @@ import { InviteMemberDialog } from "./invite-member-dialog";
 import { MembersDialog } from "@/components/members-dialog";
 import { DeleteGroupButton } from "@/components/delete-group-button";
 import { SetGroupVisibilityButton } from "@/components/set-group-visibility-button";
-import {
-  createNotification,
-  createInvite,
-} from "@/lib/actions/user-actions";
+import { createNotification, createInvite } from "@/lib/actions/user-actions";
 
 export default async function CalendarPage({
   params,
@@ -31,13 +28,19 @@ export default async function CalendarPage({
   const handleInvite = async (username: string) => {
     "use server";
 
-    const { data } = await createInvite(username, Number(groupId));
+    const { data, error } = await createInvite(username, Number(groupId));
+    if (error || !data) {
+      return { success: false, message: "Failed to create invite." };
+    }
+
     await createNotification({
       createdBy: user.id,
       type: "invite_created",
       entityType: "invite",
       entityId: data.id,
     });
+
+    return { success: true, message: `Successfully invited ${username}.` };
   };
 
   const { data: groupInfo, error: groupInfoError } = await supabase
