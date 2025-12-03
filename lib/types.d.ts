@@ -12,6 +12,29 @@ export type Event = {
 };
 export type EventStatus = "proposed" | "planned" | "canceled";
 
+export type EventStatusChangeData = {
+  from: EventStatus;
+  to: EventStatus;
+};
+
+export type Notification = {
+  createdBy: UserId;
+  type: NotificationType;
+  entityType: NotificationReferenceType;
+  entityId: number;
+  data?: EventStatusChangeData;
+};
+
+export type UserId = string;
+
+export type NotificationType =
+  | "event_status_changed"
+  | "invite_created"
+  | "invite_accepted"
+  | "invite_declined";
+
+export type NotificationReferenceType = "invite" | "event";
+
 export type Group = {
   id: number;
   name: string;

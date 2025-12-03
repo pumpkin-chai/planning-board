@@ -13,18 +13,21 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { inviteUser } from "@/lib/actions/user-actions";
 
 import { UserRoundPlus } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
-export function InviteMemberDialog({ groupId }: { groupId: number }) {
+export function InviteMemberDialog({
+  inviteAction,
+}: {
+  inviteAction: (username: string) => Promise<void>;
+}) {
   const [username, setUsername] = useState<string>("");
 
   const handleInvite = async () => {
     try {
-      await inviteUser(username, groupId);
+      await inviteAction(username);
       toast.success(`Invite sent to ${username}!`);
     } catch (e) {
       if (e instanceof Error) {
