@@ -118,7 +118,10 @@ export function EventItem({ event }: { event: Event }) {
 
   const handleStatusChange = (status: string) => {
     startTransition(async () => {
-      const { data, error } = await setEventStatus(event, status as EventStatus);
+      const { data, error } = await setEventStatus(
+        event,
+        status as EventStatus
+      );
 
       if (!data || error) {
         toast.error("Status change failed", {
@@ -144,12 +147,12 @@ export function EventItem({ event }: { event: Event }) {
               {event.startsAt.toLocaleString(undefined, datetimeOptions)}
               {event.endsAt &&
                 " to " +
-                (dateLaterThan(event.endsAt, event.startsAt)
-                  ? event.endsAt.toLocaleString(undefined, datetimeOptions)
-                  : event.endsAt.toLocaleTimeString(
-                    undefined,
-                    timeOptions,
-                  ))}{" "}
+                  (dateLaterThan(event.endsAt, event.startsAt)
+                    ? event.endsAt.toLocaleString(undefined, datetimeOptions)
+                    : event.endsAt.toLocaleTimeString(
+                        undefined,
+                        timeOptions
+                      ))}{" "}
             </ItemDescription>
             <ItemFooter>
               <p>
