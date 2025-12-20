@@ -1,6 +1,6 @@
 "use client";
 
-import { Event } from "@/lib/types";
+import { Event, EventStatus } from "@/lib/types";
 import {
   Item,
   ItemContent,
@@ -24,6 +24,7 @@ import { toast } from "sonner";
 import { NativeSelect, NativeSelectOption } from "./ui/native-select";
 import { Label } from "./ui/label";
 import Link from "next/link";
+import { setEventStatus } from "@/lib/actions/event-actions";
 
 const datetimeOptions: Intl.DateTimeFormatOptions = {
   timeStyle: "short",
@@ -117,14 +118,11 @@ export function EventItem({ event }: { event: Event }) {
 
   const handleStatusChange = (status: string) => {
     startTransition(async () => {
-      const { error } = await supabase
-        .from("events")
-        .update({ status: status })
-        .eq("id", event.id);
+      const { data, error } = await setEventStatus(event, status as EventStatus);
 
-      if (error) {
+      if (!data || error) {
         toast.error("Status change failed", {
-          description: `Failed to set event "${event.title}" status as ${status}. Please try again later.`,
+          description: error,
         });
       } else {
         setOpen(false);
@@ -146,12 +144,12 @@ export function EventItem({ event }: { event: Event }) {
               {event.startsAt.toLocaleString(undefined, datetimeOptions)}
               {event.endsAt &&
                 " to " +
-                  (dateLaterThan(event.endsAt, event.startsAt)
-                    ? event.endsAt.toLocaleString(undefined, datetimeOptions)
-                    : event.endsAt.toLocaleTimeString(
-                        undefined,
-                        timeOptions,
-                      ))}{" "}
+                (dateLaterThan(event.endsAt, event.startsAt)
+                  ? event.endsAt.toLocaleString(undefined, datetimeOptions)
+                  : event.endsAt.toLocaleTimeString(
+                    undefined,
+                    timeOptions,
+                  ))}{" "}
             </ItemDescription>
             <ItemFooter>
               <p>
