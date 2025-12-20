@@ -22,7 +22,7 @@ export function LeaveGroupButton({
   const leaveGroup = () => {
     startTransition(async () => {
       const { error } = await supabase
-        .from("Memberships")
+        .from("memberships")
         .delete()
         .eq("group_id", group.id);
 

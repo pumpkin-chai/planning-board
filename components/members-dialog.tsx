@@ -38,7 +38,7 @@ export function MembersDialog({
   useEffect(() => {
     const fetchData = async () => {
       const { data, error } = await supabase
-        .from("Memberships")
+        .from("memberships")
         .select(
           "user:profiles(username, firstName:first_name, lastName:last_name), role",
         )

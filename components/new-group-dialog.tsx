@@ -43,7 +43,7 @@ export function NewGroupDialog({
   const handleNewGroup = () => {
     startTransition(async () => {
       const { data, error } = await supabase
-        .from("Groups")
+        .from("groups")
         .insert({ name: groupName, is_private: isPrivate})
         .select("id, name")
         .single();

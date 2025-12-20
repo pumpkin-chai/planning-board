@@ -49,7 +49,7 @@ export function EventProposalDialog({ group }: { group: number }) {
 
   const handlePropose = (proposal: EventProposal) => {
     startTransition(async () => {
-      const { error } = await supabase.from("Events").insert({
+      const { error } = await supabase.from("events").insert({
         group_id: group,
         title: proposal.title,
         description: proposal.description,

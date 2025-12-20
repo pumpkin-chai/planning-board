@@ -29,7 +29,7 @@ export function SetGroupVisibilityButton({
   const handleSetVisibility = () => {
     const changeVisibility = async () => {
       const { error, count } = await supabase
-        .from("Groups")
+        .from("groups")
         .update(
           {
             is_private: !isPrivate,
