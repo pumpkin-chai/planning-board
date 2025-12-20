@@ -23,7 +23,7 @@ export function DeleteGroupButton({ groupId }: { groupId: string }) {
   const handleDelete = () => {
     const deleteGroup = async () => {
       const { error, count } = await supabase
-        .from("Groups")
+        .from("groups")
         .delete({ count: "exact" })
         .eq("id", groupId);
 

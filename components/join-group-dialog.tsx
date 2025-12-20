@@ -43,7 +43,7 @@ export function JoinGroupDialog({
 
     startTransition(async () => {
       const { data: groupData, error: groupError } = await supabase
-        .from("Groups")
+        .from("groups")
         .select("id, name, is_private")
         .eq("id", groupId)
         .single();
@@ -58,7 +58,7 @@ export function JoinGroupDialog({
         });
       } else {
         const { data, error } = await supabase
-          .from("Memberships")
+          .from("memberships")
           .insert({ group_id: Number(groupId) })
           .select("group:Groups(id, name, is_private)")
           .single()

@@ -52,7 +52,7 @@ export function EventItem({ event }: { event: Event }) {
   const handleDelete = () => {
     startTransition(async () => {
       const { error } = await supabase
-        .from("Events")
+        .from("events")
         .delete()
         .eq("id", event.id);
 
@@ -118,7 +118,7 @@ export function EventItem({ event }: { event: Event }) {
   const handleStatusChange = (status: string) => {
     startTransition(async () => {
       const { error } = await supabase
-        .from("Events")
+        .from("events")
         .update({ status: status })
         .eq("id", event.id);
 

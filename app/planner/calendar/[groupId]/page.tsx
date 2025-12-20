@@ -35,7 +35,7 @@ export default async function CalendarPage({
   }
 
   const { data: membershipData, error: membershipInfoError } = await supabase
-    .from("Memberships")
+    .from("memberships")
     .select("user:profiles(username), role")
     .eq("user_id", user.id)
     .eq("group_id", groupId)
